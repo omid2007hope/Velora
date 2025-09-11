@@ -154,7 +154,7 @@ const navigation = {
   ],
 };
 
-function Popup(props) {
+function SignupPopup(props) {
   console.log(props);
 
   return (
@@ -175,47 +175,200 @@ function Popup(props) {
               transition
               className="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
-              <div className="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-500/10 sm:mx-0 sm:size-10">
-                    <ExclamationTriangleIcon
-                      aria-hidden="true"
-                      className="size-6 text-red-400"
-                    />
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <DialogTitle
-                      as="h3"
-                      className="text-base font-semibold text-white"
-                    >
-                      Deactivate account
-                    </DialogTitle>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-400">
-                        Are you sure you want to deactivate your account? All of
-                        your data will be permanently removed. This action
-                        cannot be undone.
-                      </p>
+              <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                  <img
+                    alt="Your Company"
+                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                    className="mx-auto h-10 w-auto"
+                  />
+                  <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+                    Sign in to your account
+                  </h2>
+                </div>
+
+                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                  <form action="#" method="POST" className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm/6 font-medium text-gray-100"
+                      >
+                        Email address
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          autoComplete="email"
+                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                        />
+                      </div>
                     </div>
-                  </div>
+
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <label
+                          htmlFor="password"
+                          className="block text-sm/6 font-medium text-gray-100"
+                        >
+                          Password
+                        </label>
+                        <div className="text-sm">
+                          <a
+                            href="#"
+                            className="font-semibold text-indigo-400 hover:text-indigo-300"
+                          >
+                            Forgot password?
+                          </a>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <input
+                          id="password"
+                          name="password"
+                          type="password"
+                          required
+                          autoComplete="current-password"
+                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      >
+                        Sign in
+                      </button>
+                    </div>
+                  </form>
+
+                  <p className="mt-10 text-center text-sm/6 text-gray-400">
+                    Not a member?{" "}
+                    <a
+                      href="#"
+                      className="font-semibold text-indigo-400 hover:text-indigo-300"
+                    >
+                      Start a 14 day free trial
+                    </a>
+                  </p>
                 </div>
               </div>
-              <div className="bg-gray-700/25 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                  type="button"
-                  onClick={() => props.setOpen(false)}
-                  className="inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white hover:bg-red-400 sm:ml-3 sm:w-auto"
-                >
-                  Deactivate
-                </button>
-                <button
-                  type="button"
-                  data-autofocus
-                  onClick={() => props.setOpen(false)}
-                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20 sm:mt-0 sm:w-auto"
-                >
-                  Cancel
-                </button>
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
+    </div>
+  );
+}
+
+function LoginPopup(props) {
+  console.log(props);
+
+  return (
+    <div>
+      <Dialog
+        open={props.open}
+        onClose={props.setOpen}
+        className="relative z-10"
+      >
+        <DialogBackdrop
+          transition
+          className="fixed inset-0 bg-gray-900/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+        />
+
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <DialogPanel
+              transition
+              className="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+            >
+              <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                  <img
+                    alt="Your Company"
+                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                    className="mx-auto h-10 w-auto"
+                  />
+                  <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+                    Sign in to your account
+                  </h2>
+                </div>
+
+                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                  <form action="#" method="POST" className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm/6 font-medium text-gray-100"
+                      >
+                        Email address
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          autoComplete="email"
+                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <label
+                          htmlFor="password"
+                          className="block text-sm/6 font-medium text-gray-100"
+                        >
+                          Password
+                        </label>
+                        <div className="text-sm">
+                          <a
+                            href="#"
+                            className="font-semibold text-indigo-400 hover:text-indigo-300"
+                          >
+                            Forgot password?
+                          </a>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <input
+                          id="password"
+                          name="password"
+                          type="password"
+                          required
+                          autoComplete="current-password"
+                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      >
+                        Sign in
+                      </button>
+                    </div>
+                  </form>
+
+                  <p className="mt-10 text-center text-sm/6 text-gray-400">
+                    Not a member?{" "}
+                    <a
+                      href="#"
+                      className="font-semibold text-indigo-400 hover:text-indigo-300"
+                    >
+                      Start a 14 day free trial
+                    </a>
+                  </p>
+                </div>
               </div>
             </DialogPanel>
           </div>
@@ -229,9 +382,14 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
 
+  //
+
+  const [signup, setSignup] = useState(false);
+
   return (
     <div className="fixed z-10 w-full bg-white">
-      <Popup open={login} setOpen={setLogin} />
+      <LoginPopup open={login} setOpen={setLogin} />
+      <SignupPopup open={signup} setOpen={setSignup} />
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop
           transition
@@ -520,6 +678,7 @@ export default function Header() {
                   <a
                     href="#"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    onClick={() => setSignup(true)}
                   >
                     Create account
                   </a>
