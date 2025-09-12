@@ -1,7 +1,7 @@
 "use client";
 
-import Item from "./Item";
-import List from "./List";
+import Item from "../Item";
+import List from "../List";
 
 import { useState } from "react";
 import {
@@ -85,7 +85,7 @@ export default function Sidebar() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   return (
-    <div className="bg-white">
+    <div className="bg-red-50">
       <div>
         {/* Mobile filter dialog */}
         <Dialog

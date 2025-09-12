@@ -157,6 +157,8 @@ const navigation = {
   ],
 };
 
+import Logo from "./assets/Images/Logo.png";
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
@@ -312,9 +314,9 @@ export default function Header() {
         </div>
       </Dialog>
 
-      <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
-          Get free delivery on orders over $100
+      <header className="relative bg-rose-200 border-b-2 border-rose-300">
+        <p className="flex h-10 items-center justify-center bg-rose-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+          Free delivery for orders over 50$
         </p>
 
         <nav aria-label="Top" className="w-full  px-4 sm:px-6 lg:px-8">
@@ -331,14 +333,10 @@ export default function Header() {
               </button>
 
               {/* Logo */}
-              <div className="ml-4 flex lg:ml-0">
+              <div className=" scale-140 ml-4 flex lg:ml-0 border-1 border-rose-400">
                 <a href="#">
                   <span className="sr-only">Your Company</span>
-                  <img
-                    alt=""
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
-                  />
+                  <img alt="" src={Logo} className="h-8 w-auto" />
                 </a>
               </div>
 
@@ -348,11 +346,11 @@ export default function Header() {
                   {navigation.categories.map((category) => (
                     <Popover key={category.name} className="flex">
                       <div className="relative flex">
-                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-open:text-indigo-600">
+                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-rose-800 transition-colors duration-200 ease-out hover:text-rose-900 data-open:text-rose-900">
                           {category.name}
                           <span
                             aria-hidden="true"
-                            className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-indigo-600"
+                            className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-rose-900"
                           />
                         </PopoverButton>
                       </div>
@@ -365,7 +363,7 @@ export default function Header() {
                           aria-hidden="true"
                           className="absolute inset-0 top-1/2 bg-white shadow-sm"
                         />
-                        <div className="relative bg-white">
+                        <div className="relative bg-rose-50">
                           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
                               <div className="col-start-2 grid grid-cols-2 gap-x-8">
@@ -381,7 +379,7 @@ export default function Header() {
                                     />
                                     <a
                                       href={item.href}
-                                      className="mt-6 block font-medium text-gray-900"
+                                      className="mt-6 block font-medium text-rose-900"
                                     >
                                       <span
                                         aria-hidden="true"
@@ -400,7 +398,7 @@ export default function Header() {
                                   <div key={section.name}>
                                     <p
                                       id={`${section.name}-heading`}
-                                      className="font-medium text-gray-900"
+                                      className="font-medium text-rose-900"
                                     >
                                       {section.name}
                                     </p>
@@ -413,7 +411,7 @@ export default function Header() {
                                         <li key={item.name} className="flex">
                                           <a
                                             href={item.href}
-                                            className="hover:text-gray-800"
+                                            className="hover:text-rose-800"
                                           >
                                             {item.name}
                                           </a>
@@ -433,7 +431,7 @@ export default function Header() {
                     <a
                       key={page.name}
                       href={page.href}
-                      className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="flex items-center text-sm font-medium text-rose-800 hover:text-rose-900"
                     >
                       {page.name}
                     </a>
@@ -445,7 +443,7 @@ export default function Header() {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <a
                     href="#"
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    className="text-sm font-medium text-rose-800 hover:text-rose-900"
                     onClick={() => setLogin(true)}
                   >
                     Sign in
@@ -453,7 +451,7 @@ export default function Header() {
                   <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
                   <a
                     href="#"
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    className="text-sm font-medium text-rose-800 hover:text-rose-900"
                     onClick={() => setSignup(true)}
                   >
                     Create account
@@ -470,14 +468,16 @@ export default function Header() {
                       src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
                       className="block h-auto w-5 shrink-0"
                     />
-                    <span className="ml-3 block text-sm font-medium">CAD</span>
+                    <span className="ml-3 block text-sm font-medium text-rose-800 hover:text-rose-900">
+                      CAD
+                    </span>
                     <span className="sr-only">, change currency</span>
                   </a>
                 </div>
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
-                  <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
+                  <a href="#" className="p-2 text-rose-800 hover:text-rose-700">
                     <span className="sr-only">Search</span>
                     <MagnifyingGlassIcon
                       aria-hidden="true"
@@ -491,7 +491,7 @@ export default function Header() {
                   <a href="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
-                      className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                      className="size-6 shrink-0 text-rose-800 group-hover:text-rose-700"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
                       0
