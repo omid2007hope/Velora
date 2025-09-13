@@ -24,8 +24,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import LoginPopup from "./components/Login";
-import SignupPopup from "./components/Register";
+import LoginPopup from "./Login";
+import SignupPopup from "./Register";
 
 const navigation = {
   categories: [
@@ -157,13 +157,12 @@ const navigation = {
   ],
 };
 
-import Logo from "./assets/Images/Logo.png";
+import Logo from "../assets/Images/Logo.png";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
-
   return (
     <div className="fixed z-10 w-full bg-white">
       <LoginPopup open={login} setOpen={setLogin} />

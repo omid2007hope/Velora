@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
-
-export default function Hero() {
+export default function Promo() {
   return (
-    <div className="relative overflow-hidden bg-white">
-      <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
+    <div className="relative overflow-hidden bg-rose-50 h-100 top-25 ">
+      <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-10 lg:pb-48 ">
         <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
           <div className="sm:max-w-lg">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
@@ -82,12 +80,12 @@ export default function Hero() {
                 </div>
               </div>
 
-              <Link
-                to="/Home"
+              <a
+                href="#"
                 className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
               >
                 Shop Collection
-              </Link>
+              </a>
             </div>
           </div>
         </div>
