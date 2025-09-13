@@ -160,13 +160,31 @@ const navigation = {
 import Logo from "../assets/Images/Logo.png";
 
 export default function Header() {
+  const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
+  const [user, setUser] = useState(loadUser);
+
+  function signout() {
+    setUser("");
+    localStorage.removeItem("user");
+  }
+
   return (
     <div className="fixed z-10 w-full bg-white">
-      <LoginPopup open={login} setOpen={setLogin} />
-      <SignupPopup open={signup} setOpen={setSignup} />
+      <LoginPopup
+        open={login}
+        setOpen={setLogin}
+        user={user}
+        setUser={setUser}
+      />
+      <SignupPopup
+        open={signup}
+        setOpen={setSignup}
+        user={user}
+        setUser={setUser}
+      />
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop
           transition
@@ -440,21 +458,40 @@ export default function Header() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-rose-800 hover:text-rose-900"
-                    onClick={() => setLogin(true)}
-                  >
-                    Sign in
-                  </a>
+                  {user ? (
+                    <a
+                      href="#"
+                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      onClick={signout}
+                    >
+                      Sign out
+                    </a>
+                  ) : (
+                    <a
+                      href="#"
+                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      onClick={() => setLogin(true)}
+                    >
+                      Sign in
+                    </a>
+                  )}
                   <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-rose-800 hover:text-rose-900"
-                    onClick={() => setSignup(true)}
-                  >
-                    Create account
-                  </a>
+                  {user ? (
+                    <a
+                      href="#"
+                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                    >
+                      {user.fullName}
+                    </a>
+                  ) : (
+                    <a
+                      href="#"
+                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      onClick={() => setSignup(true)}
+                    >
+                      Create account
+                    </a>
+                  )}
                 </div>
 
                 <div className="hidden lg:ml-8 lg:flex">

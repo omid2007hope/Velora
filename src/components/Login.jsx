@@ -12,9 +12,10 @@ export default function LoginPopup(props) {
       (x) => x.email === email && x.password === password
     );
     if (!findUser) {
-      alert("Fuck off");
       return;
     }
+    localStorage.setItem("user", JSON.stringify(findUser));
+    props.setUser(findUser);
     props.setOpen(false);
   }
 
