@@ -331,13 +331,13 @@ export default function Header() {
         </div>
       </Dialog>
 
-      <header className="relative bg-rose-200 border-b-2 border-rose-300">
-        <p className="flex h-10 items-center justify-center bg-rose-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+      <header className="relative bg-orange-200">
+        <p className="flex h-10 items-center justify-center bg-amber-950 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
           Free delivery for orders over 50$
         </p>
 
         <nav aria-label="Top" className="w-full  px-4 sm:px-6 lg:px-8">
-          <div className="border-b border-gray-200">
+          <div className="">
             <div className="flex h-16 items-center">
               <button
                 type="button"
@@ -350,10 +350,14 @@ export default function Header() {
               </button>
 
               {/* Logo */}
-              <div className=" scale-140 ml-4 flex lg:ml-0 border-1 border-rose-400">
+              <div className=" scale-140 ml-4 flex lg:ml-0 ">
                 <a href="#">
                   <span className="sr-only">Your Company</span>
-                  <img alt="" src={Logo} className="h-8 w-auto" />
+                  <img
+                    alt=""
+                    src={Logo}
+                    className="h-8 w-auto rounded-xl border-1 border-amber-950"
+                  />
                 </a>
               </div>
 
@@ -363,11 +367,11 @@ export default function Header() {
                   {navigation.categories.map((category) => (
                     <Popover key={category.name} className="flex">
                       <div className="relative flex">
-                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-rose-800 transition-colors duration-200 ease-out hover:text-rose-900 data-open:text-rose-900">
+                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-amber-950 transition-colors duration-200 ease-out hover:text-amber-900 data-open:text-rose-900">
                           {category.name}
                           <span
                             aria-hidden="true"
-                            className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-rose-900"
+                            className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-amber-950"
                           />
                         </PopoverButton>
                       </div>
@@ -380,7 +384,7 @@ export default function Header() {
                           aria-hidden="true"
                           className="absolute inset-0 top-1/2 bg-white shadow-sm"
                         />
-                        <div className="relative bg-rose-50">
+                        <div className="relative bg-orange-50">
                           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
                               <div className="col-start-2 grid grid-cols-2 gap-x-8">
@@ -396,7 +400,7 @@ export default function Header() {
                                     />
                                     <a
                                       href={item.href}
-                                      className="mt-6 block font-medium text-rose-900"
+                                      className="mt-6 block font-medium text-amber-950"
                                     >
                                       <span
                                         aria-hidden="true"
@@ -415,7 +419,7 @@ export default function Header() {
                                   <div key={section.name}>
                                     <p
                                       id={`${section.name}-heading`}
-                                      className="font-medium text-rose-900"
+                                      className="font-medium text-amber-950"
                                     >
                                       {section.name}
                                     </p>
@@ -428,7 +432,7 @@ export default function Header() {
                                         <li key={item.name} className="flex">
                                           <a
                                             href={item.href}
-                                            className="hover:text-rose-800"
+                                            className="hover:text-amber-900"
                                           >
                                             {item.name}
                                           </a>
@@ -448,7 +452,7 @@ export default function Header() {
                     <a
                       key={page.name}
                       href={page.href}
-                      className="flex items-center text-sm font-medium text-rose-800 hover:text-rose-900"
+                      className="flex items-center text-sm font-medium text-amber-950 hover:text-amber-900"
                     >
                       {page.name}
                     </a>
@@ -461,7 +465,7 @@ export default function Header() {
                   {user ? (
                     <a
                       href="#"
-                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      className="text-sm font-medium text-amber-950 hover:text-amber-900"
                       onClick={signout}
                     >
                       Sign out
@@ -469,7 +473,7 @@ export default function Header() {
                   ) : (
                     <a
                       href="#"
-                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      className="text-sm font-medium text-amber-950 hover:text-amber-900"
                       onClick={() => setLogin(true)}
                     >
                       Sign in
@@ -479,14 +483,14 @@ export default function Header() {
                   {user ? (
                     <a
                       href="#"
-                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      className="text-sm font-medium text-amber-950 hover:text-amber-900"
                     >
                       {user.fullName}
                     </a>
                   ) : (
                     <a
                       href="#"
-                      className="text-sm font-medium text-rose-800 hover:text-rose-900"
+                      className="text-sm font-medium text-amber-950 hover:text-amber-900"
                       onClick={() => setSignup(true)}
                     >
                       Create account
@@ -504,7 +508,7 @@ export default function Header() {
                       src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
                       className="block h-auto w-5 shrink-0"
                     />
-                    <span className="ml-3 block text-sm font-medium text-rose-800 hover:text-rose-900">
+                    <span className="ml-3 block text-sm font-medium text-amber-950 hover:text-amber-900">
                       CAD
                     </span>
                     <span className="sr-only">, change currency</span>
@@ -513,7 +517,10 @@ export default function Header() {
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
-                  <a href="#" className="p-2 text-rose-800 hover:text-rose-700">
+                  <a
+                    href="#"
+                    className="p-2 text-amber-950 hover:text-amber-800"
+                  >
                     <span className="sr-only">Search</span>
                     <MagnifyingGlassIcon
                       aria-hidden="true"
@@ -527,7 +534,7 @@ export default function Header() {
                   <a href="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
-                      className="size-6 shrink-0 text-rose-800 group-hover:text-rose-700"
+                      className="size-6 shrink-0 text-amber-950 group-hover:text-amber-800"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
                       0
