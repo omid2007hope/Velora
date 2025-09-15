@@ -32,7 +32,7 @@ export default function Promo() {
             <img
               src={Banner}
               alt="Summer collection"
-              className="w-full h-auto lg:max-w-4xl rounded-md object-cover"
+              className="w-full h-auto lg:max-w-4xl rounded-md object-cover border-2 border-amber-950"
             />
           </div>
         </div>

@@ -331,7 +331,7 @@ export default function Header() {
         </div>
       </Dialog>
 
-      <header className="relative bg-orange-200">
+      <header className="relative bg-orange-200 border-b-1 border-amber-950">
         <p className="flex h-10 items-center justify-center bg-amber-950 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
           Free delivery for orders over 50$
         </p>
@@ -384,7 +384,7 @@ export default function Header() {
                           aria-hidden="true"
                           className="absolute inset-0 top-1/2 bg-white shadow-sm"
                         />
-                        <div className="relative bg-orange-50">
+                        <div className="relative bg-orange-50 border-b-1 border-amber-950">
                           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
                               <div className="col-start-2 grid grid-cols-2 gap-x-8">

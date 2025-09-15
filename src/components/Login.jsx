@@ -35,93 +35,75 @@ export default function LoginPopup(props) {
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <DialogPanel
               transition
-              className="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+              className="relative transform overflow-hidden rounded-2xl bg-orange-50 text-left shadow-2xl sm:my-8 sm:w-full sm:max-w-md"
             >
-              <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                    className="mx-auto h-10 w-auto"
-                  />
-                  <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
-                    Sign in to your account
+              <div className="flex flex-col px-8 py-10">
+                {/* Header */}
+                <div className="mx-auto text-center">
+                  <h2 className="text-2xl font-bold tracking-tight text-amber-950">
+                    Welcome back
                   </h2>
-                </div>
-
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                  <form action="#" method="POST" className="space-y-6">
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm/6 font-medium text-gray-100"
-                      >
-                        Email address
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          onChange={(e) => setEmail(e.target.value.trim())}
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          autoComplete="email"
-                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <label
-                          htmlFor="password"
-                          className="block text-sm/6 font-medium text-gray-100"
-                        >
-                          Password
-                        </label>
-                        <div className="text-sm">
-                          <a
-                            href="#"
-                            className="font-semibold text-indigo-400 hover:text-indigo-300"
-                          >
-                            Forgot password?
-                          </a>
-                        </div>
-                      </div>
-                      <div className="mt-2">
-                        <input
-                          onChange={(e) => setPassword(e.target.value.trim())}
-                          id="password"
-                          name="password"
-                          type="password"
-                          required
-                          autoComplete="current-password"
-                          className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <button
-                        onClick={Login}
-                        type="button"
-                        className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                      >
-                        Sign in
-                      </button>
-                    </div>
-                  </form>
-
-                  <p className="mt-10 text-center text-sm/6 text-gray-400">
-                    Not a member?{" "}
-                    <a
-                      href="#"
-                      className="font-semibold text-indigo-400 hover:text-indigo-300"
-                    >
-                      Start a 14 day free trial
-                    </a>
+                  <p className="mt-1 text-sm text-amber-700">
+                    Sign in to continue shopping
                   </p>
                 </div>
+
+                {/* Form */}
+                <form action="#" method="POST" className="mt-8 space-y-5">
+                  {/* Email */}
+                  <input
+                    onChange={(e) => setEmail(e.target.value.trim())}
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Email address"
+                    required
+                    autoComplete="email"
+                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                  />
+
+                  {/* Password */}
+                  <div>
+                    <input
+                      onChange={(e) => setPassword(e.target.value.trim())}
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="Password"
+                      required
+                      autoComplete="current-password"
+                      className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    />
+                    <div className="mt-2 flex justify-end">
+                      <a
+                        href="#"
+                        className="text-sm font-medium text-amber-700 hover:text-amber-900"
+                      >
+                        Forgot password?
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Button */}
+                  <button
+                    onClick={Login}
+                    type="button"
+                    className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
+                  >
+                    Sign in
+                  </button>
+                </form>
+
+                {/* Footer */}
+                <p className="mt-6 text-center text-sm text-amber-700">
+                  Not a member?{" "}
+                  <a
+                    href="#"
+                    className="font-semibold text-amber-900 hover:text-amber-700"
+                  >
+                    Create an account
+                  </a>
+                </p>
               </div>
             </DialogPanel>
           </div>
