@@ -356,7 +356,7 @@ export default function Header() {
                   <img
                     alt=""
                     src={Logo}
-                    className="h-8 w-auto rounded-xl border-1 border-amber-950"
+                    className="h-8 w-auto rounded-md border-1 border-amber-950"
                   />
                 </a>
               </div>
