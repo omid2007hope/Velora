@@ -157,7 +157,7 @@ const navigation = {
   ],
 };
 
-import Logo from "../assets/Images/Logo.png";
+import Logo from "../../assets/Images/Logo.png";
 
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));

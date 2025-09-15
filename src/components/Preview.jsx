@@ -21,7 +21,7 @@ export default function Preview() {
   return (
     <div className="bg-orange-100">
       {/* Categories Section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <section className="px-4 sm:px-6 lg:px-8 py-0 sm:py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-amber-950">
