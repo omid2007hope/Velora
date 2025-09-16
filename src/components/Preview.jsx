@@ -21,20 +21,7 @@ export default function Preview() {
   return (
     <div className="bg-orange-100">
       {/* Categories Section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-0 sm:py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-amber-950">
-            Shop by Category
-          </h2>
-          <a
-            href="#"
-            className="text-sm font-semibold text-amber-800 hover:text-amber-950"
-          >
-            Browse all categories →
-          </a>
-        </div>
-
+      <section className="px-4 sm:px-6 lg:px-16 py-0 sm:py-16">
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[600px]">
           {/* Left Column */}
@@ -49,7 +36,7 @@ export default function Preview() {
                   <img
                     src={cat.img}
                     alt={cat.name}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
                   <div className="absolute bottom-3 left-3">
@@ -65,12 +52,12 @@ export default function Preview() {
             {/* Wide card */}
             <a
               key={categories[2].name}
-              className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
+              className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full border-2 border-amber-950"
             >
               <img
                 src={categories[2].img}
                 alt={categories[2].name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4">
@@ -92,7 +79,7 @@ export default function Preview() {
             <img
               src={categories[3].img}
               alt={categories[3].name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-30  border-2 border-amber-9500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
             <div className="absolute bottom-4 left-4">

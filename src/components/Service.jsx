@@ -28,7 +28,7 @@ export default function Service() {
   ];
 
   return (
-    <section className="bg-orange-100 py-12 px-6 lg:px-20">
+    <section className="bg-orange-100 py-6 sm:py-0 lg:py-0 px-16 sm:px-16 lg:px-16">
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         {/* Left Content */}
         <div>
