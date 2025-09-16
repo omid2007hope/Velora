@@ -5,6 +5,8 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 
+import S from "../assets/Images/S.png";
+
 export default function Service() {
   const features = [
     {
@@ -48,7 +50,7 @@ export default function Service() {
         <div className="relative w-full h-64 sm:h-80 lg:h-96">
           <img
             className="w-full h-full object-cover rounded-lg shadow-md border-2 border-amber-950"
-            src="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1200"
+            src={S}
             alt="Customer service desk"
           />
         </div>
