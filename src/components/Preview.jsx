@@ -21,7 +21,7 @@ export default function Preview() {
   return (
     <div className="bg-orange-100">
       {/* Categories Section */}
-      <section className="px-4 sm:px-6 lg:px-16 py-0 sm:py-16">
+      <section className="px-4 sm:px-6 lg:px-16 py-8 sm:py-8">
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[600px]">
           {/* Left Column */}
