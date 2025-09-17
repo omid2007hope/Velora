@@ -1,10 +1,11 @@
+import Shirt from "../assets/Images/Shirt.png";
+
 export default function Deals() {
   const deals = [
     {
       id: 1,
       name: "Wireless Headphones",
-      image:
-        "https://images.unsplash.com/photo-1585386959984-a4155223f9a5?auto=format&fit=crop&w=600&q=80",
+      image: Shirt,
       oldPrice: "$199",
       newPrice: "$99",
       discount: "50% OFF",
@@ -12,8 +13,7 @@ export default function Deals() {
     {
       id: 2,
       name: "Smart Watch",
-      image:
-        "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=600&q=80",
+      image: Shirt,
       oldPrice: "$249",
       newPrice: "$149",
       discount: "40% OFF",
@@ -21,8 +21,7 @@ export default function Deals() {
     {
       id: 3,
       name: "Minimalist Chair",
-      image:
-        "https://images.unsplash.com/photo-1582582425713-dbf45f93b07d?auto=format&fit=crop&w=600&q=80",
+      image: Shirt,
       oldPrice: "$399",
       newPrice: "$199",
       discount: "50% OFF",
@@ -30,8 +29,7 @@ export default function Deals() {
     {
       id: 4,
       name: "Stylish Backpack",
-      image:
-        "https://images.unsplash.com/photo-1585386959984-a4155223f9a5?auto=format&fit=crop&w=600&q=80",
+      image: Shirt,
       oldPrice: "$89",
       newPrice: "$49",
       discount: "45% OFF",
@@ -39,7 +37,7 @@ export default function Deals() {
   ];
 
   return (
-    <section className="bg-orange-100 px-0 lg:px-8 sm:px-6 py-0 lg:py-0 sm:py-0 pb-0 lg:pb-8 sm:pb-0">
+    <section className="bg-orange-100 px-0 lg:px-8 sm:px-6 py-0 lg:py-0 sm:py-0 pb lg:pb-8 sm:pb-0">
       {/* Full width container */}
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Full-width product grid */}
@@ -47,7 +45,7 @@ export default function Deals() {
           {deals.map((deal) => (
             <div
               key={deal.id}
-              className="rounded-xl bg-orange-50 shadow-md overflow-hidden hover:shadow-xl transition border-2 border-amber-950"
+              className="rounded-xl bg-orange-200 shadow-md overflow-hidden hover:shadow-xl transition border-2 border-amber-950"
             >
               <div className="relative">
                 <img

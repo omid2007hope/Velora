@@ -367,7 +367,7 @@ export default function Header() {
                   {navigation.categories.map((category) => (
                     <Popover key={category.name} className="flex">
                       <div className="relative flex">
-                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-amber-950 transition-colors duration-200 ease-out hover:text-amber-900 data-open:text-rose-900">
+                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-amber-950 transition-colors duration-200 ease-out hover:text-amber-900 data-open:text-amber-950">
                           {category.name}
                           <span
                             aria-hidden="true"
