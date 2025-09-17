@@ -159,6 +159,8 @@ const navigation = {
 
 import Logo from "../../assets/Images/Logo.png";
 
+import SearchDropDown from "./SearchDropDown";
+
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
@@ -498,35 +500,9 @@ export default function Header() {
                   )}
                 </div>
 
-                <div className="hidden lg:ml-8 lg:flex">
-                  <a
-                    href="#"
-                    className="flex items-center text-gray-700 hover:text-gray-800"
-                  >
-                    <img
-                      alt=""
-                      src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
-                      className="block h-auto w-5 shrink-0"
-                    />
-                    <span className="ml-3 block text-sm font-medium text-amber-950 hover:text-amber-900">
-                      CAD
-                    </span>
-                    <span className="sr-only">, change currency</span>
-                  </a>
-                </div>
-
                 {/* Search */}
                 <div className="flex lg:ml-6">
-                  <a
-                    href="#"
-                    className="p-2 text-amber-950 hover:text-amber-800"
-                  >
-                    <span className="sr-only">Search</span>
-                    <MagnifyingGlassIcon
-                      aria-hidden="true"
-                      className="size-6"
-                    />
-                  </a>
+                  <SearchDropDown />
                 </div>
 
                 {/* Cart */}

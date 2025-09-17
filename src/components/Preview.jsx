@@ -54,7 +54,7 @@ export default function Preview() {
             {/* Wide Card */}
             <a
               key={categories[2].name}
-              className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full border-2 border-amber-950"
+              className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
             >
               <img
                 src={categories[2].img}
