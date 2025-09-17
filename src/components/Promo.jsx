@@ -12,7 +12,7 @@ export default function Promo() {
               <h1 className="text-4xl font-bold tracking-tight text-amber-950 sm:text-6xl ml-0 sm:ml-8 lg:ml-0">
                 Summer styles are finally here
               </h1>
-              <p className="text-lg text-amber-800 ml-0 sm:ml-8 lg:ml-0">
+              <p className="text-lg text-amber-800 ml-0 sm:ml-8 lg:ml-0 mr-10 sm:mr-10 lg:mr-10">
                 This year, our new summer collection will shelter you from the
                 harsh elements of a world that doesn't care if you live or die.
               </p>
