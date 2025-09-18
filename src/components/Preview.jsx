@@ -24,7 +24,7 @@ export default function Preview() {
   ];
 
   return (
-    <div className="bg-orange-100">
+    <div className="bg-orange-200 border-t-2 border-b-2 border-amber-950">
       <section className="px-4 sm:px-6 lg:px-16 py-8 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[600px]">
           {/* Left Column */}
