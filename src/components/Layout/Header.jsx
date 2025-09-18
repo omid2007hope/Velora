@@ -160,6 +160,7 @@ const navigation = {
 import Logo from "../../assets/Images/Logo.png";
 
 import SearchDropDown from "./SearchDropDown";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
@@ -507,7 +508,7 @@ export default function Header() {
 
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <Link to="/Cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-amber-950 group-hover:text-amber-800"
@@ -516,7 +517,7 @@ export default function Header() {
                       0
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

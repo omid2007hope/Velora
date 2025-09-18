@@ -37,7 +37,7 @@ export default function Deals() {
   ];
 
   return (
-    <section className="bg-orange-100 px-0 lg:px-8 sm:px-6 py-0 lg:py-0 sm:py-0 pb lg:pb-8 sm:pb-0">
+    <section className="bg-orange-100 px-0 lg:px-8 sm:px-6 py-0 lg:py-0 sm:py-0 pb lg:pb-0 sm:pb-0">
       {/* Full width container */}
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Full-width product grid */}
