@@ -508,7 +508,10 @@ export default function Header() {
 
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <Link to="/Cart" className="group -m-2 flex items-center p-2">
+                  <Link
+                    to="/Order"
+                    className="group -m-2 flex items-center p-2"
+                  >
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-amber-950 group-hover:text-amber-800"
