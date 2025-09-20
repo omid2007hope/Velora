@@ -50,7 +50,7 @@ export default function SignupPopup(props) {
               <div className="flex flex-col px-8 py-10">
                 {/* Brand Icon / Title */}
                 <div className="mx-auto flex flex-col items-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 border-2 border-amber-950">
                     <svg
                       className="h-7 w-7 text-amber-900"
                       fill="none"
@@ -79,7 +79,7 @@ export default function SignupPopup(props) {
                     type="text"
                     placeholder="Full Name"
                     required
-                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                   />
 
                   {/* Email */}
@@ -90,7 +90,7 @@ export default function SignupPopup(props) {
                     type="email"
                     placeholder="Email address"
                     required
-                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                   />
 
                   {/* Password */}
@@ -101,7 +101,7 @@ export default function SignupPopup(props) {
                     type="password"
                     placeholder="Password"
                     required
-                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                   />
 
                   {/* Confirm Password */}
@@ -112,7 +112,7 @@ export default function SignupPopup(props) {
                     type="password"
                     placeholder="Confirm password"
                     required
-                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                   />
 
                   {/* Button */}

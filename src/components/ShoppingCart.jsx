@@ -1,5 +1,6 @@
 import React from "react";
 import Shirt from "../assets/Images/Shirt.png";
+import { Link } from "react-router-dom";
 
 export default function ShoppingCart(props) {
   const cartItems = [
@@ -46,6 +47,12 @@ export default function ShoppingCart(props) {
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 w-full">
         {/* Left - Cart Items */}
         <div className="lg:col-span-7 h-full flex flex-col">
+          <div className="w-full bg-orange-200 text-amber-950 py-5 sm:py-5 lg:py-5 mb-4 sm:mb-4 lg:mb-4 rounded-lg border-2 border-amber-950  ">
+            <div>
+              <a className="ml-5 font-bold"> Shopping Cart</a>
+            </div>
+          </div>
+
           <ul className="space-y-4 flex-1">
             {cartItems.map((item) => (
               <li
@@ -95,9 +102,9 @@ export default function ShoppingCart(props) {
         </div>
 
         {/* Right - Order Summary */}
-        <div className="lg:col-span-5 h-full flex flex-col mt-8 lg:mt-0">
+        <div className="lg:col-span-5 h-auto sm:h-auto lg:h-full flex flex-col mt-8 lg:mt-0">
           <div className="rounded-lg bg-orange-200 shadow-md border-2 border-amber-950 p-6 flex flex-col h-full">
-            <h2 className="text-lg font-medium text-amber-950 mb-4">
+            <h2 className="text-lg font-medium text-amber-950 mb-4 sm:mb-4 lg:mb-4">
               Order Summary
             </h2>
 
@@ -120,7 +127,7 @@ export default function ShoppingCart(props) {
                   ${tax.toFixed(2)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between border-t border-amber-800 pt-3">
+              <div className="flex items-center justify-between border-t border-amber-800 pt-3 mb-10 sm:mb-20 lg:mb-10">
                 <dt className="text-base font-semibold text-amber-950">
                   Order total
                 </dt>
@@ -129,6 +136,12 @@ export default function ShoppingCart(props) {
                 </dd>
               </div>
             </dl>
+
+            <Link to="/">
+              <button className="mt-6 w-full rounded-md bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 shadow hover:bg-amber-900">
+                Back
+              </button>
+            </Link>
 
             <button
               className="mt-6 w-full rounded-md bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 shadow hover:bg-amber-900"

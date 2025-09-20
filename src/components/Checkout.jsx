@@ -1,7 +1,7 @@
 import React from "react";
 import Shirt from "../assets/Images/Shirt.png";
 
-export default function Checkout() {
+export default function Checkout(props) {
   const cartItems = [
     {
       id: 1,
@@ -36,6 +36,10 @@ export default function Checkout() {
   const shipping = 5.0;
   const tax = 8.32;
   const total = subtotal + shipping + tax;
+
+  const handleBack = () => {
+    props.setStep(1);
+  };
 
   return (
     <div className="bg-orange-100 min-h-screen flex items-stretch px-4 sm:px-6 lg:px-8 py-6">
@@ -101,6 +105,13 @@ export default function Checkout() {
               <span>Billing address is the same as shipping address</span>
             </label>
           </form>
+
+          <button
+            className="w-full bg-amber-950 text-orange-50 py-3 rounded-md hover:bg-amber-900"
+            onClick={handleBack}
+          >
+            Back
+          </button>
 
           <button className="mt-6 w-full bg-amber-950 text-orange-50 py-3 rounded-md hover:bg-amber-900">
             Pay ${total.toFixed(2)}

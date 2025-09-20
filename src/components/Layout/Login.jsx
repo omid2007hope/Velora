@@ -59,7 +59,7 @@ export default function LoginPopup(props) {
                     placeholder="Email address"
                     required
                     autoComplete="email"
-                    className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                   />
 
                   {/* Password */}
@@ -72,7 +72,7 @@ export default function LoginPopup(props) {
                       placeholder="Password"
                       required
                       autoComplete="current-password"
-                      className="block w-full rounded-lg border border-amber-200 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+                      className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
                     />
                     <div className="mt-2 flex justify-end">
                       <a
