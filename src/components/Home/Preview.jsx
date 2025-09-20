@@ -1,7 +1,7 @@
-import Men from "../assets/Images/Men.png";
-import Women from "../assets/Images/Women.png";
-import New from "../assets/Images/New.png";
-import Accessories from "../assets/Images/Accessories.png";
+import Men from "../../assets/Images/Men.png";
+import Women from "../../assets/Images/Women.png";
+import New from "../../assets/Images/New.png";
+import Accessories from "../../assets/Images/Accessories.png";
 
 export default function Preview() {
   const categories = [

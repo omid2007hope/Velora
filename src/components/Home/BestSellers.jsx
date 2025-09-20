@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import { bestSellers } from "../Data/Index";
+import { bestSellers } from "../../Data/Index";
 
 export default function BestSellers() {
   return (

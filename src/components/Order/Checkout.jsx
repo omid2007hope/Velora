@@ -1,5 +1,5 @@
 import React from "react";
-import Shirt from "../assets/Images/Shirt.png";
+import Shirt from "../../assets/Images/Shirt.png";
 
 export default function Checkout(props) {
   const cartItems = [

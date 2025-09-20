@@ -1,5 +1,5 @@
 import React from "react";
-import Shirt from "../assets/Images/Shirt.png";
+import Shirt from "../../assets/Images/Shirt.png";
 import { Link } from "react-router-dom";
 
 export default function ShoppingCart(props) {

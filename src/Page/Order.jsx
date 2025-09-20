@@ -1,7 +1,6 @@
-import ShoppingCart from "../components/ShoppingCart";
-import Checkout from "../components/Checkout";
-
 import { useState } from "react";
+import ShoppingCart from "../components/Order/ShoppingCart";
+import Checkout from "../components/Order/Checkout";
 
 function Order() {
   const [step, setStep] = useState(1);

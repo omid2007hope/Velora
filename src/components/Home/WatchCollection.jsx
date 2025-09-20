@@ -1,5 +1,5 @@
 import React from "react";
-import Watch from "../assets/Images/Watch.png";
+import Watch from "../../assets/Images/Watch.png";
 
 export default function WatchCollection() {
   return (

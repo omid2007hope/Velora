@@ -1,9 +1,9 @@
-import ProductPreview from "../components/ProductPreview";
+import ProductPreview from "../components/Product/ProductPreview";
 
-function ProductPage(props) {
+function ProductPage() {
   return (
     <>
-      <ProductPreview {...props} />
+      <ProductPreview />
     </>
   );
 }

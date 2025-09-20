@@ -1,4 +1,4 @@
-import Shirt from "../assets/Images/Shirt.png";
+import Shirt from "../../assets/Images/Shirt.png";
 
 export default function Deals() {
   const deals = [
