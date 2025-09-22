@@ -1,6 +1,24 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { products } from "../../Data";
 
 export default function ProductPreview() {
+  const { id } = useParams();
+  const [product, setProduct] = useState("");
+  console.log(product);
+
+  const getProductById = () => {
+    try {
+      const x = products.find((y) => String(y.id) === String(id));
+      setProduct(x);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getProductById();
+  });
+
   const [selectedColor, setSelectedColor] = useState("black");
   const [selectedSize, setSelectedSize] = useState("S");
 
@@ -19,7 +37,7 @@ export default function ProductPreview() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <img
-              src="https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg"
+              src={product?.image}
               alt="Black Tee"
               className="w-full rounded-lg object-cover"
             />
@@ -45,7 +63,7 @@ export default function ProductPreview() {
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl font-bold text-amber-950">
-              Basic Tee 6-Pack
+              {product.name}
             </h1>
             <p className="mt-2 text-amber-900">
               The Basic Tee 6-Pack allows you to fully express your vibrant

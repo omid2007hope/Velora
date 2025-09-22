@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import { bestSellers } from "../../Data/Index";
+import { bestSellers } from "../../Data";
 
 export default function BestSellers() {
   return (
@@ -11,7 +11,7 @@ export default function BestSellers() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 ">
         {bestSellers.map((product) => (
-          <Link to={`/Product/${product.id}?refre=bestSellers`}>
+          <Link to={`/Product/${product.id}`}>
             <div
               key={product.id}
               className="group bg-orange-200 border-2 border-amber-950 rounded-lg p-2"
