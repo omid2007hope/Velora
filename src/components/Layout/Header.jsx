@@ -151,16 +151,13 @@ const navigation = {
       ],
     },
   ],
-  pages: [
-    { name: "Company", href: "#" },
-    { name: "Stores", href: "#" },
-  ],
+  pages: [],
 };
 
 import Logo from "../../assets/Images/Logo.png";
 
-import SearchDropDown from "./SearchDropDown";
 import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
@@ -329,21 +326,24 @@ export default function Header() {
           Free delivery for orders over 50$
         </p>
 
-        <nav aria-label="Top" className="w-full  px-4 sm:px-6 lg:px-8">
+        <nav
+          aria-label="Top"
+          className="w-full px-4 sm:px-6 lg:px-8 bg-orange-200"
+        >
           <div className="">
             <div className="flex h-16 items-center">
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="relative rounded-md bg-white p-2 text-gray-400 lg:hidden border-b-2 border-amber-950"
+                className="relative rounded-md bg-orange-50 p-2 text-amber-950 lg:hidden border-amber-950"
               >
-                <span className="absolute -inset-0.5 border-2 border-amber-950 rounded-lg  " />
+                <span className="absolute -inset-0.5 border-2 border-amber-950 rounded-lg " />
                 <span className="sr-only">Open menu</span>
                 <Bars3Icon aria-hidden="true" className="size-6" />
               </button>
 
               {/* Logo */}
-              <div className=" scale-140 ml-4 flex lg:ml-0 ">
+              <div className=" scale-0 sm:scale-140 lg:scale-140 ml-4 flex lg:ml-0">
                 <a href="#">
                   <span className="sr-only">Your Company</span>
                   <img
@@ -456,6 +456,10 @@ export default function Header() {
                 </div>
               </PopoverGroup>
 
+              <div>
+                <SearchBar />
+              </div>
+
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {user ? (
@@ -492,11 +496,6 @@ export default function Header() {
                       Create account
                     </a>
                   )}
-                </div>
-
-                {/* Search */}
-                <div className="flex lg:ml-6">
-                  <SearchDropDown />
                 </div>
 
                 {/* Cart */}
