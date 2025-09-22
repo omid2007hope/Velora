@@ -35,37 +35,22 @@ export default function ProductPreview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Left Side - Images */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex justify-center algin-center border-2 border-amber-950 rounded-lg shadow shadow-amber-950">
             <img
               src={product?.image}
               alt="Black Tee"
-              className="w-full rounded-lg object-cover"
-            />
-            <img
-              src="https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-02.jpg"
-              alt="White Tee"
-              className="w-full rounded-lg object-cover"
-            />
-            <img
-              src="https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-03.jpg"
-              alt="Gray Tee"
-              className="w-full rounded-lg object-cover"
-            />
-            <img
-              src="https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-04.jpg"
-              alt="Pack of Tees"
               className="w-full rounded-lg object-cover"
             />
           </div>
         </div>
 
         {/* Right Side - Details */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:border-l-2 lg:border-b-2 rounded-lg border-amber-950 bg-orange-100">
           <div>
-            <h1 className="text-2xl font-bold text-amber-950">
+            <h1 className="text-2xl font-bold text-amber-950 ml-2 lg:ml-10 sm:ml-10 ">
               {product.name}
             </h1>
-            <p className="mt-2 text-amber-900">
+            <p className="mt-2 text-amber-900 ml-2 lg:ml-10 sm:ml-10 ">
               The Basic Tee 6-Pack allows you to fully express your vibrant
               personality with three grayscale options. Feeling adventurous? Put
               on a heather gray tee. Want to be a trendsetter? Try our exclusive
@@ -75,7 +60,7 @@ export default function ProductPreview() {
           </div>
 
           {/* Price + Reviews */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between ml-2 lg:ml-10 sm:ml-10 ">
             <p className="text-2xl font-semibold text-amber-950">$192</p>
             <a href="#reviews" className="text-amber-950 hover:text-amber-900">
               117 reviews
@@ -84,8 +69,10 @@ export default function ProductPreview() {
 
           {/* Colors */}
           <div>
-            <h3 className="font-semibold text-amber-950 mb-2">Color</h3>
-            <div className="flex space-x-3">
+            <h3 className="font-semibold text-amber-950 mb-2 ml-2 lg:ml-10 sm:ml-10 ">
+              Color
+            </h3>
+            <div className="flex space-x-3 ml-2 lg:ml-10 sm:ml-10 ">
               {colors.map((color) => (
                 <button
                   key={color.value}
@@ -102,8 +89,10 @@ export default function ProductPreview() {
 
           {/* Sizes */}
           <div>
-            <h3 className="font-semibold text-amber-950 mb-2">Size</h3>
-            <div className="grid grid-cols-4 gap-3">
+            <h3 className="font-semibold text-amber-950 mb-2 ml-2 lg:ml-10 sm:ml-10 ">
+              Size
+            </h3>
+            <div className="grid grid-cols-4 gap-3 ml-2 lg:ml-10 sm:ml-10 ">
               {sizes.map((size) => (
                 <button
                   key={size}
@@ -121,12 +110,17 @@ export default function ProductPreview() {
           </div>
 
           {/* Add to Bag */}
-          <button className="w-full bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900">
-            Add to Bag
-          </button>
+          <div className="flex flex-rows">
+            <button className="px-6 sm:px-30 lg:px-30 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-9 sm:ml-26 lg:ml-26 ">
+              Add to Bag
+            </button>
+            <button className="px-8 sm:px-30 lg:px-30 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-2 sm:ml-5 lg:ml-5 ">
+              Buy now
+            </button>
+          </div>
 
           {/* Highlights */}
-          <div className="pt-6 border-t border-amber-950">
+          <div className="pt-6 border-t border-amber-950 ml-2 lg:ml-10 sm:ml-10 ">
             <h3 className="font-semibold text-amber-950">Highlights</h3>
             <ul className="mt-2 list-disc list-inside text-amber-900 space-y-1">
               <li>Hand cut and sewn locally</li>
@@ -138,8 +132,10 @@ export default function ProductPreview() {
 
           {/* Details */}
           <div className="pt-4">
-            <h3 className="font-semibold text-amber-950">Details</h3>
-            <p className="text-amber-900 mt-2">
+            <h3 className="font-semibold text-amber-950 ml-2 lg:ml-10 sm:ml-10 ">
+              Details
+            </h3>
+            <p className="text-amber-900 mt-2 ml-2 lg:ml-10 lg:mb-10">
               The 6-Pack includes two black, two white, and two heather gray
               Basic Tees. Sign up for our subscription service and be the first
               to get new, exciting colors, like our upcoming “Charcoal Gray”
