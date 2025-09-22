@@ -24,3 +24,6 @@ Styling: Tailwind CSS
 Routing: React Router DOM
 
 Assets: Unsplash (royalty-free images)
+
+This project is licensed under the MIT License
+ © 2025 Omid Teimory.
