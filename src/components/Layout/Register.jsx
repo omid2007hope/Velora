@@ -11,7 +11,9 @@ export default function SignupPopup(props) {
 
   function Signup() {
     const confirmPassword =
-      fullName.trim() && email.trim() && password.trim() === confirmPass.trim();
+      fullName.trim() !== "" &&
+      email.trim() !== "" &&
+      password.trim() === confirmPass.trim();
     if (!confirmPassword) {
       return;
     }

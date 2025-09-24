@@ -1,9 +1,13 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
+import SignupPopup from "./Register";
 
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const loadUser = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(loadUser);
+  const [openSignup, setOpenSignup] = useState(false);
 
   function Login() {
     const loadUser = JSON.parse(localStorage.getItem("savedUser"));
@@ -21,6 +25,12 @@ export default function LoginPopup(props) {
 
   return (
     <div>
+      <SignupPopup
+        open={openSignup}
+        setOpen={setOpenSignup}
+        user={user}
+        setUser={setUser}
+      />
       <Dialog
         open={props.open}
         onClose={props.setOpen}
@@ -98,8 +108,8 @@ export default function LoginPopup(props) {
                 <p className="mt-6 text-center text-sm text-amber-700">
                   Not a member?{" "}
                   <a
-                    href="#"
                     className="font-semibold text-amber-900 hover:text-amber-700"
+                    onClick={() => setOpenSignup(true)}
                   >
                     Create an account
                   </a>
