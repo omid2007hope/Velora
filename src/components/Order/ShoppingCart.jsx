@@ -43,47 +43,51 @@ export default function ShoppingCart(props) {
   };
 
   return (
-    <div className="bg-orange-100 min-h-screen flex items-stretch px-4 sm:px-6 lg:px-8 py-6">
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 w-full">
-        {/* Left - Cart Items */}
-        <div className="lg:col-span-7 h-full flex flex-col">
-          <div className="w-full bg-orange-200 text-amber-950 py-5 sm:py-5 lg:py-5 mb-4 sm:mb-4 lg:mb-4 rounded-lg border-2 border-amber-950  ">
-            <div>
-              <a className="ml-5 font-bold"> Shopping Cart</a>
-            </div>
-          </div>
+    <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-x-10 w-full">
+        {/* Cart Section */}
+        <div className="lg:col-span-7 flex flex-col">
+          <h1 className="text-2xl font-bold text-amber-950 border-b-2 border-amber-900 pb-3 mb-6">
+            Shopping Cart
+          </h1>
 
-          <ul className="space-y-4 flex-1">
+          <ul className="space-y-5">
             {cartItems.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center bg-orange-200 border-2 border-amber-950 rounded-lg shadow-sm p-4 relative"
+                className="flex items-center bg-orange-200 border border-amber-950 rounded-xl shadow-md p-5"
               >
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-24 w-24 sm:h-28 sm:w-28 rounded-md object-cover border-2 border-amber-950"
+                  className="h-24 w-24 sm:h-28 sm:w-28 rounded-lg object-cover border border-amber-900"
                 />
-                <div className="ml-4 flex-1">
+                <div className="ml-5 flex-1">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-base font-semibold text-amber-950">
+                      <h3 className="text-lg font-semibold text-amber-950">
                         {item.name}
                       </h3>
                       <p className="text-sm text-amber-900">
                         {item.color} {item.size && `| ${item.size}`}
                       </p>
-                      <p className="text-xs text-amber-800 mt-1">
+                      <p
+                        className={`text-xs mt-2 ${
+                          item.status === "In stock"
+                            ? "text-green-700"
+                            : "text-amber-700"
+                        }`}
+                      >
                         {item.status}
                       </p>
                     </div>
-                    <p className="text-sm font-medium text-amber-950">
+                    <p className="text-sm font-bold text-amber-950">
                       ${item.price.toFixed(2)}
                     </p>
                   </div>
 
-                  <div className="mt-2 flex items-center space-x-3">
-                    <select className="w-20 rounded-md border-amber-950 text-amber-950 shadow-sm focus:border-amber-950 focus:ring-amber-950 sm:text-sm">
+                  <div className="mt-3 flex items-center space-x-4">
+                    <select className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm focus:ring-amber-950 focus:border-amber-950 sm:text-sm">
                       <option>1</option>
                       <option>2</option>
                       <option>3</option>
@@ -101,33 +105,33 @@ export default function ShoppingCart(props) {
           </ul>
         </div>
 
-        {/* Right - Order Summary */}
-        <div className="lg:col-span-5 h-auto sm:h-auto lg:h-full flex flex-col mt-8 lg:mt-0">
-          <div className="rounded-lg bg-orange-200 shadow-md border-2 border-amber-950 p-6 flex flex-col h-full">
-            <h2 className="text-lg font-medium text-amber-950 mb-4 sm:mb-4 lg:mb-4">
+        {/* Order Summary */}
+        <div className="lg:col-span-5 mt-10 lg:mt-0">
+          <div className="rounded-xl bg-orange-200 border border-amber-950 shadow-lg p-6 flex flex-col">
+            <h2 className="text-xl font-bold text-amber-950 mb-5">
               Order Summary
             </h2>
 
-            <dl className="space-y-3 flex-1">
-              <div className="flex items-center justify-between">
+            <dl className="space-y-3">
+              <div className="flex justify-between">
                 <dt className="text-sm text-amber-800">Subtotal</dt>
                 <dd className="text-sm font-medium text-amber-950">
                   ${subtotal.toFixed(2)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <dt className="text-sm text-amber-800">Shipping estimate</dt>
                 <dd className="text-sm font-medium text-amber-950">
                   ${shipping.toFixed(2)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <dt className="text-sm text-amber-800">Tax estimate</dt>
                 <dd className="text-sm font-medium text-amber-950">
                   ${tax.toFixed(2)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between border-t border-amber-800 pt-3 mb-10 sm:mb-20 lg:mb-10">
+              <div className="border-t border-amber-900 pt-4 mt-4 flex justify-between">
                 <dt className="text-base font-semibold text-amber-950">
                   Order total
                 </dt>
@@ -137,18 +141,19 @@ export default function ShoppingCart(props) {
               </div>
             </dl>
 
-            <Link to="/">
-              <button className="mt-6 w-full rounded-md bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 shadow hover:bg-amber-900">
-                Back
+            <div className="mt-8 space-y-3">
+              <Link to="/">
+                <button className="w-full rounded-lg bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 hover:bg-amber-900">
+                  Back
+                </button>
+              </Link>
+              <button
+                onClick={handleSubmit}
+                className="w-full rounded-lg bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 hover:bg-amber-900 mt-5"
+              >
+                Checkout
               </button>
-            </Link>
-
-            <button
-              className="mt-6 w-full rounded-md bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 shadow hover:bg-amber-900"
-              onClick={handleSubmit}
-            >
-              Checkout
-            </button>
+            </div>
           </div>
         </div>
       </div>
