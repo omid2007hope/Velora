@@ -1,48 +1,59 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import AccountPage from "../../Page/AccountPage";
+import { Link } from "react-router-dom";
 
-export default function AccountMenu({ setUser }) {
-  const getUserName = JSON.parse(localStorage.getItem("user")) || {};
-  const [userName, setUserName] = useState(getUserName);
-
+export default function AccountMenu(props) {
   function signout() {
     localStorage.removeItem("user");
-    setUserName(null); // clear local state
-    setUser(null); // 🔑 tells Header to hide AccountMenu
+    props.setUser(null);
   }
 
   return (
     <Menu as="div" className="relative inline-block">
-      <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50">
-        {userName?.fullName || "Account"}
+      {/* Button */}
+      <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md border-2 border-amber-950 bg-orange-100 px-4 py-2 text-sm font-semibold text-amber-950 shadow-sm hover:bg-orange-200 transition">
+        {props?.user?.fullName || "Account"}
         <ChevronDownIcon
           aria-hidden="true"
-          className="-mr-1 size-5 text-gray-400"
+          className="-mr-1 size-5 text-amber-800"
         />
       </MenuButton>
 
+      {/* Dropdown */}
       <MenuItems
         transition
-        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5"
+        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-xl border border-amber-900 bg-orange-50 shadow-lg ring-1 ring-amber-950/20 focus:outline-none data-closed:scale-95 data-closed:opacity-0 data-enter:duration-150 data-leave:duration-100"
       >
         <div className="py-1">
           <MenuItem>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100"
-            >
-              Account settings
-            </a>
+            {({ focus }) => (
+              <Link
+                to="/AccountPage"
+                className={`block px-4 py-2 text-sm font-medium ${
+                  focus
+                    ? "bg-amber-950 text-orange-50"
+                    : "text-amber-900 hover:bg-orange-200"
+                }`}
+              >
+                Account settings
+              </Link>
+            )}
           </MenuItem>
           <MenuItem>
-            <button
-              type="button"
-              onClick={signout}
-              className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
-            >
-              Sign out
-            </button>
+            {({ focus }) => (
+              <button
+                type="button"
+                onClick={signout}
+                className={`block w-full px-4 py-2 text-left text-sm font-medium ${
+                  focus
+                    ? "bg-amber-950 text-orange-50"
+                    : "text-amber-900 hover:bg-orange-200"
+                }`}
+              >
+                Sign out
+              </button>
+            )}
           </MenuItem>
         </div>
       </MenuItems>

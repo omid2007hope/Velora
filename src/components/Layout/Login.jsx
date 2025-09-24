@@ -5,8 +5,6 @@ import SignupPopup from "./Register";
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const loadUser = JSON.parse(localStorage.getItem("user"));
-  const [user, setUser] = useState(loadUser);
   const [openSignup, setOpenSignup] = useState(false);
 
   function Login() {
@@ -25,12 +23,7 @@ export default function LoginPopup(props) {
 
   return (
     <div>
-      <SignupPopup
-        open={openSignup}
-        setOpen={setOpenSignup}
-        user={user}
-        setUser={setUser}
-      />
+      <SignupPopup open={openSignup} setOpen={setOpenSignup} />
       <Dialog
         open={props.open}
         onClose={props.setOpen}
