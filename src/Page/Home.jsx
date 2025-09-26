@@ -5,7 +5,6 @@ import WithMenuLayout from "../components/Layout/Index";
 import Service from "../components/Home/Service";
 import Deals from "../components/Home/Deals";
 import WatchCollection from "../components/Home/WatchCollection";
-import BestSellers from "../components/Home/BestSellers";
 
 function Home() {
   return (
@@ -14,7 +13,6 @@ function Home() {
       <Preview />
       <Deals />
       <WatchCollection />
-      <BestSellers />
       <Service />
     </>
   );

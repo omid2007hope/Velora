@@ -1,6 +1,8 @@
 // sampleData.js
 // Professional sample database for Men’s & Women’s Clothing
 
+import Shirt from "../assets/Images/Shirt.png";
+
 // Categories (these can map to product.category values)
 export const categories = [
   {
@@ -1156,5 +1158,40 @@ export const bestSellers = [
     category: "Women",
     image:
       "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&q=80",
+  },
+];
+
+export const deals = [
+  {
+    id: 1,
+    name: "Wireless Headphones",
+    image: Shirt,
+    oldPrice: "$199",
+    newPrice: "$99",
+    discount: "50% OFF",
+  },
+  {
+    id: 2,
+    name: "Smart Watch",
+    image: Shirt,
+    oldPrice: "$249",
+    newPrice: "$149",
+    discount: "40% OFF",
+  },
+  {
+    id: 3,
+    name: "Minimalist Chair",
+    image: Shirt,
+    oldPrice: "$399",
+    newPrice: "$199",
+    discount: "50% OFF",
+  },
+  {
+    id: 4,
+    name: "Stylish Backpack",
+    image: Shirt,
+    oldPrice: "$89",
+    newPrice: "$49",
+    discount: "45% OFF",
   },
 ];
