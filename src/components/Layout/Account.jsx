@@ -34,24 +34,20 @@ export default function AccountSettings() {
           <p className="text-sm text-amber-950">$38.00 Balance</p>
         </div>
         <nav className="flex-1 px-4 space-y-2 \">
-          {[
-            "My Wallet",
-            "My Orders",
-            "Personal Information",
-            "Addresses",
-            "Payment Methods",
-          ].map((item) => (
-            <button
-              key={item}
-              className={`w-full text-left px-3 py-2 rounded-md text-amber-950 hover:text-white hover:bg-amber-950 transition border-b-2 border-l-2 mt-2.5 border-amber-950 shadow-md shadow-amber-950 ${
-                item === "Personal Information"
-                  ? "bg-amber-950 text-white font-semibold"
-                  : ""
-              }`}
-            >
-              {item}
-            </button>
-          ))}
+          {["Personal Information", "Addresses", "Payment Methods"].map(
+            (item) => (
+              <button
+                key={item}
+                className={`w-full text-left px-3 py-2 rounded-md text-amber-950 hover:text-white hover:bg-amber-950 transition border-b-2 border-l-2 mt-2.5 border-amber-950 shadow-md shadow-amber-950 ${
+                  item === "Personal Information"
+                    ? "bg-amber-950 text-white font-semibold"
+                    : ""
+                }`}
+              >
+                {item}
+              </button>
+            )
+          )}
         </nav>
         <div className="px-4 py-4">
           <button className="w-full text-left text-amber-800 hover:underline">

@@ -3,7 +3,7 @@ import Banner from "../../assets/Images/Banner.png";
 export default function Promo() {
   return (
     <div className="relative overflow-hidden bg-orange-100 pt-20 pt-20 sm:pt-24 lg:pt-32 pb-8 sm:pb-8 lg:pb-8">
-      <div className="relative w-full px-4 sm:px-6 lg:px-16 py-8 sm:py-0 lg:py-0 ">
+      <div className="relative w-full px-4 sm:px-6 lg:px-16 py-8 sm:py-0 lg:py-8 ">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-10 lg:gap-0 items-center ">
           {/* Text Section */}
           <div className="max-w-4xl h-full flex flex-col justify-between py-0 sm:py-0 lg:py-0 px-0 sm:px-0 lg:px-0">
