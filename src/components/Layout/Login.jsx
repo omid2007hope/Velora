@@ -1,23 +1,26 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import SignupPopup from "./Register";
+import * as UserApi from "../../API/User";
 
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
 
-  function Login() {
-    const loadUser = JSON.parse(localStorage.getItem("savedUser"));
+  async function Login() {
+    const { data } = await UserApi.LoginFun(email, password);
 
-    const findUser = loadUser.find(
-      (x) => x.email === email && x.password === password
-    );
-    if (!findUser) {
+    console.log(data);
+
+    if (!data || !data[0]) {
       return;
     }
-    localStorage.setItem("user", JSON.stringify(findUser));
-    props.setUser(findUser);
+
+    const User = data[0];
+
+    localStorage.setItem("user", JSON.stringify(User));
+    props.setUser(User);
     props.setOpen(false);
   }
 

@@ -13,7 +13,7 @@ export default function AccountMenu(props) {
     <Menu as="div" className="relative inline-block">
       {/* Button */}
       <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md border-2 border-amber-950 bg-orange-100 px-4 py-2 text-sm font-semibold text-amber-950 shadow-sm hover:bg-orange-200 transition">
-        {props?.user?.fullName || "Account"}
+        {props?.user?.fullName || props?.user?.name || "Account"}
         <ChevronDownIcon
           aria-hidden="true"
           className="-mr-1 size-5 text-amber-800"

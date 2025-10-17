@@ -1,15 +1,14 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import * as UserApi from "../../API/User";
 
 export default function SignupPopup(props) {
-  const loadUser = JSON.parse(localStorage.getItem("savedUser"));
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-  const [dataBase, setDataBase] = useState(loadUser || []);
 
-  function Signup() {
+  async function Signup() {
     const confirmPassword =
       fullName.trim() !== "" &&
       email.trim() !== "" &&
@@ -22,14 +21,11 @@ export default function SignupPopup(props) {
       email: email.trim(),
       password: password.trim(),
     };
-    const data = [...dataBase, userData];
-    setDataBase(data);
+    const { data } = await UserApi.CreateUser(userData);
+    console.log(data);
+
     props.setOpen(false);
   }
-
-  useEffect(() => {
-    localStorage.setItem("savedUser", JSON.stringify(dataBase));
-  }, [dataBase]);
 
   return (
     <div>
