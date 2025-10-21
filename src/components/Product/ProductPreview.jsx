@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { products } from "../../Data";
+import * as ProductApi from "../../API/Product";
 
 export default function ProductPreview() {
   const { id } = useParams();
-  const [product, setProduct] = useState("");
-  console.log(product);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const getProductById = () => {
+  const getProductById = async () => {
     try {
-      const x = products.find((y) => String(y.id) === String(id));
-      setProduct(x);
+      setLoading(true);
+      setErrorMsg("");
+      const p = await ProductApi.fetchProductById(id); // expects /products/:id
+      setProduct(p ?? null);
     } catch (error) {
       console.error(error);
+      setErrorMsg("Failed to load product.");
+      setProduct(null);
+    } finally {
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     getProductById();
-  });
+  }, [id]);
 
   const [selectedColor, setSelectedColor] = useState("black");
   const [selectedSize, setSelectedSize] = useState("S");
@@ -30,15 +38,31 @@ export default function ProductPreview() {
 
   const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10">
+        <p className="text-amber-950">Loading…</p>
+      </div>
+    );
+  }
+
+  if (errorMsg || !product) {
+    return (
+      <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10">
+        <p className="text-red-700">{errorMsg || "Product not found."}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Left Side - Images */}
+        {/* Left Side - Image */}
         <div className="space-y-4">
-          <div className="flex justify-center algin-center border-2 border-amber-950 rounded-lg shadow shadow-amber-950">
+          <div className="flex justify-center items-center border-2 border-amber-950 rounded-lg shadow shadow-amber-950">
             <img
-              src={product?.image}
-              alt="Black Tee"
+              src={product.image}
+              alt={product.title}
               className="w-full rounded-lg object-cover"
             />
           </div>
@@ -48,7 +72,7 @@ export default function ProductPreview() {
         <div className="space-y-6 lg:border-l-2 lg:border-b-2 rounded-lg border-amber-950 bg-orange-100">
           <div>
             <h1 className="text-2xl font-bold text-amber-950 ml-2 lg:ml-10 sm:ml-10 ">
-              {product.name}
+              {product.title}
             </h1>
             <p className="mt-2 text-amber-900 ml-2 lg:ml-10 sm:ml-10 ">
               The Basic Tee 6-Pack allows you to fully express your vibrant
@@ -61,7 +85,9 @@ export default function ProductPreview() {
 
           {/* Price + Reviews */}
           <div className="flex items-center justify-between ml-2 lg:ml-10 sm:ml-10 ">
-            <p className="text-2xl font-semibold text-amber-950">$192</p>
+            <p className="text-2xl font-semibold text-amber-950">
+              €{product.price}
+            </p>
             <a href="#reviews" className="text-amber-950 hover:text-amber-900">
               117 reviews
             </a>
@@ -77,6 +103,7 @@ export default function ProductPreview() {
                 <button
                   key={color.value}
                   onClick={() => setSelectedColor(color.value)}
+                  aria-label={color.name}
                   className={`w-10 h-10 rounded-full border-2 ${
                     selectedColor === color.value
                       ? "border-amber-950"
@@ -109,12 +136,12 @@ export default function ProductPreview() {
             </div>
           </div>
 
-          {/* Add to Bag */}
-          <div className="flex flex-rows">
-            <button className="px-6 sm:px-30 lg:px-30 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-9 sm:ml-26 lg:ml-26 ">
+          {/* Actions */}
+          <div className="flex flex-row">
+            <button className="px-6 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-9">
               Add to Bag
             </button>
-            <button className="px-8 sm:px-30 lg:px-30 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-2 sm:ml-5 lg:ml-5 ">
+            <button className="px-8 bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 ml-2">
               Buy now
             </button>
           </div>
