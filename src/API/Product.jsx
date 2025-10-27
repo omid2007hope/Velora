@@ -1,13 +1,13 @@
 import { ApiClient } from "./API";
 
+const Url = "/products";
+
 // GET all products
-export async function fetchProducts() {
-  const { data } = await ApiClient.get("/products");
-  return data; // array of products
+export function fetchProducts() {
+  return ApiClient.get(Url);
 }
 
 // GET one product
-export async function fetchProductById(id) {
-  const { data } = await ApiClient.get(`/products/${id}`);
-  return data; // single product object
+export function fetchProductById(id) {
+  return ApiClient.get(`${Url}/${id}`);
 }

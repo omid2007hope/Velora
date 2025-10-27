@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchProducts } from "../../API/Product"; // adjust path
+import * as productApi from "../../API/Product"; // adjust path
 
 export default function Deals() {
   const [products, setProducts] = useState([]);
 
+  const getProduct = async () => {
+    const { data, status } = await productApi.fetchProducts();
+    if (status === 200) {
+      setProducts(data);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        setProducts(await fetchProducts());
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+    getProduct();
   }, []);
 
   return (

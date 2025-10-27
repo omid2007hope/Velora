@@ -12,8 +12,10 @@ export default function ProductPreview() {
     try {
       setLoading(true);
       setErrorMsg("");
-      const p = await ProductApi.fetchProductById(id); // expects /products/:id
-      setProduct(p ?? null);
+      const { data, status } = await ProductApi.fetchProductById(id); // expects /products/:id
+      console.log(data, status);
+
+      setProduct(data ?? null);
     } catch (error) {
       console.error(error);
       setErrorMsg("Failed to load product.");
