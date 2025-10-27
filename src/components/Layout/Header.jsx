@@ -24,8 +24,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import LoginPopup from "./Login";
-import SignupPopup from "./Register";
+import LoginPopup from "../Layout/LoginForm/index";
 
 const navigation = {
   categories: [
@@ -291,20 +290,16 @@ export default function Header() {
 
             <div className="space-y-6 px-4 py-6">
               <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-amber-950"
-                >
-                  Sign in
-                </a>
-              </div>
-              <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-amber-950"
-                >
-                  Create account
-                </a>
+                {user ? (
+                  <AccountMenu user={user} setUser={setUser} />
+                ) : (
+                  <button
+                    className="text-sm font-medium text-amber-950 hover:text-amber-900"
+                    onClick={() => setLogin(true)}
+                  >
+                    Sign in
+                  </button>
+                )}
               </div>
             </div>
           </DialogPanel>
