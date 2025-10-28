@@ -1,4 +1,4 @@
 import axios from "axios";
 
-const baseURL = "https://my-json-server.typicode.com/omid2007hope/mock-shop";
+const baseURL = "http://localhost:3085/client/v1";
 export const ApiClient = axios.create({ baseURL });

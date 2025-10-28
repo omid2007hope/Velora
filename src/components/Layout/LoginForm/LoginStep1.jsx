@@ -1,24 +1,33 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
-import * as UserApi from "../../../API/User";
+import * as CustomerApi from "../../../API/Customer";
 
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
 
   async function Login() {
-    const { data } = await UserApi.LoginFun(email);
+    const sendBody = { email: email };
 
-    // console.log(data);
+    const { data, status } = await CustomerApi.CheckIfEmailExist(sendBody);
 
-    if (!data || !data[0]) {
+    if (status === 200) {
+      props.setEmail(email);
+      props.setStep(2);
+    } else {
       return;
     }
 
-    const User = data[0];
+    console.log(data, status);
 
-    localStorage.setItem("user", JSON.stringify(User));
-    props.setUser(User);
-    props.setOpen(false);
+    // if (!data || !data[0]) {
+    //   return;
+    // }
+
+    // const User = data[0];
+
+    // localStorage.setItem("user", JSON.stringify(User));
+    // props.setUser(User);
+    // props.setOpen(false);
   }
 
   return (

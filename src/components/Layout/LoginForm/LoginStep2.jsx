@@ -1,25 +1,30 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
-import * as UserApi from "../../../API/User";
+import * as CustomerApi from "../../../API/Customer";
 
 export default function LoginPopup(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
 
   async function Login() {
-    const { data } = await UserApi.LoginFun(email, password);
+    const sendBody = { email: props.email, verifyCode: code };
 
-    // console.log(data);
+    const { data, status } = await CustomerApi.Login(sendBody);
 
-    if (!data || !data[0]) {
-      return;
+    // console.log(data, status);
+
+    if (status === 200) {
+      localStorage.setItem("user", JSON.stringify(data.data));
+      localStorage.setItem("token", JSON.stringify(data.data.token));
+
+      props.setUser(data.data);
+      props.setOpen(false);
     }
 
-    const User = data[0];
+    // if (!data || !data[0]) {
+    //   return;
+    // }
 
-    localStorage.setItem("user", JSON.stringify(User));
-    props.setUser(User);
-    props.setOpen(false);
+    // const User = data[0];
   }
 
   return (
@@ -38,36 +43,29 @@ export default function LoginPopup(props) {
       <form action="#" method="POST" className="mt-8 space-y-5">
         {/* Email */}
         <input
-          onChange={(e) => setEmail(e.target.value.trim())}
+          value={props.email}
+          disabled
           id="email"
           name="email"
           type="email"
           placeholder="Email address"
           required
           autoComplete="email"
-          className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
+          className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950/50 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
         />
 
         {/* Password */}
         <div>
           <input
-            onChange={(e) => setPassword(e.target.value.trim())}
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Password"
+            onChange={(e) => setCode(e.target.value.trim())}
+            id="code"
+            name="code"
+            type="text"
+            placeholder="code"
             required
-            autoComplete="current-password"
+            autoComplete="current-code"
             className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
           />
-          <div className="mt-2 flex justify-end">
-            <a
-              href="#"
-              className="text-sm font-medium text-amber-700 hover:text-amber-900"
-            >
-              Forgot password?
-            </a>
-          </div>
         </div>
 
         {/* Button */}
@@ -77,6 +75,13 @@ export default function LoginPopup(props) {
           className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
         >
           Sign in
+        </button>
+        <button
+          onClick={() => props.setStep(1)}
+          type="button"
+          className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
+        >
+          Back
         </button>
       </form>
     </div>

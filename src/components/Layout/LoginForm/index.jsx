@@ -5,6 +5,7 @@ import LoginStep2 from "./LoginStep2";
 
 export default function LoginPopup(props) {
   const [step, setStep] = useState(1);
+  const [email, setEmail] = useState("");
 
   return (
     <div>
@@ -24,8 +25,25 @@ export default function LoginPopup(props) {
               transition
               className="relative transform overflow-hidden rounded-2xl bg-orange-50 text-left shadow-2xl sm:my-8 sm:w-full sm:max-w-md"
             >
-              {step === 1 && <LoginStep1 step={step} setStep={setStep} />},
-              {step === 2 && <LoginStep2 step={step} setStep={setStep} />}
+              {step === 1 && (
+                <LoginStep1
+                  step={step}
+                  setStep={setStep}
+                  email={email}
+                  setEmail={setEmail}
+                  {...props}
+                />
+              )}
+              ,
+              {step === 2 && (
+                <LoginStep2
+                  step={step}
+                  setStep={setStep}
+                  email={email}
+                  setEmail={setEmail}
+                  {...props}
+                />
+              )}
             </DialogPanel>
           </div>
         </div>
