@@ -40,7 +40,7 @@ export default function AccountSettings() {
   return (
     <div className="min-h-screen bg-orange-50 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-orange-50 shadow-md hidden md:flex flex-col border-r-1 border-amber-950 shadow-md shadow-amber-950 ">
+      <aside className="w-64 bg-orange-50 hidden md:flex flex-col border-r-1 border-amber-950 shadow-md shadow-amber-950 ">
         <div className="flex flex-col items-center py-6 rounded-md border-amber-950">
           <div className="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center border-1 border-amber-950 ">
             <UserIcon className="h-8 w-8 text-amber-950 " />
