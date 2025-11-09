@@ -1,26 +1,41 @@
 // src/pages/AccountSettings.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 
 export default function AccountSettings() {
-  const [formData, setFormData] = useState({
-    firstName: "",
+  const [user, setUser] = useState({
+    name: "",
     lastName: "",
     email: "",
-    phone: "",
-    dob: "",
-    gender: "male",
+    phoneNumber: "",
+    dateOfBirth: "",
+    gender: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  function getDataFromLocalStorage() {
+    const loadUser = JSON.parse(localStorage.getItem("user"));
+    if (!loadUser) {
+      return;
+    }
+    const splitFullName = loadUser.fullName.split(" ");
+    const firstName = splitFullName[0];
+    const lastName = splitFullName[1];
+    // console.log(splitFullName);
+    setUser({ ...loadUser, firstName, lastName });
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-  };
+  useEffect(() => {
+    getDataFromLocalStorage();
+  }, []);
+
+  console.log(user);
+
+  const loadYourUser = JSON.parse(localStorage.getItem("user"));
+
+  function onChange(name, value) {
+    setUser((p) => ({ ...p, [name]: value }));
+  }
 
   return (
     <div className="min-h-screen bg-orange-50 flex">
@@ -30,8 +45,9 @@ export default function AccountSettings() {
           <div className="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center border-1 border-amber-950 ">
             <UserIcon className="h-8 w-8 text-amber-950 " />
           </div>
-          <h2 className="mt-2 font-semibold text-amber-950">Omid Teimory</h2>
-          <p className="text-sm text-amber-950">$38.00 Balance</p>
+          <h2 className="mt-2 font-semibold text-amber-950">
+            {loadYourUser?.fullName}
+          </h2>
         </div>
         <nav className="flex-1 px-4 space-y-2 \">
           {["Personal Information", "Addresses", "Payment Methods"].map(
@@ -67,7 +83,7 @@ export default function AccountSettings() {
             and shipping.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4">
             {/* Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -75,12 +91,11 @@ export default function AccountSettings() {
                   First Name
                 </label>
                 <input
+                  value={user.firstName}
+                  onChange={(x) => onChange("firstName", x.target.value)}
                   type="text"
                   name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-amber-300 bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
-                  placeholder="First name"
+                  className="mt-1 block w-full rounded-md  bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
                 />
               </div>
               <div>
@@ -88,12 +103,11 @@ export default function AccountSettings() {
                   Last Name
                 </label>
                 <input
+                  value={user.lastName}
+                  onChange={(x) => onChange("lastName", x.target.value)}
                   type="text"
                   name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-amber-300 bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
-                  placeholder="Last name"
+                  className="mt-1 block w-full rounded-md  bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
                 />
               </div>
             </div>
@@ -104,12 +118,11 @@ export default function AccountSettings() {
                 Email
               </label>
               <input
+                value={user.email}
+                onChange={(x) => onChange("email", x.target.value)}
                 type="email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-amber-300 bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
-                placeholder="you@example.com"
+                className="mt-1 block w-full rounded-md  bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
               />
             </div>
 
@@ -120,12 +133,11 @@ export default function AccountSettings() {
                   Phone
                 </label>
                 <input
+                  value={user.phoneNumber}
+                  onChange={(x) => onChange("phoneNumber", x.target.value)}
                   type="tel"
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-amber-300 bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
-                  placeholder="+43 123 456 789"
+                  className="mt-1 block w-full rounded-md  bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
                 />
               </div>
               <div>
@@ -133,11 +145,11 @@ export default function AccountSettings() {
                   Date of Birth
                 </label>
                 <input
+                  value={user.dateOfBirth}
+                  onChange={(x) => onChange("dateOfBirth", x.target.value)}
                   type="date"
                   name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-amber-300 bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
+                  className="mt-1 block w-full rounded-md  bg-amber-50 focus:ring-amber-600 focus:border-amber-600 sm:text-sm py-2.5 rounder-lg border-1 border-amber-950 pl-2 "
                 />
               </div>
             </div>
@@ -150,22 +162,22 @@ export default function AccountSettings() {
               <div className="mt-2 flex space-x-6">
                 <label className="flex items-center space-x-2">
                   <input
+                    onChange={(x) => onChange("gender", x.target.value)}
+                    checked={user.gender === "male"}
                     type="radio"
                     name="gender"
                     value="male"
-                    checked={formData.gender === "male"}
-                    onChange={handleChange}
                     className="h-4 w-4 text-amber-700 border-amber-400 focus:ring-amber-600"
                   />
                   <span className="text-amber-900">Male</span>
                 </label>
                 <label className="flex items-center space-x-2">
                   <input
+                    onChange={(x) => onChange("gender", x.target.value)}
+                    checked={user.gender === "female"}
                     type="radio"
                     name="gender"
                     value="female"
-                    checked={formData.gender === "female"}
-                    onChange={handleChange}
                     className="h-4 w-4 text-amber-700 border-amber-400 focus:ring-amber-600"
                   />
                   <span className="text-amber-900">Female</span>
@@ -178,6 +190,9 @@ export default function AccountSettings() {
               <button
                 type="submit"
                 className="px-4 py-2 bg-amber-950 text-orange-50 rounded-md shadow hover:bg-amber-900 transition"
+                onClick={() =>
+                  localStorage.setItem("user", JSON.stringify(user))
+                }
               >
                 Save
               </button>

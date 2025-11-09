@@ -1,6 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import AccountPage from "../../Page/AccountPage";
 import { Link } from "react-router-dom";
 
 export default function AccountMenu(props) {
