@@ -4,7 +4,9 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import SignOutForm from "./SignOutForm";
 
-export default function AccountSettings() {
+import SideBarLayOut from "./Layout";
+
+function AccountSettings() {
   const [user, setUser] = useState({
     name: "",
     lastName: "",
@@ -177,3 +179,8 @@ export default function AccountSettings() {
     </div>
   );
 }
+
+// ✅ Give the wrapped component a name before export
+const WrappedPaymentForm = SideBarLayOut(AccountSettings);
+
+export default WrappedPaymentForm;

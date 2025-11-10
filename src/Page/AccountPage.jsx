@@ -1,9 +1,9 @@
-import AccountIndex from "../components/Layout/AccountPages/AccountIndex";
+import Account from "../components/Layout/AccountPages/Account";
 
 function AccountPage() {
   return (
     <>
-      <AccountIndex />
+      <Account />
     </>
   );
 }
