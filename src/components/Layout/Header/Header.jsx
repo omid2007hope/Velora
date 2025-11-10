@@ -25,7 +25,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import LoginPopup from "./Login";
+import LoginPopup from "../SignUpAndLogIn/Login";
 
 const navigation = {
   categories: [
@@ -154,7 +154,7 @@ const navigation = {
   pages: [],
 };
 
-import Logo from "../../assets/Images/Logo.png";
+import Logo from "../../../assets/Images/Logo.png";
 
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
