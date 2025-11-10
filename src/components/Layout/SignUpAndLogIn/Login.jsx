@@ -1,12 +1,14 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import SignupPopup from "./Register";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
+
+  const navigate = useNavigate();
 
   function Login() {
     const loadUser = JSON.parse(localStorage.getItem("savedUser"));
@@ -20,6 +22,8 @@ export default function LoginPopup(props) {
     localStorage.setItem("user", JSON.stringify(findUser));
     props.setUser(findUser);
     props.setOpen(false);
+
+    navigate("/AccountPage");
   }
 
   return (
@@ -89,15 +93,13 @@ export default function LoginPopup(props) {
                   </div>
 
                   {/* Button */}
-                  <Link to="/AccountPage">
-                    <button
-                      onClick={Login}
-                      type="button"
-                      className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
-                    >
-                      Sign in
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => Login()}
+                    type="button"
+                    className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
+                  >
+                    Sign in
+                  </button>
                 </form>
 
                 {/* Footer */}
