@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import SignOutForm from "./SignOutForm";
 
 export default function AccountSettings() {
-  const [open, setOpen] = useState(false);
-
   const [user, setUser] = useState({
     name: "",
     lastName: "",
@@ -34,54 +32,15 @@ export default function AccountSettings() {
 
   console.log(user);
 
-  const loadYourUser = JSON.parse(localStorage.getItem("user"));
-
   function onChange(name, value) {
     setUser((p) => ({ ...p, [name]: value }));
   }
 
   return (
     <div className="min-h-screen bg-orange-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-orange-50 hidden md:flex flex-col border-r-1 border-amber-950 shadow-md shadow-amber-950 ">
-        <div className="flex flex-col items-center py-6 rounded-md border-amber-950">
-          <div className="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center border-1 border-amber-950 ">
-            <UserIcon className="h-8 w-8 text-amber-950 " />
-          </div>
-          <h2 className="mt-2 font-semibold text-amber-950">
-            {loadYourUser?.fullName}
-          </h2>
-        </div>
-        <nav className="flex-1 px-4 space-y-2 \">
-          {["Personal Information", "Addresses", "Payment Methods"].map(
-            (item) => (
-              <button
-                key={item}
-                className={`w-full text-left px-3 py-2 rounded-md text-amber-950 hover:text-white hover:bg-amber-950 transition border-b-2 border-l-2 mt-2.5 border-amber-950 shadow-md shadow-amber-950 ${
-                  item === "Personal Information"
-                    ? "bg-amber-950 text-white font-semibold"
-                    : ""
-                }`}
-              >
-                {item}
-              </button>
-            )
-          )}
-        </nav>
-        <div className="px-4 py-4">
-          <button
-            onClick={() => setOpen(true)}
-            className="w-full text-left text-red-500 font-bold hover:text-red-500/50 active:text-red-500"
-          >
-            Sign Out
-          </button>
-        </div>
-      </aside>
-
       {/* Main Content */}
       <main className="flex-1 p-6">
         <div className="bg-white border-1 border-amber-950 rounded-xl shadow p-6 max-w-3xl mx-auto">
-          <SignOutForm open={open} setOpen={setOpen} />
           <h1 className="text-2xl font-bold text-amber-950 mb-2">
             Personal Information
           </h1>
@@ -208,7 +167,7 @@ export default function AccountSettings() {
                   type="button"
                   className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow hover:bg-amber-950 hover:text-orange-50 transition"
                 >
-                  Cancel
+                  continue to Shop
                 </button>
               </Link>
             </div>

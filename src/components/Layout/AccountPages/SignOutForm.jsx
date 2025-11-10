@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SignOutForm(props) {
@@ -57,13 +56,15 @@ export default function SignOutForm(props) {
                 </div>
               </div>
               <div className="bg-orange-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                  onClick={() => signout()}
-                  type="button"
-                  className="inline-flex w-full justify-center rounded-md border-2 border-red-950 bg-red-600 px-3 py-2 text-sm font-semibold text-orange-50 shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-                >
-                  <Link to="/">Sign Out</Link>
-                </button>
+                <Link to="/">
+                  <button
+                    onClick={() => signout()}
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md border-2 border-red-950 bg-red-600 px-3 py-2 text-sm font-semibold text-orange-50 shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
+                  >
+                    Sign Out
+                  </button>
+                </Link>
                 <button
                   onClick={() => props.setOpen(false)}
                   type="button"

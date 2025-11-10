@@ -1,6 +1,7 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import SignupPopup from "./Register";
+import { Link } from "react-router-dom";
 
 export default function LoginPopup(props) {
   const [email, setEmail] = useState("");
@@ -88,13 +89,15 @@ export default function LoginPopup(props) {
                   </div>
 
                   {/* Button */}
-                  <button
-                    onClick={Login}
-                    type="button"
-                    className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
-                  >
-                    Sign in
-                  </button>
+                  <Link to="/AccountPage">
+                    <button
+                      onClick={Login}
+                      type="button"
+                      className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
+                    >
+                      Sign in
+                    </button>
+                  </Link>
                 </form>
 
                 {/* Footer */}
