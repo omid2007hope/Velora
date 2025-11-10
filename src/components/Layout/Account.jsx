@@ -2,8 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import SignOutForm from "./SignOutForm";
 
 export default function AccountSettings() {
+  const [open, setOpen] = useState(false);
+
   const [user, setUser] = useState({
     name: "",
     lastName: "",
@@ -66,8 +69,11 @@ export default function AccountSettings() {
           )}
         </nav>
         <div className="px-4 py-4">
-          <button className="w-full text-left text-amber-800 hover:underline">
-            <Link to="/">Back</Link>
+          <button
+            onClick={() => setOpen(true)}
+            className="w-full text-left text-red-500 font-bold hover:text-red-500/50 active:text-red-500"
+          >
+            Sign Out
           </button>
         </div>
       </aside>
@@ -75,6 +81,7 @@ export default function AccountSettings() {
       {/* Main Content */}
       <main className="flex-1 p-6">
         <div className="bg-white border-1 border-amber-950 rounded-xl shadow p-6 max-w-3xl mx-auto">
+          <SignOutForm open={open} setOpen={setOpen} />
           <h1 className="text-2xl font-bold text-amber-950 mb-2">
             Personal Information
           </h1>
@@ -196,12 +203,14 @@ export default function AccountSettings() {
               >
                 Save
               </button>
-              <button
-                type="button"
-                className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow hover:bg-amber-950 hover:text-orange-50 transition"
-              >
-                Cancel
-              </button>
+              <Link to="/">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow hover:bg-amber-950 hover:text-orange-50 transition"
+                >
+                  Cancel
+                </button>
+              </Link>
             </div>
           </form>
         </div>

@@ -6,6 +6,7 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
+  Disclosure,
   Popover,
   PopoverButton,
   PopoverGroup,
@@ -25,7 +26,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 import LoginPopup from "./Login";
-import SignupPopup from "./Register";
 
 const navigation = {
   categories: [
@@ -158,8 +158,7 @@ import Logo from "../../assets/Images/Logo.png";
 
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import AccountMenu from "./AccountMenu";
-
+import { CircleUserRound } from "lucide-react";
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
@@ -189,7 +188,7 @@ export default function Header() {
             transition
             className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-orange-100 pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full border-r-2 border-amber-950 "
           >
-            <div className="flex px-4 pt-5 pb-2 ">
+            <div className="px-4 pt-5 pb-2 border-b-2 border-amber-950 shadow-lg flex flex-row justify-between items-center">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -199,6 +198,20 @@ export default function Header() {
                 <span className="sr-only">Close menu</span>
                 <XMarkIcon aria-hidden="true" className="size-6" />
               </button>
+              <div className="flex flex-row justify-center border border-amber-950 rounded-md p-2 bg-orange-50">
+                {user ? (
+                  <Link to="/AccountPage">
+                    <CircleUserRound />
+                  </Link>
+                ) : (
+                  <button
+                    className="text-sm font-medium text-amber-950 hover:text-amber-900"
+                    onClick={() => setLogin(true)}
+                  >
+                    Sign in
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Links */}
@@ -276,7 +289,7 @@ export default function Header() {
               </TabPanels>
             </TabGroup>
 
-            <div className="space-y-6 px-4 py-6">
+            <div className="space-y-6 px-4 py-0">
               {navigation.pages.map((page) => (
                 <div key={page.name} className="flow-root">
                   <a
@@ -287,25 +300,6 @@ export default function Header() {
                   </a>
                 </div>
               ))}
-            </div>
-
-            <div className="space-y-6 px-4 py-6">
-              <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-amber-950"
-                >
-                  Sign in
-                </a>
-              </div>
-              <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-amber-950"
-                >
-                  Create account
-                </a>
-              </div>
             </div>
           </DialogPanel>
         </div>
@@ -453,7 +447,11 @@ export default function Header() {
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {user ? (
-                    <AccountMenu user={user} setUser={setUser} />
+                    <Link to="/AccountPage">
+                      <div className="flex flex-col justify-center items-center p-1 rounded-sm text-amber-950  hover:text-amber-950/50 transition ">
+                        <CircleUserRound />
+                      </div>
+                    </Link>
                   ) : (
                     <button
                       className="text-sm font-medium text-amber-950 hover:text-amber-900"

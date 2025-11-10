@@ -1,4 +1,4 @@
-import Account from "../components/Layout/Account";
+import Account from "../components/Layout/Account.jsx";
 
 function AccountPage() {
   return (
