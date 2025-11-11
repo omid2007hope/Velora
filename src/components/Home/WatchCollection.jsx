@@ -23,7 +23,7 @@ export default function WatchCollection() {
           </div>
 
           {/* Right Image */}
-          <div className="w-full h-64 sm:h-96 lg:h-full py-10 bg-orange-100">
+          <div className="w-full max-w-[800px] mx-auto border-2 border-amber-950 rounded-lg overflow-hidden">
             <PromoBanner />
           </div>
         </div>
