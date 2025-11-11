@@ -8,23 +8,25 @@ import Watch from "../../assets/Images/Watch.png";
 
 export default function PromoCarousel() {
   return (
-    <Carousel
-      autoplay
-      shape="bar"
-      className="rounded-lg shadow-md overflow-hidden"
-      style={{
-        height: 400,
-        background: "#f7f3ef",
-      }}
-    >
-      <img src={Banner} alt="Banner" className="w-full h-full object-cover" />
-      <img src={Men} alt="Men" className="w-full h-full object-cover" />
-      <img
-        src={Accessories}
-        alt="Accessories"
-        className="w-full h-full object-cover"
-      />
-      <img src={Watch} alt="Watch" className="w-full h-full object-cover" />
-    </Carousel>
+    <div className="w-full h-auto lg:w-full rounded-md object-cover border-2 border-amber-950">
+      <Carousel
+        autoplay
+        shape="bar"
+        className="rounded-lg shadow-md overflow-hidden"
+        style={{
+          height: 400,
+          background: "#f7f3ef",
+        }}
+      >
+        <img src={Banner} alt="Banner" className="w-full h-full object-cover" />
+        <img src={Men} alt="Men" className="w-full h-full object-cover" />
+        <img
+          src={Accessories}
+          alt="Accessories"
+          className="w-full h-full object-cover"
+        />
+        <img src={Watch} alt="Watch" className="w-full h-full object-cover" />
+      </Carousel>
+    </div>
   );
 }

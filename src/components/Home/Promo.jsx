@@ -33,7 +33,7 @@ export default function Promo() {
           </div>
 
           {/* Image Section */}
-          <div className="w-full max-w-[800px] mx-auto">
+          <div className="flex justify-center">
             <PromoCarousel />
           </div>
         </div>
