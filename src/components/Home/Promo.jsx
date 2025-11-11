@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Banner from "../../assets/Images/Banner.png";
+import PromoCarousel from "./PromoBanner";
 
 export default function Promo() {
   const navigate = useNavigate();
@@ -33,11 +34,7 @@ export default function Promo() {
 
           {/* Image Section */}
           <div className="flex justify-center">
-            <img
-              src={Banner}
-              alt="Summer collection"
-              className="w-full h-auto lg:w-full rounded-md object-cover border-2 border-amber-950 "
-            />
+            <PromoCarousel />
           </div>
         </div>
       </div>
