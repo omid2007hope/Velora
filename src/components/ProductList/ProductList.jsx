@@ -27,14 +27,17 @@ export default function ProductList() {
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 h-full border-r-2 border-amber-900 bg-orange-100 shadow-lg">
         {/* Top Section - Search + Back */}
-        <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 space-y-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 bg-amber-950 text-orange-50 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-900 transition"
-          >
-            <ArrowLeft size={16} />
-            Back
-          </button>
+        <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 space-y-3 pt-30">
+          <div className="w-full flex flex-row justify-start items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 bg-amber-950 text-orange-50 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-900 transition lg:ml-3.5"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </button>
+          </div>
+
           <SearchBar />
         </div>
 
