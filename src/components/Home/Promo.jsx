@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import Banner from "../../assets/Images/Banner.png";
 
 export default function Promo() {
+  const navigate = useNavigate();
+
   return (
     <div className="relative overflow-hidden bg-orange-100 pt-20 pt-20 sm:pt-24 lg:pt-32 pb-8 sm:pb-8 lg:pb-8">
       <div className="relative w-full px-4 sm:px-6 lg:px-16 py-8 sm:py-0 lg:py-8 ">
@@ -20,6 +23,7 @@ export default function Promo() {
 
             {/* Button */}
             <a
+              onClick={() => navigate("/ProductListPage")}
               href="#"
               className="inline-block mt-8 lg:mt-12 rounded-md bg-amber-950 px-10 py-4 text-center font-medium text-white hover:bg-amber-900 self-start ml-0 sm:ml-8 lg:ml-0"
             >
