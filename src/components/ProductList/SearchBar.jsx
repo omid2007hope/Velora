@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function SearchBar() {
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center mt-26">
+    <div className="w-full h-full flex flex-col justify-center items-center mt-14">
       <div className="w-full h-full flex flex-row justify-center items-center">
         <input
           type="text"

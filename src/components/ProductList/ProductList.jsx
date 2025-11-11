@@ -1,21 +1,95 @@
-import { Search } from "lucide-react";
+import { ArrowLeft, Filter } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { products } from "../../Data";
-import { Link } from "react-router-dom";
 
 export default function ProductList() {
+  const navigate = useNavigate();
+
+  const categories = [
+    "Men",
+    "Women",
+    "Sportswear",
+    "Footwear",
+    "Accessories",
+    "Formal",
+    "Casual",
+  ];
+
+  const quickLinks = [
+    { name: "New Arrivals", path: "/new" },
+    { name: "Best Sellers", path: "/bestsellers" },
+    { name: "On Sale", path: "/sale" },
+  ];
+
   return (
     <div className="flex flex-col md:flex-row w-screen h-screen bg-orange-50 overflow-hidden">
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 h-full border-r-2 border-amber-900 bg-orange-100 shadow-lg">
-        <div className="flex flex-col items-center justify-center h-1/6 border-b-2 border-amber-900 shadow-md p-4">
+        {/* Top Section - Search + Back */}
+        <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 space-y-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 bg-amber-950 text-orange-50 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-900 transition"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
           <SearchBar />
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Categories */}
+          <div>
+            <h3 className="flex items-center gap-2 text-amber-950 font-bold mb-3">
+              <Filter size={16} />
+              Categories
+            </h3>
+            <ul className="space-y-2 text-amber-900">
+              {categories.map((cat, i) => (
+                <li
+                  key={i}
+                  className="cursor-pointer hover:text-amber-950 transition-colors"
+                >
+                  {cat}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div className="pt-4 border-t border-amber-900">
+            <h3 className="text-amber-950 font-bold mb-3">Quick Links</h3>
+            <ul className="space-y-2 text-amber-900">
+              {quickLinks.map((link, i) => (
+                <li key={i}>
+                  <Link
+                    to={link.path}
+                    className="hover:text-amber-950 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Footer */}
+          <div className="mt-auto pt-4 border-t border-amber-900 text-center text-xs text-amber-900">
+            <p>Free Shipping over $50</p>
+            <p className="mt-1">© 2025 Omid Teimory Store</p>
+          </div>
         </div>
       </aside>
 
       {/* Main content */}
       <main className="flex-1 h-full overflow-y-auto pt-25">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-amber-950">All Products</h2>
+          </div>
+
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {products.map((item) => (
               <Link key={item.id} to={`/product/${item.id}`}>
