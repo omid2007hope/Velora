@@ -1,6 +1,6 @@
 import React from "react";
 import Watch from "../../assets/Images/Watch.png";
-
+import PromoBanner from "../../components/Home/WatchBanner";
 export default function WatchCollection() {
   return (
     <section className="w-full border-t-2 border-b-2 border-amber-950">
@@ -23,12 +23,8 @@ export default function WatchCollection() {
           </div>
 
           {/* Right Image */}
-          <div className="w-full h-64 sm:h-96 lg:h-full">
-            <img
-              src={Watch} // replace with your watch image path
-              alt="Watch collection"
-              className="w-full h-full object-cover"
-            />
+          <div className="w-full h-64 sm:h-96 lg:h-full py-10 bg-orange-100">
+            <PromoBanner />
           </div>
         </div>
       </div>
