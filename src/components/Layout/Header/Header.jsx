@@ -158,6 +158,7 @@ import Logo from "../../../assets/Images/Logo.png";
 
 import { Link } from "react-router-dom";
 import { CircleUserRound } from "lucide-react";
+import SearchBar from "../../ProductList/SearchBar";
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
@@ -438,6 +439,10 @@ export default function Header() {
                   ))}
                 </div>
               </PopoverGroup>
+
+              <div className="visible md:hidden lg:hidden flex-grow">
+                <SearchBar />
+              </div>
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
