@@ -1,20 +1,35 @@
 import { ArrowLeft, Filter } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { products } from "../../Data";
+import { products } from "../../dataBase/Index";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../Redux/basketRender";
 
 export default function ProductList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("category");
+  const [data, setData] = useState(products);
+
+  const dispatch = useDispatch();
+
+  function addToBasket(item) {
+    dispatch(addItem(item));
+  }
+
   const navigate = useNavigate();
 
-  const categories = [
-    "Men",
-    "Women",
-    "Sportswear",
-    "Footwear",
-    "Accessories",
-    "Formal",
-    "Casual",
-  ];
+  const categories = ["Men", "Women", "Accessories"];
+
+  function search(cat) {
+    if (!cat) return;
+    const newData = products.filter((x) => x.category === cat);
+    setData(newData);
+  }
+
+  useEffect(() => {
+    search(query);
+  }, [query]);
 
   const quickLinks = [
     { name: "New Arrivals", path: "/new" },
@@ -53,7 +68,10 @@ export default function ProductList() {
               {categories.map((cat, i) => (
                 <li
                   key={i}
-                  className="cursor-pointer hover:text-amber-950 transition-colors"
+                  className={`cursor-pointer hover:text-amber-950 transition-colors ${
+                    cat === query ? "text-amber-800 font-bold" : ""
+                  }`}
+                  onClick={() => setSearchParams({ category: cat })}
                 >
                   {cat}
                 </li>
@@ -94,7 +112,7 @@ export default function ProductList() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.map((item) => (
+            {data.map((item) => (
               <Link key={item.id} to={`/product/${item.id}`}>
                 <div className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
                   <div className="relative">

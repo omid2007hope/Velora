@@ -23,13 +23,12 @@ export default function Promo() {
             </div>
 
             {/* Button */}
-            <a
+            <button
               onClick={() => navigate("/ProductListPage")}
-              href="#"
               className="inline-block mt-8 lg:mt-12 rounded-md bg-amber-950 px-10 py-4 text-center font-medium text-white hover:bg-amber-900 self-start ml-0 sm:ml-8 lg:ml-0"
             >
               Shop Collection
-            </a>
+            </button>
           </div>
 
           {/* Image Section */}

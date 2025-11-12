@@ -7,6 +7,7 @@ export const products = [
     newPrice: 39,
     discount: "34%",
     category: "Men",
+    NewArrivals: true,
     image: "https://content.moss.co.uk/images/extraextralarge/966806670_01.jpg",
   },
   {
@@ -16,6 +17,7 @@ export const products = [
     newPrice: 85,
     discount: "29%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://cdnc.lystit.com/photos/3329-2014/07/23/dsquared-blue-distressed-denim-jacket-product-1-21944452-2-706694096-normal.jpeg",
   },
@@ -26,6 +28,7 @@ export const products = [
     newPrice: 299,
     discount: "15%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://ae01.alicdn.com/kf/HTB1dDJ_KXXXXXc5XVXXq6xXFXXXA/Slim-Fit-Formal-Men-Wedding-Suits-Black-Men-Business-Suits-Luxury-Brand-Fashion-Mens-Skinny-Suits.jpg",
   },
@@ -36,6 +39,7 @@ export const products = [
     newPrice: 29,
     discount: "40%",
     category: "Men",
+    NewArrivals: true,
     image:
       "https://d1fufvy4xao6k9.cloudfront.net/looks/498/black-polo-shirt-outfit-1.jpg",
   },
@@ -46,6 +50,7 @@ export const products = [
     newPrice: 175,
     discount: "20%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://www.starsjackets.com/wp-content/uploads/2020/06/Men%E2%80%99s-Leather-Classic-Trucker-Jacket.jpg",
   },
@@ -56,6 +61,7 @@ export const products = [
     newPrice: 49,
     discount: "30%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://youraverageguystyle.com/wp-content/uploads/2019/05/Mens-UK-Fashion-Blog-How-To-Wear-A-Beige-Hoodie-1.jpg",
   },
@@ -66,6 +72,7 @@ export const products = [
     newPrice: 65,
     discount: "28%",
     category: "Men",
+    NewArrivals: true,
     image:
       "https://maskonline.co.in/cdn/shop/files/RJCP1293-LT.KHAKI-S_1.webp?v=1733218064&width=533",
   },
@@ -76,6 +83,7 @@ export const products = [
     newPrice: 115,
     discount: "23%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://www.brostrick.com/wp-content/uploads/2015/02/brown-line-sport-coat-for-men-jcrew-blazer-2016-spring-summer-2-e1456966882568.jpeg",
   },
@@ -86,6 +94,7 @@ export const products = [
     newPrice: 89,
     discount: "26%",
     category: "Men",
+    NewArrivals: true,
     image:
       "https://manofmany.com/wp-content/uploads/2023/02/Best-Brown-Sneakers-for-Men-1200x900.jpg",
   },
@@ -96,6 +105,7 @@ export const products = [
     newPrice: 35,
     discount: "30%",
     category: "Men",
+    NewArrivals: false,
     image:
       "https://ae01.alicdn.com/kf/S29ac56a50e7f493697b839f2341b7d2b3/New-Leather-Belt-For-Men-Luxury-Business-Male-High-Quality-PU-Leather-Belts-Casual-Pin-Buckle.jpeg",
   },
@@ -108,6 +118,7 @@ export const products = [
     newPrice: 59,
     discount: "34%",
     category: "Women",
+    NewArrivals: true,
     image:
       "https://i5.walmartimages.com/seo/YouLoveIt-Women-s-Summer-Dress-Mini-Dresses-V-Neck-Sleeveless-Ruffle-Loose-Fit-Swing-Beach-Cover-Plain-Solid-Color_4b1e590a-6e97-4af3-9232-b22e945e0642.3185ee131446db819ed7c5debd155715.jpeg",
   },
@@ -118,6 +129,7 @@ export const products = [
     newPrice: 99,
     discount: "29%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://fancycorrectitude.com/wp-content/uploads/2020/10/09caf6d2-52bf-4522-9658-415804cca6d6-1900x2913.jpeg",
   },
@@ -128,6 +140,7 @@ export const products = [
     newPrice: 149,
     discount: "25%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://i.pinimg.com/736x/4b/79/34/4b7934f1e9de7c90cfcbb2c040c4ddd1--mk-handbags-fashion-handbags.jpg",
   },
@@ -138,6 +151,7 @@ export const products = [
     newPrice: 29,
     discount: "40%",
     category: "Women",
+    NewArrivals: true,
     image:
       "https://maxmetasmart.com/wp-content/uploads/2024/10/DALL%C2%B7E-2024-10-20-05.01.39-A-fashionable-woman-wearing-a-smart-casual-top-standing-in-a-modern-stylish-environment.-The-top-is-a-blend-of-elegance-and-comfort-with-a-loose-f.webp",
   },
@@ -148,6 +162,7 @@ export const products = [
     newPrice: 210,
     discount: "19%",
     category: "Women",
+    NewArrivals: false,
     image: "https://ae01.alicdn.com/kf/Sb9e79a65aada428b8e0f975e97eb0566z.jpg",
   },
   {
@@ -157,6 +172,7 @@ export const products = [
     newPrice: 55,
     discount: "31%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://darlingjadore.com/wp-content/uploads/2020/12/chunky-sweater-knitting-pattern-jumper-pullover-pattern-scaled.jpg",
   },
@@ -167,6 +183,7 @@ export const products = [
     newPrice: 40,
     discount: "33%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://i.pinimg.com/originals/75/a3/7c/75a37c8578b4aee19d728be5195daf12.jpg",
   },
@@ -177,6 +194,7 @@ export const products = [
     newPrice: 150,
     discount: "21%",
     category: "Women",
+    NewArrivals: true,
     image:
       "https://di2ponv0v5otw.cloudfront.net/posts/2022/11/25/6380b3d2acf4629d017e0fb1/m_6380b3dcf644e564abfcfa99.jpg",
   },
@@ -187,6 +205,7 @@ export const products = [
     newPrice: 110,
     discount: "27%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://m.media-amazon.com/images/I/913sL+OvALL._AC_UL960_QL65_.jpg",
   },
@@ -197,6 +216,7 @@ export const products = [
     newPrice: 110,
     discount: "27%",
     category: "Women",
+    NewArrivals: false,
     image:
       "https://di2ponv0v5otw.cloudfront.net/posts/2019/05/21/5ce4c476d400080e4665eaa0/m_5ce4c6bdaa7ed339deb7ee75.jpg",
   },
@@ -209,6 +229,7 @@ export const products = [
     newPrice: 180,
     discount: "18%",
     category: "Accessories",
+    NewArrivals: false,
     image:
       "https://i.pinimg.com/originals/14/32/6f/14326fd9259d826653ef8b29e8a41c23.jpg",
   },
@@ -219,6 +240,7 @@ export const products = [
     newPrice: 90,
     discount: "25%",
     category: "Accessories",
+    NewArrivals: false,
     image:
       "https://www.topsunglasses.net/wp-content/uploads/2016/10/Aviator-Sunglasses-for-Men.jpg",
   },
@@ -229,6 +251,7 @@ export const products = [
     newPrice: 135,
     discount: "25%",
     category: "Accessories",
+    NewArrivals: false,
     image:
       "https://imagescdn.simons.ca/images/21332-12511628-21-A1_2/belt-strap-faux-suede-bag.jpg",
   },
@@ -239,6 +262,7 @@ export const products = [
     newPrice: 65,
     discount: "28%",
     category: "Accessories",
+    NewArrivals: true,
     image:
       "https://i.etsystatic.com/8985799/r/il/8dcd3b/1151236345/il_1080xN.1151236345_li5b.jpg",
   },
@@ -249,6 +273,7 @@ export const products = [
     newPrice: 360,
     discount: "20%",
     category: "Accessories",
+    NewArrivals: true,
     image:
       "https://images.augustman.com/wp-content/uploads/sites/2/2022/10/27044039/gold-watch-for-men.jpg",
   },

@@ -3,35 +3,7 @@ import Shirt from "../../assets/Images/Shirt.png";
 import { Link } from "react-router-dom";
 
 export default function ShoppingCart(props) {
-  const cartItems = [
-    {
-      id: 1,
-      name: "Basic Tee",
-      color: "Sienna",
-      size: "Large",
-      price: 32,
-      status: "In stock",
-      image: Shirt,
-    },
-    {
-      id: 2,
-      name: "Basic Tee",
-      color: "Black",
-      size: "Large",
-      price: 32,
-      status: "Ships in 3–4 weeks",
-      image: Shirt,
-    },
-    {
-      id: 3,
-      name: "Nomad Tumbler",
-      color: "White",
-      size: "",
-      price: 35,
-      status: "In stock",
-      image: Shirt,
-    },
-  ];
+  const cartItems = [];
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const shipping = 5.0;

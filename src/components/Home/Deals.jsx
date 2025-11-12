@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { products } from "../../Data";
+import { products } from "../../dataBase/Index";
 
 const preview = products.filter((x) => x.id < 5);
 
-console.log(preview);
+// console.log(preview);
 
 export default function Deals() {
   return (

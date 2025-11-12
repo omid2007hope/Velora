@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
-import { products } from "../../Data";
+import { products } from "../../dataBase/Index";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../Redux/basketRender";
 
 export default function ProductPreview() {
   const { id } = useParams();
@@ -9,6 +11,12 @@ export default function ProductPreview() {
   const [product, setProduct] = useState("");
   const [selectedColor, setSelectedColor] = useState("black");
   const [selectedSize, setSelectedSize] = useState("S");
+
+  const dispatch = useDispatch();
+
+  function addToBasket(item) {
+    dispatch(addItem(item));
+  }
 
   useEffect(() => {
     const found = products.find((y) => String(y.id) === String(id));
@@ -133,7 +141,10 @@ export default function ProductPreview() {
 
           {/* Action buttons */}
           <div className="flex flex-wrap gap-3">
-            <button className="flex-1 min-w-[140px] bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 transition">
+            <button
+              onClick={() => addToBasket(product)}
+              className="flex-1 min-w-[140px] bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 transition"
+            >
               Add to Bag
             </button>
             <button className="flex-1 min-w-[140px] bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 transition">

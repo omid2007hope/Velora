@@ -2,24 +2,29 @@ import Men from "../../assets/Images/Men.png";
 import Women from "../../assets/Images/Women.png";
 import New from "../../assets/Images/New.png";
 import Accessories from "../../assets/Images/Accessories.png";
+import { Link } from "react-router-dom";
 
 export default function Preview() {
   const categories = [
     {
       name: "New Arrivals",
       img: New, // model wearing trendy clothes
+      id: "New",
     },
     {
       name: "Accessories",
       img: Accessories, // watch + bracelet
+      id: "Accessories",
     },
     {
       name: "Men’s Collection",
       img: Men, // men’s outfit
+      id: "Men",
     },
     {
       name: "Women’s Collection",
       img: Women, // women’s fashion
+      id: "Women",
     },
   ];
 
@@ -31,7 +36,8 @@ export default function Preview() {
           <div className="grid grid-rows-2 gap-6 h-full">
             <div className="grid grid-cols-2 gap-6">
               {categories.slice(0, 2).map((cat) => (
-                <a
+                <Link
+                  to={`/ProductListPage?category=${cat.id}`}
                   key={cat.name}
                   className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
                 >
@@ -47,12 +53,13 @@ export default function Preview() {
                     </h3>
                     <span className="text-sm text-white/90">Shop now</span>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
 
             {/* Wide Card */}
-            <a
+            <Link
+              to={`/ProductListPage?category=${categories[2].id}`}
               key={categories[2].name}
               className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
             >
@@ -70,11 +77,12 @@ export default function Preview() {
                   Shop now
                 </button>
               </div>
-            </a>
+            </Link>
           </div>
 
           {/* Right Column → Tall Card */}
-          <a
+          <Link
+            to={`/ProductListPage?category=${categories[3].id}`}
             key={categories[3].name}
             className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-72 sm:h-[500px] lg:h-full"
           >
@@ -92,7 +100,7 @@ export default function Preview() {
                 Shop now
               </button>
             </div>
-          </a>
+          </Link>
         </div>
       </section>
     </div>

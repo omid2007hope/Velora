@@ -17,7 +17,6 @@ function App() {
         <Route path="/AccountPage/AddressForm" element={<AddressForm />} />
         <Route path="/AccountPage/PaymentForm" element={<PaymentForm />} />
         <Route path="/ProductListPage" element={<ProductListPage />} />
-
         <Route path="/Product/:id" element={<ProductPage />} />
       </Routes>
     </BrowserRouter>
