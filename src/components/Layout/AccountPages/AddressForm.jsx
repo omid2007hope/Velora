@@ -16,6 +16,8 @@ function AddressForm() {
     setAddress((p) => ({ ...p, [name]: value }));
   }
 
+  const loadAddress = JSON.parse(localStorage.getItem("savedAddress"));
+
   function handleSave() {
     localStorage.setItem("savedAddress", JSON.stringify(address));
     alert("Address saved");
@@ -31,28 +33,28 @@ function AddressForm() {
           <input
             name="country"
             placeholder="Country"
-            value={address.country}
+            value={loadAddress.country}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
           <input
             name="city"
             placeholder="City"
-            value={address.city}
+            value={loadAddress.city}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
           <input
             name="postal"
             placeholder="Postal Code"
-            value={address.postal}
+            value={loadAddress.postal}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
           <input
             name="street"
             placeholder="Street Address"
-            value={address.street}
+            value={loadAddress.street}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />

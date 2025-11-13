@@ -1,6 +1,10 @@
 import React from "react";
 import Shirt from "../../assets/Images/Shirt.png";
 
+const loadUser = JSON.parse(localStorage.getItem("user"));
+const loadAddress = JSON.parse(localStorage.getItem("savedAddress"));
+const loadPayment = JSON.parse(localStorage.getItem("savedPayment"));
+
 export default function Checkout(props) {
   const cartItems = [
     {
@@ -61,41 +65,50 @@ export default function Checkout(props) {
           {/* Form */}
           <form className="space-y-4 flex-1">
             <input
+              value={loadUser.email}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
               placeholder="Email address"
             />
             <input
+              value={loadUser.fullName}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
               placeholder="Name on card"
             />
             <input
+              value={loadPayment.cardNumber}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
               placeholder="Card number"
             />
             <div className="flex space-x-3">
               <input
+                value={loadPayment.cardNumber}
                 className="flex-1 border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
                 placeholder="MM/YY"
               />
               <input
+                value={loadPayment.cvv}
                 className="flex-1 border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
-                placeholder="CVC"
+                placeholder="CVV"
               />
             </div>
             <input
+              value={loadAddress.street}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
               placeholder="Address"
             />
             <div className="grid grid-cols-3 gap-3">
               <input
+                value={loadAddress.country}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
-                placeholder="City"
+                placeholder="Country"
               />
               <input
+                value={loadAddress.city}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
                 placeholder="State/Province"
               />
               <input
+                value={loadAddress.postal}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
                 placeholder="Postal Code"
               />

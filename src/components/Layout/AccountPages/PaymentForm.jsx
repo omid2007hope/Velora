@@ -10,6 +10,10 @@ function PaymentForm() {
     cvv: "",
   });
 
+  const loadPayment = JSON.parse(localStorage.getItem("savedPayment"));
+
+  console.log(loadPayment);
+
   function handleChange(e) {
     const { name, value } = e.target;
     setPayment((p) => ({ ...p, [name]: value }));
@@ -33,14 +37,14 @@ function PaymentForm() {
           <input
             name="name"
             placeholder="Cardholder Name"
-            value={payment.name}
+            value={loadPayment.name}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
           <input
             name="cardNumber"
             placeholder="Card Number"
-            value={payment.cardNumber}
+            value={loadPayment.cardNumber}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
@@ -48,14 +52,14 @@ function PaymentForm() {
             <input
               name="expiry"
               placeholder="MM/YY"
-              value={payment.expiry}
+              value={loadPayment.expiry}
               onChange={handleChange}
               className="w-1/2 p-2 border rounded bg-amber-50"
             />
             <input
               name="cvv"
               placeholder="CVV"
-              value={payment.cvv}
+              value={loadPayment.cvv}
               onChange={handleChange}
               className="w-1/2 p-2 border rounded bg-amber-50"
             />
