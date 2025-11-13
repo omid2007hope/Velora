@@ -1,9 +1,11 @@
 import React from "react";
 import Shirt from "../../assets/Images/Shirt.png";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function ShoppingCart(props) {
   const cartItems = [];
+  const loadItems = useSelector((state) => state.list);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const shipping = 5.0;
@@ -24,56 +26,58 @@ export default function ShoppingCart(props) {
           </h1>
 
           <ul className="space-y-5">
-            {cartItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center bg-orange-200 border border-amber-950 rounded-xl shadow-md p-5"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-24 w-24 sm:h-28 sm:w-28 rounded-lg object-cover border border-amber-900"
-                />
-                <div className="ml-5 flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold text-amber-950">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-amber-900">
-                        {item.color} {item.size && `| ${item.size}`}
-                      </p>
-                      <p
-                        className={`text-xs mt-2 ${
-                          item.status === "In stock"
-                            ? "text-green-700"
-                            : "text-amber-700"
-                        }`}
-                      >
-                        {item.status}
-                      </p>
-                    </div>
-                    <p className="text-sm font-bold text-amber-950">
-                      ${item.price.toFixed(2)}
-                    </p>
-                  </div>
+            {loadItems && loadItems.length
+              ? loadItems.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex items-center bg-orange-200 border border-amber-950 rounded-xl shadow-md p-5"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="h-24 w-24 sm:h-28 sm:w-28 rounded-lg object-cover border border-amber-900"
+                    />
+                    <div className="ml-5 flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-amber-950">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-amber-900">
+                            {item.color} {item.size && `| ${item.size}`}
+                          </p>
+                          <p
+                            className={`text-xs mt-2 ${
+                              item.status === "In stock"
+                                ? "text-green-700"
+                                : "text-amber-700"
+                            }`}
+                          >
+                            {item.status}
+                          </p>
+                        </div>
+                        <p className="text-sm font-bold text-amber-950">
+                          ${item.newPrice.toFixed(2)}
+                        </p>
+                      </div>
 
-                  <div className="mt-3 flex items-center space-x-4">
-                    <select className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm focus:ring-amber-950 focus:border-amber-950 sm:text-sm">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </select>
-                    <button
-                      type="button"
-                      className="text-sm text-red-700 hover:text-red-900 font-medium"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
+                      <div className="mt-3 flex items-center space-x-4">
+                        <select className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm focus:ring-amber-950 focus:border-amber-950 sm:text-sm">
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                        </select>
+                        <button
+                          type="button"
+                          className="text-sm text-red-700 hover:text-red-900 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))
+              : {}}
           </ul>
         </div>
 

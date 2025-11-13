@@ -10,6 +10,7 @@ export default function Preview() {
       name: "New Arrivals",
       img: New, // model wearing trendy clothes
       id: "New",
+      new: true,
     },
     {
       name: "Accessories",

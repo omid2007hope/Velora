@@ -3,19 +3,21 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { products } from "../../dataBase/Index";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addItem } from "../../Redux/basketRender";
+// import { useDispatch } from "react-redux";
+// import { addItem } from "../../Redux/basketRender";
 
 export default function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("category");
   const [data, setData] = useState(products);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  function addToBasket(item) {
-    dispatch(addItem(item));
-  }
+  // function addToBasket(item) {
+  //   dispatch(addItem(item));
+  // }
+
+  // console.log(query);
 
   const navigate = useNavigate();
 
@@ -23,7 +25,12 @@ export default function ProductList() {
 
   function search(cat) {
     if (!cat) return;
-    const newData = products.filter((x) => x.category === cat);
+    let newData = [];
+    if (cat !== "New") {
+      newData = products.filter((x) => x.category === cat);
+    } else {
+      newData = products.filter((x) => String(x.NewArrivals) === "true");
+    }
     setData(newData);
   }
 

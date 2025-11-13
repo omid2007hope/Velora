@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const saved = localStorage.getItem("BasketItems");
+
+const initialState = saved ? JSON.parse(saved) : [];
 
 const listSlice = createSlice({
   name: "list",
@@ -8,6 +10,7 @@ const listSlice = createSlice({
   reducers: {
     addItem: (state, action) => {
       state.push(action.payload);
+      localStorage.setItem("BasketItems", JSON.stringify(state));
     },
     // Action to remove
     removeItem: (state, action) => {

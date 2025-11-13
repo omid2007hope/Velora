@@ -16,6 +16,7 @@ export default function ProductPreview() {
 
   function addToBasket(item) {
     dispatch(addItem(item));
+    // navigate("/Order");
   }
 
   useEffect(() => {
