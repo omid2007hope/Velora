@@ -39,9 +39,9 @@ function AccountSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-orange-50 flex">
+    <div className="min-h-screen bg-orange-50 flex flex-col justify-center items-center">
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1  flex flex-col justify-start items-center p-6">
         <div className="bg-white border-1 border-amber-950 rounded-xl shadow p-6 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold text-amber-950 mb-2">
             Personal Information

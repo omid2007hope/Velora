@@ -9,7 +9,10 @@ const listSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action) => {
+      // count
+
       state.push(action.payload);
+
       localStorage.setItem("BasketItems", JSON.stringify(state));
     },
     // Action to remove
