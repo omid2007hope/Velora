@@ -10,6 +10,8 @@ function PaymentForm() {
     cvv: "",
   });
 
+  const loadUser = JSON.parse(localStorage.getItem("user"));
+
   const loadPayment = JSON.parse(localStorage.getItem("savedPayment"));
 
   console.log(loadPayment);
@@ -25,7 +27,7 @@ function PaymentForm() {
   }
 
   return (
-    <div className="flex flex-col pt-5 justify-start items-center w-full h-screen bg-[#FEF5EC] text-[#3C1D00]">
+    <div className="flex flex-col justify-start items-center w-full h-screen bg-[#FEF5EC] text-[#3C1D00]  pt-90 md:pt-0 lg:pt-0  ">
       <div className="border rounded-md shadow-sm border-[#BCA389] bg-white p-6 w-[90%] max-w-lg">
         <h2 className="font-bold text-lg mb-2">Payment Methods</h2>
         <p className="text-xs mb-4">
@@ -37,14 +39,14 @@ function PaymentForm() {
           <input
             name="name"
             placeholder="Cardholder Name"
-            value={loadPayment.name}
+            value={loadUser.fullName}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
           <input
             name="cardNumber"
             placeholder="Card Number"
-            value={loadPayment.cardNumber}
+            value={loadPayment ? loadPayment.cardNumber : ""}
             onChange={handleChange}
             className="w-full p-2 border rounded bg-amber-50"
           />
@@ -52,14 +54,14 @@ function PaymentForm() {
             <input
               name="expiry"
               placeholder="MM/YY"
-              value={loadPayment.expiry}
+              value={loadPayment ? loadPayment.expiry : ""}
               onChange={handleChange}
               className="w-1/2 p-2 border rounded bg-amber-50"
             />
             <input
               name="cvv"
               placeholder="CVV"
-              value={loadPayment.cvv}
+              value={loadPayment ? loadPayment.cvv : ""}
               onChange={handleChange}
               className="w-1/2 p-2 border rounded bg-amber-50"
             />

@@ -14,6 +14,7 @@ export default function ShoppingCart(props) {
 
   const handleSubmit = () => {
     props.setStep(2);
+    props.setProduct(loadItems);
   };
 
   return (

@@ -39,7 +39,7 @@ function AccountSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-orange-50 flex flex-col justify-center items-center">
+    <div className="min-h-screen bg-orange-50 flex flex-col justify-center items-center pt-85 md:pt-0 lg:pt-0 ">
       {/* Main Content */}
       <main className="flex-1  flex flex-col justify-start items-center p-6">
         <div className="bg-white border-1 border-amber-950 rounded-xl shadow p-6 max-w-3xl mx-auto">

@@ -15,11 +15,11 @@ function SideBarLayOut(WrappedComponent) {
     ];
 
     return (
-      <div className="min-h-screen bg-orange-50 flex">
+      <div className="min-h-screen bg-orange-50 flex flex-col md:flex-row lg:flex-row ">
         {/* Sidebar */}
-        <aside className="fixed w-64 h-screen bg-orange-50 hidden md:flex flex-col border-r border-amber-950 shadow-md shadow-amber-950">
-          <div className="flex flex-col items-center py-6 border-amber-950">
-            <div className="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center border border-amber-950">
+        <div className="fixed z-250 w-full md:w-64 lg:w-64 h-53/100 md:h-screen lg:h-screen bg-orange-50 md:flex flex-col border-r border-amber-950 shadow-md shadow-amber-950">
+          <div className="w-full flex flex-row md:flex-col lg:flex-col justify-evenly items-center py-6 border-amber-950">
+            <div className="flex justify-center items-center h-16 w-16 rounded-full bg-orange-100 border border-amber-950">
               <UserIcon className="h-8 w-8 text-amber-950" />
             </div>
             <h2 className="mt-2 font-semibold text-amber-950">
@@ -54,7 +54,7 @@ function SideBarLayOut(WrappedComponent) {
               Sign Out
             </button>
           </div>
-        </aside>
+        </div>
 
         {/* Main Content */}
         <div className="w-full h-full flex flex-col justify-center items-center ml-0 md:ml-60 lg:ml-60">

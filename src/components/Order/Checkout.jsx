@@ -1,4 +1,3 @@
-import React from "react";
 import Shirt from "../../assets/Images/Shirt.png";
 
 const loadUser = JSON.parse(localStorage.getItem("user"));
@@ -45,6 +44,18 @@ export default function Checkout(props) {
     props.setStep(1);
   };
 
+  // const [checkOut, setCheckOut] = useState({
+  //   email: loadUser.email,
+  //   fullName: loadUser.fullName,
+  //   cardNumber: loadPayment.cardNumber,
+
+  // });
+
+  // function handleChange(e) {
+  //   const { name, value } = e.target;
+  //   setCheckOut((p) => ({ ...p, [name]: value }));
+  // }
+
   return (
     <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8">
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10 w-full">
@@ -79,9 +90,9 @@ export default function Checkout(props) {
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
               placeholder="Card number"
             />
-            <div className="flex space-x-3">
+            <div className="grid grid-cols-2 gap-3">
               <input
-                value={loadPayment.cardNumber}
+                value={loadPayment.expiry}
                 className="flex-1 border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
                 placeholder="MM/YY"
               />
@@ -146,7 +157,7 @@ export default function Checkout(props) {
 
             {/* Items */}
             <ul className="divide-y divide-amber-800 flex-1">
-              {cartItems.map((item) => (
+              {props.product.map((item) => (
                 <li key={item.id} className="flex py-4">
                   <img
                     src={item.image}
@@ -171,7 +182,7 @@ export default function Checkout(props) {
                     </p>
                   </div>
                   <p className="text-sm font-bold text-amber-950">
-                    ${item.price.toFixed(2)}
+                    ${item.newPrice.toFixed(2)}
                   </p>
                 </li>
               ))}

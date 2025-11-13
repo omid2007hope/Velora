@@ -50,16 +50,6 @@ export default function ProductList() {
       <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 h-full border-r-2 border-amber-900 bg-orange-100 shadow-lg">
         {/* Top Section - Search + Back */}
         <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 space-y-3 pt-30">
-          <div className="w-full flex flex-row justify-start items-center">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 bg-amber-950 text-orange-50 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-900 transition lg:ml-3.5"
-            >
-              <ArrowLeft size={16} />
-              Back
-            </button>
-          </div>
-
           <SearchBar />
         </div>
 
@@ -115,7 +105,13 @@ export default function ProductList() {
       <main className="flex-1 h-full overflow-y-auto pt-25">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 py-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-amber-950">All Products</h2>
+            <Link
+              to="/"
+              className="text-amber-950 font-bold flex flex-row justify-between items-center border rounded-lg p-2.5 hover:bg-amber-950 hover:text-white transition active:bg-orange-50 active:text-amber-950 "
+            >
+              <ArrowLeft />
+              Back
+            </Link>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

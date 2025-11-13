@@ -4,8 +4,9 @@ import { ArrowLeft, Star } from "lucide-react";
 import { products } from "../../dataBase/Index";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../Redux/basketRender";
+import withMenuLayout from "../Layout/Index";
 
-export default function ProductPreview() {
+function ProductPreview() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState("");
@@ -55,7 +56,7 @@ export default function ProductPreview() {
     ) / totalRatings;
 
   return (
-    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10">
+    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-35">
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <button
@@ -246,3 +247,6 @@ export default function ProductPreview() {
     </div>
   );
 }
+
+const WrappedProductListPage = withMenuLayout(ProductPreview);
+export default WrappedProductListPage;

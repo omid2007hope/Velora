@@ -24,7 +24,7 @@ function AddressForm() {
   }
 
   return (
-    <div className="flex flex-col pt-5 justify-start items-center w-full h-screen bg-[#FEF5EC] text-[#3C1D00]">
+    <div className="flex flex-col justify-start items-center w-full h-screen bg-[#FEF5EC] text-[#3C1D00]  pt-90 md:pt-0 lg:pt-0 ">
       <div className="border rounded-md shadow-sm border-[#BCA389] bg-white p-6 w-[90%] max-w-lg">
         <h2 className="font-bold text-lg mb-2">Addresses</h2>
         <p className="text-xs mb-4">Add or edit your shipping address below.</p>
