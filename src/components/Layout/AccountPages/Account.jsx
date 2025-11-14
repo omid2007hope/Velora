@@ -194,6 +194,8 @@ function AccountSettings() {
   );
 }
 
-const WrappedPaymentForm = SideBarLayOut(AccountSettings);
+// Wrap component with Sidebar Layout
+const WrappedAccountSettings = SideBarLayOut(AccountSettings);
 
-export default AccountSettings;
+// Export wrapped component
+export default WrappedAccountSettings;

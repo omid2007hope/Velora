@@ -228,7 +228,7 @@ export default function Header() {
                         <div className="col-start-2 grid grid-cols-2 gap-8">
                           {category.featured.map((item) => (
                             <div key={item.name}>
-                              <div className="rounded-lg overflow-hidden border-2 border-amber-950">
+                              <div className="w-240 rounded-lg overflow-hidden border-2 border-amber-950">
                                 {item.imageSrc}
                               </div>
 
