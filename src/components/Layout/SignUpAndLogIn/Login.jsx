@@ -3,7 +3,7 @@ import { useState } from "react";
 import SignupPopup from "./Register";
 import { useNavigate } from "react-router-dom";
 
-export default function LoginPopup({ open, setOpen, user, setUser }) {
+export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
