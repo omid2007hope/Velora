@@ -1,11 +1,10 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  Disclosure,
   Popover,
   PopoverButton,
   PopoverGroup,
@@ -19,15 +18,15 @@ import {
 
 import {
   Bars3Icon,
-  MagnifyingGlassIcon,
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import LoginPopup from "../SignUpAndLogIn/Login";
 import { Link } from "react-router-dom";
 import { CircleUserRound } from "lucide-react";
+import { useSelector } from "react-redux";
 
+import LoginPopup from "../SignUpAndLogIn/Login";
 import SearchBar from "../../ProductList/SearchBar";
 import WomanPhoto from "./WomanPhoto";
 import MenPhoto from "./MenPhoto";
@@ -82,10 +81,52 @@ const navigation = {
 };
 
 export default function Header() {
-  const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
-  const [user, setUser] = useState(loadUser);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  });
+
+  const cartItems = useSelector((state) => state.list) || [];
+
+  const cartCount = cartItems.reduce(
+    (sum, item) => sum + (item.quantity || 1),
+    0
+  );
+
+  // Listen for "open-login-popup" (from Signup) and open Login
+  useEffect(() => {
+    const handleOpenLogin = () => setLogin(true);
+    document.addEventListener("open-login-popup", handleOpenLogin);
+
+    return () => {
+      document.removeEventListener("open-login-popup", handleOpenLogin);
+    };
+  }, []);
+
+  // Sync user state if localStorage user changes (login/logout in other parts)
+  useEffect(() => {
+    const updateUser = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem("user"));
+        setUser(stored);
+      } catch {
+        setUser(null);
+      }
+    };
+
+    window.addEventListener("storage", updateUser);
+    window.addEventListener("user-updated", updateUser);
+
+    return () => {
+      window.removeEventListener("storage", updateUser);
+      window.removeEventListener("user-updated", updateUser);
+    };
+  }, []);
 
   return (
     <div className="fixed z-10 w-full bg-orange-100">
@@ -96,7 +137,7 @@ export default function Header() {
         setUser={setUser}
       />
 
-      {/* Mobile menu */}
+      {/* MOBILE MENU */}
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
 
@@ -117,7 +158,10 @@ export default function Header() {
                   </Link>
                 ) : (
                   <button
-                    onClick={() => setLogin(true)}
+                    onClick={() => {
+                      setOpen(false); // close sidebar
+                      setTimeout(() => setLogin(true), 300); // open login popup
+                    }}
                     className="text-sm text-amber-950"
                   >
                     Sign in
@@ -156,6 +200,7 @@ export default function Header() {
                           <Link
                             to={item.href}
                             className="block mt-4 font-medium text-amber-950"
+                            onClick={() => setOpen(false)}
                           >
                             {item.name}
                           </Link>
@@ -172,7 +217,11 @@ export default function Header() {
                         <ul className="mt-6 space-y-4">
                           {section.items.map((item) => (
                             <li key={item.name}>
-                              <Link to={item.href} className="text-amber-900">
+                              <Link
+                                to={item.href}
+                                className="text-amber-900"
+                                onClick={() => setOpen(false)}
+                              >
                                 {item.name}
                               </Link>
                             </li>
@@ -210,6 +259,7 @@ export default function Header() {
                 <img
                   src={Logo}
                   className="h-8 w-auto border border-amber-950 rounded-md"
+                  alt="Logo"
                 />
               </Link>
             </div>
@@ -223,26 +273,25 @@ export default function Header() {
                       {category.name}
                     </PopoverButton>
 
-                    <PopoverPanel className="absolute inset-x-0 top-full bg-orange-100 border-y border-amber-950 shadow-md">
-                      <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-2 gap-8">
-                        <div className="col-start-2 grid grid-cols-2 gap-8">
-                          {category.featured.map((item) => (
-                            <div key={item.name}>
-                              <div className="w-240 rounded-lg overflow-hidden border-2 border-amber-950">
-                                {item.imageSrc}
-                              </div>
-
-                              <Link
-                                to={item.href}
-                                className="block mt-4 font-medium text-amber-950"
-                              >
-                                {item.name}
-                              </Link>
+                    <PopoverPanel className="absolute left-0 right-0 top-full bg-orange-100 border-y border-amber-950 shadow-md z-40">
+                      <div className="w-full px-8 py-10 grid grid-cols-4 gap-10">
+                        {/* Featured Column */}
+                        {category.featured.map((item) => (
+                          <div key={item.name} className="space-y-3 col-span-1">
+                            <div className="rounded-lg overflow-hidden border-2 border-amber-950">
+                              {item.imageSrc}
                             </div>
-                          ))}
-                        </div>
+                            <Link
+                              to={item.href}
+                              className="ml-1 font-medium text-amber-950 hover:text-amber-800 block"
+                            >
+                              {item.name}
+                            </Link>
+                          </div>
+                        ))}
 
-                        <div className="grid grid-cols-3 gap-8">
+                        {/* Sections */}
+                        <div className="col-span-3 grid grid-cols-3 gap-10">
                           {category.sections.map((section) => (
                             <div key={section.name}>
                               <p className="font-medium text-amber-950">
@@ -253,7 +302,7 @@ export default function Header() {
                                   <li key={item.name}>
                                     <Link
                                       to={item.href}
-                                      className="text-amber-950 hover:text-amber-900"
+                                      className="text-amber-950 hover:text-amber-800"
                                     >
                                       {item.name}
                                     </Link>
@@ -277,7 +326,7 @@ export default function Header() {
 
             {/* RIGHT SIDE */}
             <div className="ml-auto flex items-center">
-              {/* User */}
+              {/* User (desktop) */}
               <div className="hidden lg:flex items-center space-x-6">
                 {user ? (
                   <Link to="/AccountPage">
@@ -298,7 +347,7 @@ export default function Header() {
               {/* Cart */}
               <Link to="/Order" className="ml-4 flex items-center">
                 <ShoppingBagIcon className="size-6 text-amber-950" />
-                <span className="ml-2 text-sm text-gray-700">0</span>
+                <span className="ml-2 text-sm text-gray-700">{cartCount}</span>
               </Link>
             </div>
           </div>

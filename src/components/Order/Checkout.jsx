@@ -1,169 +1,129 @@
-import Shirt from "../../assets/Images/Shirt.png";
+export default function Checkout({ product, setStep }) {
+  const loadUser = JSON.parse(localStorage.getItem("user")) || {};
+  const loadAddress = JSON.parse(localStorage.getItem("savedAddress")) || {};
+  const loadPayment = JSON.parse(localStorage.getItem("savedPayment")) || {};
 
-const loadUser = JSON.parse(localStorage.getItem("user"));
-const loadAddress = JSON.parse(localStorage.getItem("savedAddress"));
-const loadPayment = JSON.parse(localStorage.getItem("savedPayment"));
+  const cartItems = product || [];
 
-export default function Checkout(props) {
-  const cartItems = [
-    {
-      id: 1,
-      name: "Basic Tee",
-      color: "Sienna",
-      size: "Large",
-      price: 32,
-      status: "In stock",
-      image: Shirt,
-    },
-    {
-      id: 2,
-      name: "Basic Tee",
-      color: "Black",
-      size: "Large",
-      price: 32,
-      status: "Ships in 3–4 weeks",
-      image: Shirt,
-    },
-    {
-      id: 3,
-      name: "Nomad Tumbler",
-      color: "White",
-      size: "",
-      price: 35,
-      status: "In stock",
-      image: Shirt,
-    },
-  ];
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + (item.newPrice || 0),
+    0
+  );
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
-  const shipping = 5.0;
-  const tax = 8.32;
+  const shipping = cartItems.length > 0 ? 5 : 0;
+  const tax = cartItems.length > 0 ? 8.32 : 0;
   const total = subtotal + shipping + tax;
 
-  const handleBack = () => {
-    props.setStep(1);
-  };
-
-  // const [checkOut, setCheckOut] = useState({
-  //   email: loadUser.email,
-  //   fullName: loadUser.fullName,
-  //   cardNumber: loadPayment.cardNumber,
-
-  // });
-
-  // function handleChange(e) {
-  //   const { name, value } = e.target;
-  //   setCheckOut((p) => ({ ...p, [name]: value }));
-  // }
+  const goBack = () => setStep(1);
 
   return (
     <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8">
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-10 w-full">
-        {/* Left - Payment Form */}
-        <div className="lg:col-span-7 bg-orange-200 border border-amber-950 rounded-xl shadow-lg p-6 flex flex-col">
-          {/* Apple Pay */}
-          <button className="w-full bg-amber-950 text-orange-50 py-3 rounded-lg font-semibold hover:bg-amber-900 transition">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-x-10">
+        {/* LEFT: FORM */}
+        <div className="lg:col-span-7 bg-orange-200 p-6 rounded-xl border border-amber-950 shadow-lg flex flex-col">
+          <button className="w-full bg-amber-950 text-white py-3 rounded-md font-semibold">
              Pay
           </button>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-grow border-t border-amber-800"></div>
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-amber-900"></div>
             <span className="px-3 text-amber-800 text-sm">or</span>
-            <div className="flex-grow border-t border-amber-800"></div>
+            <div className="flex-grow border-t border-amber-900"></div>
           </div>
 
-          {/* Form */}
           <form className="space-y-4 flex-1">
             <input
-              value={loadUser.email}
-              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
-              placeholder="Email address"
+              value={loadUser.email || ""}
+              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
+              placeholder="Email"
+              readOnly
             />
+
             <input
-              value={loadUser.fullName}
-              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+              value={loadUser.fullName || ""}
+              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Name on card"
+              readOnly
             />
+
             <input
-              value={loadPayment.cardNumber}
-              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+              value={loadPayment.cardNumber || ""}
+              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Card number"
+              readOnly
             />
+
             <div className="grid grid-cols-2 gap-3">
               <input
-                value={loadPayment.expiry}
-                className="flex-1 border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+                value={loadPayment.expiry || ""}
+                className="border border-amber-950 p-2 rounded-md bg-orange-50"
                 placeholder="MM/YY"
+                readOnly
               />
               <input
-                value={loadPayment.cvv}
-                className="flex-1 border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+                value={loadPayment.cvv || ""}
+                className="border border-amber-950 p-2 rounded-md bg-orange-50"
                 placeholder="CVV"
+                readOnly
               />
             </div>
+
             <input
-              value={loadAddress.street}
-              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+              value={loadAddress.street || ""}
+              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Address"
+              readOnly
             />
+
             <div className="grid grid-cols-3 gap-3">
               <input
-                value={loadAddress.country}
-                className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+                value={loadAddress.country || ""}
+                className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="Country"
+                readOnly
               />
               <input
-                value={loadAddress.city}
-                className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
-                placeholder="State/Province"
+                value={loadAddress.city || ""}
+                className="border border-amber-950 rounded-md p-2 bg-orange-50"
+                placeholder="City"
+                readOnly
               />
               <input
-                value={loadAddress.postal}
-                className="border border-amber-950 rounded-md p-2 bg-orange-50 placeholder-amber-800"
+                value={loadAddress.postal || ""}
+                className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="Postal Code"
+                readOnly
               />
             </div>
-
-            {/* Checkbox */}
-            <label className="flex items-center space-x-2 text-sm text-amber-800">
-              <input
-                type="checkbox"
-                defaultChecked
-                className="h-4 w-4 border-amber-950 text-amber-900 focus:ring-amber-950"
-              />
-              <span>Billing address is the same as shipping address</span>
-            </label>
           </form>
 
-          {/* Buttons */}
-          <div className="mt-8 space-y-3">
+          <div className="mt-6 space-y-3">
             <button
-              className="w-full bg-amber-950 text-orange-50 py-3 rounded-lg font-medium hover:bg-amber-900 transition"
-              onClick={handleBack}
+              onClick={goBack}
+              className="w-full bg-amber-950 text-white py-3 rounded-md"
             >
               Back
             </button>
-            <button className="w-full bg-amber-950 text-orange-50 py-3 rounded-lg font-medium hover:bg-amber-900 transition">
+
+            <button className="w-full bg-amber-950 text-white py-3 rounded-md">
               Pay ${total.toFixed(2)}
             </button>
           </div>
         </div>
 
-        {/* Right - Cart Summary */}
+        {/* RIGHT: CART */}
         <div className="lg:col-span-5 mt-10 lg:mt-0">
-          <div className="rounded-xl bg-orange-200 border border-amber-950 shadow-lg p-6 flex flex-col h-full">
+          <div className="bg-orange-200 border border-amber-950 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-amber-950 mb-4">Your Cart</h2>
 
-            {/* Items */}
-            <ul className="divide-y divide-amber-800 flex-1">
-              {props.product.map((item) => (
+            <ul className="divide-y divide-amber-900">
+              {cartItems.map((item) => (
                 <li key={item.id} className="flex py-4">
                   <img
                     src={item.image}
-                    alt={item.name}
                     className="h-16 w-16 rounded-md border border-amber-950 object-cover"
                   />
+
                   <div className="ml-4 flex-1">
                     <h3 className="text-sm font-semibold text-amber-950">
                       {item.name}
@@ -171,16 +131,9 @@ export default function Checkout(props) {
                     <p className="text-sm text-amber-900">
                       {item.color} {item.size && `| ${item.size}`}
                     </p>
-                    <p
-                      className={`text-xs mt-1 ${
-                        item.status === "In stock"
-                          ? "text-green-700"
-                          : "text-amber-700"
-                      }`}
-                    >
-                      {item.status}
-                    </p>
+                    <p className="text-xs text-green-700 mt-1">In stock</p>
                   </div>
+
                   <p className="text-sm font-bold text-amber-950">
                     ${item.newPrice.toFixed(2)}
                   </p>
@@ -188,18 +141,6 @@ export default function Checkout(props) {
               ))}
             </ul>
 
-            {/* Discount */}
-            <div className="flex mt-5">
-              <input
-                className="flex-1 border border-amber-950 rounded-l-md p-2 bg-orange-50 placeholder-amber-800"
-                placeholder="Discount code"
-              />
-              <button className="bg-amber-950 text-orange-50 px-4 rounded-r-md hover:bg-amber-900 transition">
-                Apply
-              </button>
-            </div>
-
-            {/* Totals */}
             <dl className="mt-6 space-y-2">
               <div className="flex justify-between">
                 <dt className="text-sm text-amber-800">Subtotal</dt>
@@ -207,18 +148,21 @@ export default function Checkout(props) {
                   ${subtotal.toFixed(2)}
                 </dd>
               </div>
+
               <div className="flex justify-between">
                 <dt className="text-sm text-amber-800">Shipping</dt>
                 <dd className="text-sm font-medium text-amber-950">
                   ${shipping.toFixed(2)}
                 </dd>
               </div>
+
               <div className="flex justify-between">
-                <dt className="text-sm text-amber-800">Taxes</dt>
+                <dt className="text-sm text-amber-800">Tax</dt>
                 <dd className="text-sm font-medium text-amber-950">
                   ${tax.toFixed(2)}
                 </dd>
               </div>
+
               <div className="border-t border-amber-800 pt-3 flex justify-between">
                 <dt className="text-base font-semibold text-amber-950">
                   Total

@@ -64,6 +64,16 @@ function ProductPreview() {
       </div>
     );
 
+  function buyNow(item) {
+    if (!item) return;
+
+    // Add to basket first
+    dispatch(addItem({ ...item, selectedColor, selectedSize }));
+
+    // Then go to checkout
+    navigate("/Order"); // or /Checkout depending on your routing
+  }
+
   return (
     <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-35">
       {/* Header */}
@@ -159,7 +169,11 @@ function ProductPreview() {
             >
               Add to Bag
             </button>
-            <button className="flex-1 min-w-[140px] bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 transition">
+
+            <button
+              onClick={() => buyNow(product)}
+              className="flex-1 min-w-[140px] bg-amber-950 text-orange-50 py-3 rounded-md font-semibold hover:bg-amber-900 transition"
+            >
               Buy Now
             </button>
           </div>

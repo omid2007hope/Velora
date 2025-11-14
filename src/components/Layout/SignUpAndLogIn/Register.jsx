@@ -1,136 +1,98 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function SignupPopup(props) {
-  const loadUser = JSON.parse(localStorage.getItem("savedUser"));
+export default function SignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-  const [dataBase, setDataBase] = useState(loadUser || []);
+
+  const [db, setDb] = useState(
+    JSON.parse(localStorage.getItem("savedUser")) || []
+  );
 
   function Signup() {
-    const confirmPassword =
-      fullName.trim() !== "" &&
-      email.trim() !== "" &&
-      password.trim() === confirmPass.trim();
-    if (!confirmPassword) {
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      password.trim() !== confirmPass.trim()
+    ) {
       return;
     }
-    const userData = {
+
+    const already = db.some((u) => u.email === email.trim());
+    if (already) return;
+
+    const newUser = {
       fullName: fullName.trim(),
       email: email.trim(),
       password: password.trim(),
     };
-    const data = [...dataBase, userData];
-    setDataBase(data);
-    props.setOpen(false);
+
+    const newDB = [...db, newUser];
+    setDb(newDB);
+
+    // Close signup popup
+    setOpen(false);
+
+    // Automatically open login popup
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("open-login-popup"));
+    }, 200);
   }
 
   useEffect(() => {
-    localStorage.setItem("savedUser", JSON.stringify(dataBase));
-  }, [dataBase]);
+    localStorage.setItem("savedUser", JSON.stringify(db));
+  }, [db]);
 
   return (
-    <div>
-      <Dialog
-        open={props.open}
-        onClose={props.setOpen}
-        className="relative z-10"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-gray-900/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
-        />
+    <Dialog open={open} onClose={setOpen} className="relative z-50">
+      <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <DialogPanel
-              transition
-              className="relative transform overflow-hidden rounded-2xl bg-orange-50 shadow-2xl sm:my-8 sm:w-full sm:max-w-md"
-            >
-              <div className="flex flex-col px-8 py-10">
-                {/* Brand Icon / Title */}
-                <div className="mx-auto flex flex-col items-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 border-2 border-amber-950">
-                    <svg
-                      className="h-7 w-7 text-amber-900"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M5.5 7h13l-1.5 12h-10L5.5 7zM9 10v-2a3 3 0 016 0v2" />
-                    </svg>
-                  </div>
-                  <h2 className="mt-4 text-2xl font-bold tracking-tight text-amber-950">
-                    Create your account
-                  </h2>
-                  <p className="mt-1 text-sm text-amber-700">
-                    Join us and unlock the latest styles
-                  </p>
-                </div>
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <DialogPanel className="w-full max-w-md rounded-xl bg-orange-50 shadow-2xl p-8">
+          <h2 className="text-2xl font-bold text-amber-950 text-center">
+            Create Your Account
+          </h2>
 
-                {/* Form */}
-                <form action="#" method="POST" className="mt-8 space-y-5">
-                  {/* Full Name */}
-                  <input
-                    onChange={(e) => setFullName(e.target.value)}
-                    id="fullName"
-                    name="fullName"
-                    type="text"
-                    placeholder="Full Name"
-                    required
-                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
-                  />
+          <div className="mt-6 space-y-4">
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+              onChange={(e) => setFullName(e.target.value)}
+            />
 
-                  {/* Email */}
-                  <input
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="Email address"
-                    required
-                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
-                  />
+            <input
+              type="email"
+              placeholder="Email address"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-                  {/* Password */}
-                  <input
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    required
-                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
-                  />
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-                  {/* Confirm Password */}
-                  <input
-                    onChange={(e) => setConfirmPass(e.target.value)}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="Confirm password"
-                    required
-                    className="block w-full rounded-lg border border-amber-950 bg-white px-4 py-3 text-amber-950 placeholder:text-amber-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-600"
-                  />
-
-                  {/* Button */}
-                  <button
-                    type="button"
-                    onClick={Signup}
-                    className="w-full rounded-full bg-amber-950 px-6 py-3 text-lg font-semibold text-white hover:bg-amber-900 transition"
-                  >
-                    Sign up
-                  </button>
-                </form>
-              </div>
-            </DialogPanel>
+            <input
+              type="password"
+              placeholder="Confirm password"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+              onChange={(e) => setConfirmPass(e.target.value)}
+            />
           </div>
-        </div>
-      </Dialog>
-    </div>
+
+          <button
+            onClick={Signup}
+            className="w-full mt-6 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
+          >
+            Sign up
+          </button>
+        </DialogPanel>
+      </div>
+    </Dialog>
   );
 }

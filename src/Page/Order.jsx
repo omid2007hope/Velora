@@ -6,8 +6,6 @@ function Order() {
   const [step, setStep] = useState(1);
   const [product, setProduct] = useState([]);
 
-  console.log(product);
-
   return (
     <>
       {step === 1 && (
@@ -18,7 +16,7 @@ function Order() {
           setProduct={setProduct}
         />
       )}
-      ,
+
       {step === 2 && (
         <Checkout
           step={step}
