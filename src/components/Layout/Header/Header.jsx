@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  DialogTitle,
   Disclosure,
   Popover,
   PopoverButton,
@@ -17,15 +16,22 @@ import {
   TabPanel,
   TabPanels,
 } from "@headlessui/react";
+
 import {
   Bars3Icon,
-  ExclamationTriangleIcon,
   MagnifyingGlassIcon,
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 import LoginPopup from "../SignUpAndLogIn/Login";
+import { Link } from "react-router-dom";
+import { CircleUserRound } from "lucide-react";
+
+import SearchBar from "../../ProductList/SearchBar";
+import WomanPhoto from "./WomanPhoto";
+import MenPhoto from "./MenPhoto";
+import Logo from "../../../assets/Images/Logo.png";
 
 const navigation = {
   categories: [
@@ -34,20 +40,10 @@ const navigation = {
       name: "Women",
       featured: [
         {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-01.jpg",
-          imageAlt:
-            "Models sitting back to back, wearing Basic Tee in black and bone.",
-        },
-        {
-          name: "Basic Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-02.jpg",
-          imageAlt:
-            "Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.",
+          name: "Woman",
+          imageSrc: <WomanPhoto />,
+          imageAlt: "Women collection",
+          href: "/ProductListPage?category=Women",
         },
       ],
       sections: [
@@ -55,38 +51,7 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
-            { name: "Dresses", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Denim", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Significant Other", href: "#" },
+            { name: "Browse All", href: "/ProductListPage?category=Women" },
           ],
         },
       ],
@@ -96,20 +61,10 @@ const navigation = {
       name: "Men",
       featured: [
         {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg",
-          imageAlt:
-            "Drawstring top with elastic loop closure and textured interior padding.",
-        },
-        {
-          name: "Artwork Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg",
-          imageAlt:
-            "Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.",
+          name: "Men",
+          imageSrc: <MenPhoto />,
+          imageAlt: "Men collection",
+          href: "/ProductListPage?category=Men",
         },
       ],
       sections: [
@@ -117,35 +72,7 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
+            { name: "Browse All", href: "/ProductListPage?category=Men" },
           ],
         },
       ],
@@ -154,11 +81,6 @@ const navigation = {
   pages: [],
 };
 
-import Logo from "../../../assets/Images/Logo.png";
-
-import { Link } from "react-router-dom";
-import { CircleUserRound } from "lucide-react";
-import SearchBar from "../../ProductList/SearchBar";
 export default function Header() {
   const loadUser = JSON.parse(localStorage.getItem("user"));
   const [open, setOpen] = useState(false);
@@ -174,39 +96,29 @@ export default function Header() {
         setUser={setUser}
       />
 
-      <Dialog
-        open={open}
-        onClose={setOpen}
-        className="relative z-40 lg:hidden bg-orange-200"
-      >
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 transition-opacity duration-300 ease-linear data-closed:opacity-0 "
-        />
-        <div className="fixed inset-0 z-40 flex ">
-          <DialogPanel
-            transition
-            className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-orange-100 pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full border-r-2 border-amber-950 "
-          >
-            <div className="px-4 pt-5 pb-2 border-b-2 border-amber-950 shadow-lg flex flex-row justify-between items-center">
+      {/* Mobile menu */}
+      <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+
+        <div className="fixed inset-0 flex z-40">
+          <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-orange-100 pb-12 shadow-xl border-r border-amber-950">
+            <div className="px-4 pt-5 pb-2 border-b border-amber-950 flex flex-row justify-between items-center">
               <button
-                type="button"
                 onClick={() => setOpen(false)}
-                className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-amber-900 "
+                className="p-2 text-amber-900 rounded-md border border-amber-950"
               >
-                <span className="absolute -inset-0.5  border-2 border-amber-950/25 rounded-lg" />
-                <span className="sr-only">Close menu</span>
-                <XMarkIcon aria-hidden="true" className="size-6" />
+                <XMarkIcon className="size-6" />
               </button>
-              <div className="flex flex-row justify-center border border-amber-950 rounded-md p-2 bg-orange-50">
+
+              <div className="p-2 border border-amber-950 rounded-md bg-orange-50">
                 {user ? (
                   <Link to="/AccountPage">
                     <CircleUserRound />
                   </Link>
                 ) : (
                   <button
-                    className="text-sm font-medium text-amber-950 hover:text-amber-900"
                     onClick={() => setLogin(true)}
+                    className="text-sm text-amber-950"
                   >
                     Sign in
                   </button>
@@ -214,71 +126,55 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Links */}
-            <TabGroup className="mt-2 ">
-              <div>
-                <TabList className="-mb-px flex space-x-8 px-4">
-                  {navigation.categories.map((category) => (
-                    <Tab
-                      key={category.name}
-                      className="flex-1 border-b-2 border-transparent px-1 py-4 text-base font-medium whitespace-nowrap text-amber-950 data-selected:border-amber-950 data-selected:text-amber-950 "
-                    >
-                      {category.name}
-                    </Tab>
-                  ))}
-                </TabList>
-              </div>
-              <TabPanels as={Fragment}>
+            {/* Mobile navigation */}
+            <TabGroup className="mt-2">
+              <TabList className="flex space-x-8 px-4 border-b border-amber-950">
+                {navigation.categories.map((category) => (
+                  <Tab
+                    key={category.name}
+                    className="flex-1 px-1 py-4 text-base text-amber-950 border-b-2 border-transparent data-selected:border-amber-950"
+                  >
+                    {category.name}
+                  </Tab>
+                ))}
+              </TabList>
+
+              <TabPanels>
                 {navigation.categories.map((category) => (
                   <TabPanel
                     key={category.name}
-                    className="space-y-10 px-4 pt-10 pb-8"
+                    className="px-4 pt-10 pb-8 space-y-10"
                   >
-                    <div className="grid grid-cols-2 gap-x-4">
+                    {/* Featured */}
+                    <div className="grid grid-cols-1 gap-6">
                       {category.featured.map((item) => (
-                        <div key={item.name} className="group relative text-sm">
-                          <img
-                            alt={item.imageAlt}
-                            src={item.imageSrc}
-                            className="aspect-square w-full rounded-lg bg-orange-200 object-cover group-hover:opacity-75 border-2 border-amber-950"
-                          />
-                          <a
-                            href={item.href}
-                            className="mt-6 block font-medium text-amber-950"
+                        <div key={item.name} className="group relative">
+                          <div className="aspect-square w-full rounded-lg border-2 border-amber-950 overflow-hidden">
+                            {item.imageSrc}
+                          </div>
+
+                          <Link
+                            to={item.href}
+                            className="block mt-4 font-medium text-amber-950"
                           >
-                            <span
-                              aria-hidden="true"
-                              className="absolute inset-0 z-10"
-                            />
                             {item.name}
-                          </a>
-                          <p aria-hidden="true" className="mt-1">
-                            Shop now
-                          </p>
+                          </Link>
                         </div>
                       ))}
                     </div>
+
+                    {/* Sections */}
                     {category.sections.map((section) => (
                       <div key={section.name}>
-                        <p
-                          id={`${category.id}-${section.id}-heading-mobile`}
-                          className="font-medium text-amber-950"
-                        >
+                        <p className="font-medium text-amber-950">
                           {section.name}
                         </p>
-                        <ul
-                          role="list"
-                          aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
-                          className="mt-6 flex flex-col space-y-6"
-                        >
+                        <ul className="mt-6 space-y-4">
                           {section.items.map((item) => (
-                            <li key={item.name} className="flow-root">
-                              <a
-                                href={item.href}
-                                className="-m-2 block p-2 text-amber-900"
-                              >
+                            <li key={item.name}>
+                              <Link to={item.href} className="text-amber-900">
                                 {item.name}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -288,198 +184,122 @@ export default function Header() {
                 ))}
               </TabPanels>
             </TabGroup>
-
-            <div className="space-y-6 px-4 py-0">
-              {navigation.pages.map((page) => (
-                <div key={page.name} className="flow-root">
-                  <a
-                    href={page.href}
-                    className="-m-2 block p-2 font-medium text-amber-950"
-                  >
-                    {page.name}
-                  </a>
-                </div>
-              ))}
-            </div>
           </DialogPanel>
         </div>
       </Dialog>
 
-      <header className="relative bg-orange-200 border-b-1 border-amber-950">
-        <p className="flex h-10 items-center justify-center bg-amber-950 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+      {/* DESKTOP HEADER */}
+      <header className="relative bg-orange-200 border-b border-amber-950">
+        <p className="flex h-10 items-center justify-center bg-amber-950 text-white text-sm">
           Free delivery for orders over 50$
         </p>
 
-        <nav
-          aria-label="Top"
-          className="w-full px-4 sm:px-6 lg:px-8 bg-orange-200"
-        >
-          <div className="">
-            <div className="flex h-16 items-center">
-              <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="relative rounded-md bg-orange-50 p-2 text-amber-950 lg:hidden border-amber-950"
-              >
-                <span className="absolute -inset-0.5 border-2 border-amber-950 rounded-lg " />
-                <span className="sr-only">Open menu</span>
-                <Bars3Icon aria-hidden="true" className="size-6" />
-              </button>
+        <nav className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center">
+            {/* Mobile button */}
+            <button
+              onClick={() => setOpen(true)}
+              className="lg:hidden p-2 bg-orange-50 rounded-md border border-amber-950 text-amber-950"
+            >
+              <Bars3Icon className="size-6" />
+            </button>
 
-              {/* Logo */}
-              <div className=" scale-0 sm:scale-140 lg:scale-140 ml-4 flex lg:ml-0">
-                <a href="#">
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    alt=""
-                    src={Logo}
-                    className="h-8 w-auto rounded-md border-1 border-amber-950"
-                  />
-                </a>
-              </div>
+            {/* Logo */}
+            <div className="hidden sm:block ml-4 lg:ml-0">
+              <Link to="/">
+                <img
+                  src={Logo}
+                  className="h-8 w-auto border border-amber-950 rounded-md"
+                />
+              </Link>
+            </div>
 
-              {/* Flyout menus */}
-              <PopoverGroup className="hidden lg:ml-8 lg:block lg:self-stretch">
-                <div className="flex h-full space-x-8 ">
-                  {navigation.categories.map((category) => (
-                    <Popover key={category.name} className="flex">
-                      <div className="relative flex">
-                        <PopoverButton className="group relative flex items-center justify-center text-sm font-medium text-amber-950 transition-colors duration-200 ease-out hover:text-amber-900 data-open:text-amber-950">
-                          {category.name}
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-amber-950"
-                          />
-                        </PopoverButton>
-                      </div>
-                      <PopoverPanel
-                        transition
-                        className="absolute inset-x-0 top-full z-20 w-full bg-orange-200 border-t-1 border-amber-950 text-sm text-gray-500 transition data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
-                      >
-                        {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 top-1/2 bg-orange-200 shadow-sm"
-                        />
-                        <div className="relative bg-orange-100 border-b-1 border-amber-950">
-                          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                            <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
-                              <div className="col-start-2 grid grid-cols-2 gap-x-8">
-                                {category.featured.map((item) => (
-                                  <div
-                                    key={item.name}
-                                    className="group relative text-base sm:text-sm"
-                                  >
-                                    <img
-                                      alt={item.imageAlt}
-                                      src={item.imageSrc}
-                                      className="aspect-square w-full border-2 border-amber-950 rounded-lg bg-amber-900 object-cover group-hover:opacity-75"
-                                    />
-                                    <a
-                                      href={item.href}
-                                      className="mt-6 block font-medium text-amber-950"
-                                    >
-                                      <span
-                                        aria-hidden="true"
-                                        className="absolute inset-0 z-10"
-                                      />
-                                      {item.name}
-                                    </a>
-                                    <p
-                                      aria-hidden="true"
-                                      className="mt-1 text-amber-900"
-                                    >
-                                      Shop now
-                                    </p>
-                                  </div>
-                                ))}
+            {/* Desktop dropdown */}
+            <PopoverGroup className="hidden lg:block lg:ml-8">
+              <div className="flex h-full space-x-8">
+                {navigation.categories.map((category) => (
+                  <Popover key={category.name} className="flex">
+                    <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
+                      {category.name}
+                    </PopoverButton>
+
+                    <PopoverPanel className="absolute inset-x-0 top-full bg-orange-100 border-y border-amber-950 shadow-md">
+                      <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-2 gap-8">
+                        <div className="col-start-2 grid grid-cols-2 gap-8">
+                          {category.featured.map((item) => (
+                            <div key={item.name}>
+                              <div className="rounded-lg overflow-hidden border-2 border-amber-950">
+                                {item.imageSrc}
                               </div>
-                              <div className="row-start-1 grid grid-cols-3 gap-x-8 gap-y-10 text-sm">
-                                {category.sections.map((section) => (
-                                  <div key={section.name}>
-                                    <p
-                                      id={`${section.name}-heading`}
-                                      className="font-medium text-amber-950"
-                                    >
-                                      {section.name}
-                                    </p>
-                                    <ul
-                                      role="list"
-                                      aria-labelledby={`${section.name}-heading`}
-                                      className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
-                                    >
-                                      {section.items.map((item) => (
-                                        <li key={item.name} className="flex">
-                                          <a
-                                            href={item.href}
-                                            className=" text-amber-950 hover:text-amber-900"
-                                          >
-                                            {item.name}
-                                          </a>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                ))}
-                              </div>
+
+                              <Link
+                                to={item.href}
+                                className="block mt-4 font-medium text-amber-950"
+                              >
+                                {item.name}
+                              </Link>
                             </div>
-                          </div>
+                          ))}
                         </div>
-                      </PopoverPanel>
-                    </Popover>
-                  ))}
-                  {navigation.pages.map((page) => (
-                    <a
-                      key={page.name}
-                      href={page.href}
-                      className="flex items-center text-sm font-medium text-amber-950 hover:text-amber-900"
-                    >
-                      {page.name}
-                    </a>
-                  ))}
-                </div>
-              </PopoverGroup>
 
-              <div className="visible md:hidden lg:hidden flex-grow">
-                <SearchBar />
-              </div>
-
-              <div className="ml-auto flex items-center">
-                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {user ? (
-                    <Link to="/AccountPage">
-                      <div className="flex flex-col justify-center items-center p-1 rounded-sm text-amber-950  hover:text-amber-950/50 transition ">
-                        <CircleUserRound />
+                        <div className="grid grid-cols-3 gap-8">
+                          {category.sections.map((section) => (
+                            <div key={section.name}>
+                              <p className="font-medium text-amber-950">
+                                {section.name}
+                              </p>
+                              <ul className="mt-4 space-y-4">
+                                {section.items.map((item) => (
+                                  <li key={item.name}>
+                                    <Link
+                                      to={item.href}
+                                      className="text-amber-950 hover:text-amber-900"
+                                    >
+                                      {item.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </Link>
-                  ) : (
-                    <button
-                      className="text-sm font-medium text-amber-950 hover:text-amber-900"
-                      onClick={() => setLogin(true)}
-                    >
-                      Sign in
-                    </button>
-                  )}
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                </div>
-
-                {/* Cart */}
-                <div className="ml-4 flow-root lg:ml-6">
-                  <Link
-                    to="/Order"
-                    className="group -m-2 flex items-center p-2"
-                  >
-                    <ShoppingBagIcon
-                      aria-hidden="true"
-                      className="size-6 shrink-0 text-amber-950 group-hover:text-amber-800"
-                    />
-                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                      0
-                    </span>
-                    <span className="sr-only">items in cart, view bag</span>
-                  </Link>
-                </div>
+                    </PopoverPanel>
+                  </Popover>
+                ))}
               </div>
+            </PopoverGroup>
+
+            {/* Search (mobile only) */}
+            <div className="visible md:hidden lg:hidden flex-grow">
+              <SearchBar />
+            </div>
+
+            {/* RIGHT SIDE */}
+            <div className="ml-auto flex items-center">
+              {/* User */}
+              <div className="hidden lg:flex items-center space-x-6">
+                {user ? (
+                  <Link to="/AccountPage">
+                    <CircleUserRound className="text-amber-950" />
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => setLogin(true)}
+                    className="text-sm text-amber-950"
+                  >
+                    Sign in
+                  </button>
+                )}
+
+                <span className="h-6 w-px bg-gray-300" />
+              </div>
+
+              {/* Cart */}
+              <Link to="/Order" className="ml-4 flex items-center">
+                <ShoppingBagIcon className="size-6 text-amber-950" />
+                <span className="ml-2 text-sm text-gray-700">0</span>
+              </Link>
             </div>
           </div>
         </nav>
