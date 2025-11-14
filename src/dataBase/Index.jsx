@@ -228,7 +228,7 @@ export const products = [
     oldPrice: 220,
     newPrice: 180,
     discount: "18%",
-    category: "Accessories",
+    category: "Watch",
     NewArrivals: false,
     image:
       "https://i.pinimg.com/originals/14/32/6f/14326fd9259d826653ef8b29e8a41c23.jpg",
@@ -272,7 +272,7 @@ export const products = [
     oldPrice: 450,
     newPrice: 360,
     discount: "20%",
-    category: "Accessories",
+    category: "Watch",
     NewArrivals: true,
     image:
       "https://images.augustman.com/wp-content/uploads/sites/2/2022/10/27044039/gold-watch-for-men.jpg",
