@@ -1,5 +1,5 @@
 import { ArrowLeft, Filter } from "lucide-react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { products } from "../../dataBase/Index";
 import { useEffect, useState } from "react";
@@ -11,6 +11,30 @@ export default function ProductList() {
   const query = searchParams.get("category");
   const [data, setData] = useState(products);
 
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    let filtered = products;
+
+    // Category filter
+    if (query) {
+      if (query !== "New") {
+        filtered = filtered.filter((x) => x.category === query);
+      } else {
+        filtered = filtered.filter((x) => String(x.NewArrivals) === "true");
+      }
+    }
+
+    // Text search filter
+    if (searchText.trim() !== "") {
+      filtered = filtered.filter((x) =>
+        x.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    setData(filtered);
+  }, [query, searchText]);
+
   // const dispatch = useDispatch();
 
   // function addToBasket(item) {
@@ -18,8 +42,6 @@ export default function ProductList() {
   // }
 
   // console.log(query);
-
-  const navigate = useNavigate();
 
   const categories = ["Men", "Women", "Accessories"];
 
@@ -50,7 +72,7 @@ export default function ProductList() {
       <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 h-full border-r-2 border-amber-900 bg-orange-100 shadow-lg">
         {/* Top Section - Search + Back */}
         <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 space-y-3 pt-30">
-          <SearchBar />
+          <SearchBar value={searchText} onChange={setSearchText} />
         </div>
 
         {/* Filters */}

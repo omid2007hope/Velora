@@ -196,4 +196,4 @@ function AccountSettings() {
 
 const WrappedPaymentForm = SideBarLayOut(AccountSettings);
 
-export default WrappedPaymentForm;
+export default AccountSettings;

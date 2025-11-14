@@ -9,27 +9,19 @@ import withMenuLayout from "../Layout/Index";
 function ProductPreview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState("");
+
+  const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("black");
   const [selectedSize, setSelectedSize] = useState("S");
 
   const dispatch = useDispatch();
-
-  function addToBasket(item) {
-    dispatch(addItem(item));
-    // navigate("/Order");
-  }
-
-  useEffect(() => {
-    const found = products.find((y) => String(y.id) === String(id));
-    if (found) setProduct(found);
-  }, [id]);
 
   const colors = [
     { name: "White", value: "white", bg: "bg-gray-100" },
     { name: "Gray", value: "gray", bg: "bg-gray-400" },
     { name: "Black", value: "black", bg: "bg-black" },
   ];
+
   const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
   const reviews = [
@@ -55,6 +47,23 @@ function ProductPreview() {
       0
     ) / totalRatings;
 
+  function addToBasket(item) {
+    if (!item) return;
+    dispatch(addItem({ ...item, selectedColor, selectedSize }));
+  }
+
+  useEffect(() => {
+    const found = products.find((y) => String(y.id) === String(id));
+    setProduct(found || null);
+  }, [id]);
+
+  if (!product)
+    return (
+      <div className="min-h-screen flex justify-center items-center text-amber-950 text-lg">
+        Loading product...
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-35">
       {/* Header */}
@@ -66,6 +75,7 @@ function ProductPreview() {
           <ArrowLeft size={18} />
           Back
         </button>
+
         <h2 className="text-xl font-bold text-amber-950">Product Preview</h2>
       </div>
 
@@ -74,8 +84,8 @@ function ProductPreview() {
         {/* Left image */}
         <div className="flex justify-center items-center border-2 border-amber-950 rounded-lg shadow shadow-amber-950 bg-orange-50">
           <img
-            src={product?.image}
-            alt={product?.name || "Product"}
+            src={product.image}
+            alt={product.name}
             className="w-full rounded-lg object-cover"
           />
         </div>
@@ -84,7 +94,7 @@ function ProductPreview() {
         <div className="space-y-6 border-2 border-amber-950 rounded-lg bg-orange-50 p-6">
           <div>
             <h1 className="text-2xl font-bold text-amber-950">
-              {product?.name}
+              {product.name}
             </h1>
             <p className="mt-2 text-amber-900">
               The Basic Tee 6-Pack allows you to fully express your personality
@@ -93,10 +103,10 @@ function ProductPreview() {
             </p>
           </div>
 
-          {/* Price + review anchor */}
+          {/* Price */}
           <div className="flex items-center justify-between">
             <p className="text-2xl font-semibold text-amber-950">
-              {product?.newPrice}
+              {product.newPrice}
             </p>
             <a href="#reviews" className="text-amber-950 hover:text-amber-800">
               {totalRatings} reviews
@@ -113,7 +123,7 @@ function ProductPreview() {
                   onClick={() => setSelectedColor(color.value)}
                   className={`w-10 h-10 rounded-full border-2 ${color.bg} ${
                     selectedColor === color.value
-                      ? "border-amber-950 scale-105"
+                      ? "border-amber-950 scale-110"
                       : "border-amber-800 hover:scale-105"
                   } transition-transform`}
                 />
@@ -141,7 +151,7 @@ function ProductPreview() {
             </div>
           </div>
 
-          {/* Action buttons */}
+          {/* Buttons */}
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => addToBasket(product)}
@@ -182,7 +192,7 @@ function ProductPreview() {
           Customer Reviews
         </h2>
 
-        {/* Summary bar */}
+        {/* Summary */}
         <div className="flex flex-col lg:flex-row gap-10 mb-10">
           <div className="flex flex-col items-center justify-center lg:w-1/3">
             <div className="flex items-center gap-1 text-amber-950 text-3xl font-bold">
@@ -196,7 +206,7 @@ function ProductPreview() {
             {Object.entries(ratingCounts)
               .sort((a, b) => b[0] - a[0])
               .map(([stars, count]) => {
-                const percentage = Math.round((count / totalRatings) * 100);
+                const percent = Math.round((count / totalRatings) * 100);
                 return (
                   <div
                     key={stars}
@@ -206,10 +216,10 @@ function ProductPreview() {
                     <div className="w-full bg-orange-200 rounded-full h-3 overflow-hidden">
                       <div
                         className="h-3 bg-amber-950 rounded-full"
-                        style={{ width: `${percentage}%` }}
+                        style={{ width: `${percent}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm">{percentage}%</span>
+                    <span className="text-sm">{percent}%</span>
                   </div>
                 );
               })}
@@ -221,7 +231,7 @@ function ProductPreview() {
           {reviews.map((r, i) => (
             <div
               key={i}
-              className="bg-orange-50 border border-amber-950 rounded-lg p-5 shadow-sm"
+              className="bg-orange-50 border border-amber-950 rounded-lg p-5"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold text-amber-950">{r.name}</h4>
@@ -230,11 +240,11 @@ function ProductPreview() {
                     <Star
                       key={j}
                       size={16}
-                      className={`${
+                      className={
                         j < r.rating
                           ? "fill-amber-500 text-amber-500"
                           : "text-amber-300"
-                      }`}
+                      }
                     />
                   ))}
                 </div>
@@ -248,5 +258,8 @@ function ProductPreview() {
   );
 }
 
-const WrappedProductListPage = withMenuLayout(ProductPreview);
-export default WrappedProductListPage;
+// Wrap with menu layout
+const WrappedProductPreview = withMenuLayout(ProductPreview);
+
+// Export the wrapped version
+export default WrappedProductPreview;
