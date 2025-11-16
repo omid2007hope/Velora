@@ -101,6 +101,7 @@ export default function ProductList() {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 h-full overflow-y-auto pt-25">
+        {/* Search (mobile only) */}
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 py-8">
           {/* Back Button */}
           <div className="flex items-center justify-between mb-6">
@@ -110,6 +111,9 @@ export default function ProductList() {
             >
               <ArrowLeft /> Back
             </Link>
+            <div className="visible md:hidden lg:hidden flex-grow">
+              <SearchBar value={searchText} onChange={setSearchText} />
+            </div>
           </div>
 
           {/* PRODUCTS */}

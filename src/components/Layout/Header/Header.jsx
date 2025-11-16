@@ -319,11 +319,6 @@ export default function Header() {
               </div>
             </PopoverGroup>
 
-            {/* Search (mobile only) */}
-            <div className="visible md:hidden lg:hidden flex-grow">
-              <SearchBar />
-            </div>
-
             {/* RIGHT SIDE */}
             <div className="ml-auto flex items-center">
               {/* User (desktop) */}
