@@ -1,5 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState, useEffect } from "react";
+import GoogleSignIn from "./GoogleSignIn";
 
 export default function SignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
@@ -36,6 +37,45 @@ export default function SignupPopup({ open, setOpen }) {
     setOpen(false);
 
     // Automatically open login popup
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("open-login-popup"));
+    }, 200);
+  }
+
+  function handleGoogleSignup(token) {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const fullName = payload.name;
+    const email = payload.email;
+    const picture = payload.picture;
+
+    let db = JSON.parse(localStorage.getItem("savedUser")) || [];
+
+    const exists = db.find((u) => u.email === email);
+
+    // If already registered → show login popup instead
+    if (exists) {
+      setOpen(false);
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent("open-login-popup"));
+      }, 200);
+      return;
+    }
+
+    const newUser = {
+      fullName,
+      email,
+      password: null,
+      picture,
+      google: true,
+    };
+
+    db.push(newUser);
+    localStorage.setItem("savedUser", JSON.stringify(db));
+
+    setOpen(false);
+
+    // After signup, automatically open login popup
     setTimeout(() => {
       document.dispatchEvent(new CustomEvent("open-login-popup"));
     }, 200);
@@ -91,6 +131,7 @@ export default function SignupPopup({ open, setOpen }) {
           >
             Sign up
           </button>
+          <GoogleSignIn onLogin={handleGoogleSignup} />
         </DialogPanel>
       </div>
     </Dialog>

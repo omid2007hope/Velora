@@ -2,6 +2,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import SignupPopup from "./Register";
 import { useNavigate } from "react-router-dom";
+import GoogleSignIn from "./GoogleSignIn";
 
 export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
@@ -32,6 +33,40 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     // Close Login → Open Signup
     setOpen(false);
     setTimeout(() => setOpenSignup(true), 250);
+  }
+
+  function handleGoogleLogin(googleToken) {
+    const payload = JSON.parse(atob(googleToken.split(".")[1]));
+
+    const email = payload.email;
+    const fullName = payload.name;
+    const picture = payload.picture;
+
+    let saved = JSON.parse(localStorage.getItem("savedUser")) || [];
+
+    // check if user exists
+    let user = saved.find((u) => u.email === email);
+
+    // if not → create new user
+    if (!user) {
+      user = {
+        fullName,
+        email,
+        password: null,
+        picture,
+        google: true,
+      };
+
+      saved = [...saved, user];
+      localStorage.setItem("savedUser", JSON.stringify(saved));
+    }
+
+    // log in the user
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
+
+    setOpen(false);
+    navigate("/AccountPage");
   }
 
   return (
@@ -74,6 +109,8 @@ export default function LoginPopup({ open, setOpen, setUser }) {
             >
               Sign in
             </button>
+
+            <GoogleSignIn onLogin={handleGoogleLogin} />
 
             <p className="mt-4 text-center text-sm text-amber-900">
               Not a member?{" "}
