@@ -13,11 +13,20 @@ export default function SignupPopup({ open, setOpen }) {
   );
 
   function Signup() {
-    if (
-      !fullName.trim() ||
-      !email.trim() ||
-      password.trim() !== confirmPass.trim()
-    ) {
+    if (!fullName.trim()) {
+      alert("Please enter your full name");
+      return;
+    }
+    if (fullName.trim() && !email.trim()) {
+      alert("Please enter your email");
+      return;
+    }
+    if (email.trim() && !password.trim()) {
+      alert("Please enter your password");
+      return;
+    }
+    if (password.trim() && !confirmPass.trim()) {
+      alert("Please confirm you password");
       return;
     }
 

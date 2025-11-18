@@ -12,6 +12,15 @@ export default function LoginPopup({ open, setOpen, setUser }) {
   const navigate = useNavigate();
 
   function Login() {
+    if (!email.trim()) {
+      alert("Please enter your email");
+      return;
+    }
+    if (!password.trim() && email.trim()) {
+      alert("Please enter your password");
+      return;
+    }
+
     const saved = JSON.parse(localStorage.getItem("savedUser")) || [];
 
     const match = saved.find(
@@ -73,7 +82,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     <>
       <SignupPopup open={openSignup} setOpen={setOpenSignup} />
 
-      <Dialog open={open} onClose={setOpen} className="relative z-50">
+      <Dialog open={open} onClose={() => {}} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
