@@ -33,66 +33,66 @@ export default function Checkout({ product, setStep }) {
 
           <form className="space-y-4 flex-1">
             <input
-              value={loadUser.email || ""}
+              readOnly={!!loadUser.email}
+              defaultValue={loadUser.email || ""}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Email"
-              readOnly
             />
 
             <input
-              value={loadUser.fullName || ""}
+              readOnly={!!loadUser.fullName}
+              defaultValue={loadUser.fullName || ""}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Name on card"
-              readOnly
             />
 
             <input
-              value={loadPayment.cardNumber || ""}
+              readOnly={!!loadPayment.cardNumber}
+              defaultValue={loadPayment.cardNumber || ""}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Card number"
-              readOnly
             />
 
             <div className="grid grid-cols-2 gap-3">
               <input
-                value={loadPayment.expiry || ""}
+                readOnly={!!loadPayment.expiry}
+                defaultValue={loadPayment.expiry || ""}
                 className="border border-amber-950 p-2 rounded-md bg-orange-50"
                 placeholder="MM/YY"
-                readOnly
               />
               <input
-                value={loadPayment.cvv || ""}
+                readOnly={!!loadPayment.cvv}
+                defaultValue={loadPayment.cvv || ""}
                 className="border border-amber-950 p-2 rounded-md bg-orange-50"
                 placeholder="CVV"
-                readOnly
               />
             </div>
 
             <input
-              value={loadAddress.street || ""}
+              readOnly={!!loadAddress.street}
+              defaultValue={loadAddress.street || ""}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Address"
-              readOnly
             />
 
             <div className="grid grid-cols-3 gap-3">
               <input
-                value={loadAddress.country || ""}
+                readOnly={!!loadAddress.country}
+                defaultValue={loadAddress.country || ""}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="Country"
-                readOnly
               />
               <input
-                value={loadAddress.city || ""}
+                readOnly={!!loadAddress.city}
+                defaultValue={loadAddress.city || ""}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="City"
-                readOnly
               />
               <input
-                value={loadAddress.postal || ""}
+                readOnly={!!loadAddress.postal}
+                defaultValue={loadAddress.postal || ""}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="Postal Code"
-                readOnly
               />
             </div>
           </form>

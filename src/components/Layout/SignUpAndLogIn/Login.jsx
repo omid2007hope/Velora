@@ -27,7 +27,10 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       (x) => x.email === email.trim() && x.password === password.trim()
     );
 
-    if (!match) return;
+    if (!match) {
+      alert("Incorrect password or email");
+      return;
+    }
 
     localStorage.setItem("user", JSON.stringify(match));
     setUser(match);
