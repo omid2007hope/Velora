@@ -94,8 +94,15 @@ export default function SignupPopup({ open, setOpen }) {
     localStorage.setItem("savedUser", JSON.stringify(db));
   }, [db]);
 
+  function goBack() {
+    setOpen(false);
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("open-login-popup"));
+    }, 200);
+  }
+
   return (
-    <Dialog open={open} onClose={setOpen} className="relative z-50">
+    <Dialog open={open} onClose={() => {}} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -140,7 +147,15 @@ export default function SignupPopup({ open, setOpen }) {
           >
             Sign up
           </button>
+
           <GoogleSignIn onLogin={handleGoogleSignup} />
+
+          <button
+            onClick={goBack}
+            className="w-full mt-6 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
+          >
+            Back
+          </button>
         </DialogPanel>
       </div>
     </Dialog>

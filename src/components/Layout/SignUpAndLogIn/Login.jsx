@@ -1,5 +1,5 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SignupPopup from "./Register";
 import { useNavigate } from "react-router-dom";
 import GoogleSignIn from "./GoogleSignIn";
@@ -77,6 +77,15 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     setOpen(false);
     navigate("/AccountPage");
   }
+
+  useEffect(() => {
+    function openLogin() {
+      setOpen(true);
+    }
+
+    document.addEventListener("open-login-popup", openLogin);
+    return () => document.removeEventListener("open-login-popup", openLogin);
+  }, []);
 
   return (
     <>
