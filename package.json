@@ -12,11 +12,15 @@
   "dependencies": {
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
+    "@reduxjs/toolkit": "^2.10.1",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.12.2",
+    "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.8.2",
+    "rsuite": "^5.83.4",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {

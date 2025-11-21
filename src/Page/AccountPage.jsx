@@ -1,4 +1,4 @@
-import Account from "../components/Layout/Account";
+import Account from "../components/Layout/AccountPages/Account";
 
 function AccountPage() {
   return (
