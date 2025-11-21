@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import * as ProductApi from "../../API/Product";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../Redux/basketRender";
+import withMenuLayout from "../Layout/Index";
 
 function ProductPreview() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+  const [selectedColor, setSelectedColor] = useState("black");
+  const [selectedSize, setSelectedSize] = useState("S");
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const colors = [
+    { name: "White", value: "white", bg: "bg-gray-100" },
+    { name: "Gray", value: "gray", bg: "bg-gray-400" },
+    { name: "Black", value: "black", bg: "bg-black" },
+  ];
+
+  const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
   const getProductById = async () => {
     try {
@@ -29,19 +46,6 @@ function ProductPreview() {
     getProductById();
   }, [id]);
 
-  const [selectedColor, setSelectedColor] = useState("black");
-  const [selectedSize, setSelectedSize] = useState("S");
-
-  const dispatch = useDispatch();
-
-  const colors = [
-    { name: "White", value: "white", bg: "bg-gray-100" },
-    { name: "Gray", value: "gray", bg: "bg-gray-400" },
-    { name: "Black", value: "black", bg: "bg-black" },
-  ];
-
-  const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
-
   if (loading) {
     return (
       <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10">
@@ -56,6 +60,8 @@ function ProductPreview() {
         <p className="text-red-700">{errorMsg || "Product not found."}</p>
       </div>
     );
+  }
+
   const reviews = [
     { name: "John Doe", rating: 5, comment: "Perfect fit and quality." },
     {
@@ -84,10 +90,10 @@ function ProductPreview() {
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
   }
 
-  useEffect(() => {
-    const found = products.find((y) => String(y.id) === String(id));
-    setProduct(found || null);
-  }, [id]);
+  // useEffect(() => {
+  //   const found = products.find((y) => String(y.id) === String(id));
+  //   setProduct(found || null);
+  // }, [id]);
 
   if (!product)
     return (
@@ -103,7 +109,7 @@ function ProductPreview() {
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
 
     // Then go to checkout
-    navigate("/Order"); // or /Checkout depending on your routing
+    Navigate("/Order"); // or /Checkout depending on your routing
   }
 
   return (
