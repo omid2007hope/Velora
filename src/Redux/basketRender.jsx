@@ -11,10 +11,9 @@ const basketRender = createSlice({
 
       // Check if same item already exists (including color + size)
       const existing = state.find(
-        (x) =>
-          x.id === item.id &&
-          x.selectedColor === item.selectedColor &&
-          x.selectedSize === item.selectedSize
+        (x) => x.id === item.id
+        // &&x.selectedColor === item.selectedColor &&
+        // x.selectedSize === item.selectedSize
       );
 
       if (existing) {
