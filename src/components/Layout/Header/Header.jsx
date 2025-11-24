@@ -27,7 +27,6 @@ import { CircleUserRound } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import LoginPopup from "../SignUpAndLogIn/Login";
-import SearchBar from "../../ProductList/SearchBar";
 import WomanPhoto from "./WomanPhoto";
 import MenPhoto from "./MenPhoto";
 import Logo from "../../../assets/Images/Logo.png";
