@@ -130,6 +130,12 @@ export default function LoginPopup({ open, setOpen, setUser }) {
             >
               Sign in
             </button>
+            <button
+              onClick={() => setOpen(false)}
+              className="w-full mt-4 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
+            >
+              Back
+            </button>
 
             <GoogleSignIn onLogin={handleGoogleLogin} />
 

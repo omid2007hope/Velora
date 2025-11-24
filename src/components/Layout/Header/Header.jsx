@@ -82,11 +82,11 @@ const navigation = {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const loadUser = JSON.parse(localStorage.getItem("user"));
+  // const loadUser = JSON.parse(localStorage.getItem("user"));
 
-  const openLoginForm = !loadUser ? true : false;
+  // const openLoginForm = !loadUser ? true : false;
 
-  const [login, setLogin] = useState(openLoginForm || false);
+  const [login, setLogin] = useState(false);
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));

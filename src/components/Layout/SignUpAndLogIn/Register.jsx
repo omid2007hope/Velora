@@ -148,14 +148,13 @@ export default function SignupPopup({ open, setOpen }) {
             Sign up
           </button>
 
-          <GoogleSignIn onLogin={handleGoogleSignup} />
-
           <button
             onClick={goBack}
-            className="w-full mt-6 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
+            className="w-full mt-4 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
           >
             Back
           </button>
+          <GoogleSignIn onLogin={handleGoogleSignup} />
         </DialogPanel>
       </div>
     </Dialog>
