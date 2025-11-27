@@ -31,53 +31,55 @@ import WomanPhoto from "./WomanPhoto";
 import MenPhoto from "./MenPhoto";
 import Logo from "../../../assets/Images/Logo.png";
 
-const navigation = {
-  categories: [
-    {
-      id: "women",
-      name: "Women",
-      featured: [
-        {
-          name: "Woman",
-          imageSrc: <WomanPhoto />,
-          imageAlt: "Women collection",
-          href: "/ProductListPage?category=Women",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Browse All", href: "/ProductListPage?category=Women" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "men",
-      name: "Men",
-      featured: [
-        {
-          name: "Men",
-          imageSrc: <MenPhoto />,
-          imageAlt: "Men collection",
-          href: "/ProductListPage?category=Men",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Browse All", href: "/ProductListPage?category=Men" },
-          ],
-        },
-      ],
-    },
-  ],
-  pages: [],
-};
+import * as categoryAPI from "../../../API/Category";
+
+// const navigation = {
+//   categories: [
+//     {
+//       id: "women",
+//       name: "Women",
+//       featured: [
+//         {
+//           name: "Woman",
+//           imageSrc: <WomanPhoto />,
+//           imageAlt: "Women collection",
+//           href: "/ProductListPage?category=Women",
+//         },
+//       ],
+//       sections: [
+//         {
+//           id: "clothing",
+//           name: "Clothing",
+//           items: [
+//             { name: "Browse All", href: "/ProductListPage?category=Women" },
+//           ],
+//         },
+//       ],
+//     },
+//     {
+//       id: "men",
+//       name: "Men",
+//       featured: [
+//         {
+//           name: "Men",
+//           imageSrc: <MenPhoto />,
+//           imageAlt: "Men collection",
+//           href: "/ProductListPage?category=Men",
+//         },
+//       ],
+//       sections: [
+//         {
+//           id: "clothing",
+//           name: "Clothing",
+//           items: [
+//             { name: "Browse All", href: "/ProductListPage?category=Men" },
+//           ],
+//         },
+//       ],
+//     },
+//   ],
+//   pages: [],
+// };
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -86,13 +88,10 @@ export default function Header() {
   const openLoginForm = !loadUser ? true : false;
 
   const [login, setLogin] = useState(openLoginForm || false);
-  const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("user"));
-    } catch {
-      return null;
-    }
-  });
+
+  const [user, setUser] = useState(loadUser ? loadUser : null);
+
+  const [category, setCategory] = useState([]);
 
   const cartItems = useSelector((state) => state.list) || [];
 
@@ -129,6 +128,23 @@ export default function Header() {
       window.removeEventListener("storage", updateUser);
       window.removeEventListener("user-updated", updateUser);
     };
+  }, []);
+
+  const getAllCategory = async () => {
+    try {
+      const { data, status } = await categoryAPI.GetAllCategoryTree();
+
+      if (status !== 200) return;
+
+      setCategory(data.data);
+
+      // console.log(data.data, status);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getAllCategory();
   }, []);
 
   return (
@@ -176,65 +192,71 @@ export default function Header() {
             {/* Mobile navigation */}
             <TabGroup className="mt-2">
               <TabList className="flex space-x-8 px-4 border-b border-amber-950">
-                {navigation.categories.map((category) => (
+                {category.map((cat) => (
                   <Tab
-                    key={category.name}
+                    key={cat.id}
                     className="flex-1 px-1 py-4 text-base text-amber-950 border-b-2 border-transparent data-selected:border-amber-950"
                   >
-                    {category.name}
+                    {cat.name}
                   </Tab>
                 ))}
               </TabList>
 
-              <TabPanels>
-                {navigation.categories.map((category) => (
-                  <TabPanel
-                    key={category.name}
-                    className="px-4 pt-10 pb-8 space-y-10"
-                  >
-                    {/* Featured */}
-                    <div className="grid grid-cols-1 gap-6">
-                      {category.featured.map((item) => (
-                        <div key={item.name} className="group relative">
-                          <div className="aspect-square w-full rounded-lg border-2 border-amber-950 overflow-hidden">
-                            {item.imageSrc}
-                          </div>
+              {!category || !category.length ? (
+                ""
+              ) : (
+                <TabPanels>
+                  {category.map((cat) => (
+                    <TabPanel
+                      key={cat.name}
+                      className="px-4 pt-10 pb-8 space-y-10"
+                    >
+                      {/* Featured */}
+                      <div className="grid grid-cols-1 gap-6">
+                        {!cat.child || !cat.child.length
+                          ? ""
+                          : cat.child.map((item) => (
+                              <div key={item.name} className="group relative">
+                                <div className="aspect-square w-full rounded-lg border-2 border-amber-950 overflow-hidden">
+                                  {item.imageSrc}
+                                </div>
 
-                          <Link
-                            to={item.href}
-                            className="block mt-4 font-medium text-amber-950"
-                            onClick={() => setOpen(false)}
-                          >
-                            {item.name}
-                          </Link>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Sections */}
-                    {category.sections.map((section) => (
-                      <div key={section.name}>
-                        <p className="font-medium text-amber-950">
-                          {section.name}
-                        </p>
-                        <ul className="mt-6 space-y-4">
-                          {section.items.map((item) => (
-                            <li key={item.name}>
-                              <Link
-                                to={item.href}
-                                className="text-amber-900"
-                                onClick={() => setOpen(false)}
-                              >
-                                {item.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                                <Link
+                                  to={item.href}
+                                  className="block mt-4 font-medium text-amber-950"
+                                  onClick={() => setOpen(false)}
+                                >
+                                  {item.name}
+                                </Link>
+                              </div>
+                            ))}
                       </div>
-                    ))}
-                  </TabPanel>
-                ))}
-              </TabPanels>
+                      {/* {!cat.child || !cat.child.length ? (
+                        ""
+                      ) : (
+                        <div key={section.id}>
+                          <p className="font-medium text-amber-950">
+                            {section.name}
+                          </p>
+                          <ul className="mt-6 space-y-4">
+                            {section.child.map((item) => (
+                              <li key={item.name}>
+                                <Link
+                                  to={item.href}
+                                  className="text-amber-900"
+                                  onClick={() => setOpen(false)}
+                                >
+                                  {item.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )} */}
+                    </TabPanel>
+                  ))}
+                </TabPanels>
+              )}
             </TabGroup>
           </DialogPanel>
         </div>
@@ -267,59 +289,72 @@ export default function Header() {
               </Link>
             </div>
 
+            {useEffect(() => {
+              console.log(category);
+            }, [category])}
+
             {/* Desktop dropdown */}
             <PopoverGroup className="hidden lg:block lg:ml-8">
-              <div className="flex h-full space-x-8">
-                {navigation.categories.map((category) => (
-                  <Popover key={category.name} className="flex">
-                    <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
-                      {category.name}
-                    </PopoverButton>
+              {!category || !category.length ? (
+                ""
+              ) : (
+                <div className="flex h-full space-x-8">
+                  {category.map((cat) => (
+                    <Popover key={cat.name} className="flex">
+                      <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
+                        {cat.name}
+                      </PopoverButton>
 
-                    <PopoverPanel className="absolute left-0 right-0 top-full bg-orange-100 border-y border-amber-950 shadow-md z-40">
-                      <div className="w-full px-8 py-10 grid grid-cols-4 gap-10">
-                        {/* Featured Column */}
-                        {category.featured.map((item) => (
-                          <div key={item.name} className="space-y-3 col-span-1">
-                            <div className="rounded-lg overflow-hidden border-2 border-amber-950">
-                              {item.imageSrc}
-                            </div>
-                            <Link
-                              to={item.href}
-                              className="ml-1 font-medium text-amber-950 hover:text-amber-800 block"
-                            >
-                              {item.name}
-                            </Link>
-                          </div>
-                        ))}
-
-                        {/* Sections */}
-                        <div className="col-span-3 grid grid-cols-3 gap-10">
-                          {category.sections.map((section) => (
-                            <div key={section.name}>
-                              <p className="font-medium text-amber-950">
-                                {section.name}
-                              </p>
-                              <ul className="mt-4 space-y-4">
-                                {section.items.map((item) => (
-                                  <li key={item.name}>
+                      <PopoverPanel className="absolute left-0 right-0 top-full bg-orange-100 border-y border-amber-950 shadow-md z-40">
+                        <div className="w-full px-8 py-10 grid grid-cols-4 gap-10">
+                          {!cat.child || !cat.child.length
+                            ? ""
+                            : cat.child.map((item) => (
+                                <>
+                                  <div
+                                    key={item.id}
+                                    className="space-y-3 col-span-1"
+                                  >
+                                    <div className="rounded-lg overflow-hidden border-2 border-amber-950">
+                                      <WomanPhoto images={cat.images} />
+                                    </div>
                                     <Link
                                       to={item.href}
-                                      className="text-amber-950 hover:text-amber-800"
+                                      className="ml-1 font-medium text-amber-950 hover:text-amber-800 block"
                                     >
                                       {item.name}
                                     </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
+                                  </div>
+
+                                  <div className="col-span-3 grid grid-cols-3 gap-10">
+                                    {item.child.map((section) => (
+                                      <div key={section.id}>
+                                        <p className="font-medium text-amber-950">
+                                          {section.name}
+                                        </p>
+                                        {/* <ul className="mt-4 space-y-4">
+                                          {section.items.map((item) => (
+                                            <li key={item.name}>
+                                              <Link
+                                                to={item.href}
+                                                className="text-amber-950 hover:text-amber-800"
+                                              >
+                                                {item.name}
+                                              </Link>
+                                            </li>
+                                          ))}
+                                        </ul> */}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              ))}
                         </div>
-                      </div>
-                    </PopoverPanel>
-                  </Popover>
-                ))}
-              </div>
+                      </PopoverPanel>
+                    </Popover>
+                  ))}
+                </div>
+              )}
             </PopoverGroup>
 
             {/* RIGHT SIDE */}

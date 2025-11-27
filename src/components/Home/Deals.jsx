@@ -19,7 +19,7 @@ export default function Deals() {
   };
 
   useEffect(() => {
-    getProduct();
+    // getProduct();
   }, []);
 
   function shopNow(item) {
