@@ -277,7 +277,6 @@ export default function Header() {
             >
               <Bars3Icon className="size-6" />
             </button>
-
             {/* Logo */}
             <div className="hidden sm:block ml-4 lg:ml-0">
               <Link to="/">
@@ -288,67 +287,63 @@ export default function Header() {
                 />
               </Link>
             </div>
-
             {useEffect(() => {
               console.log(category);
             }, [category])}
-
-            {/* Desktop dropdown */}
+            /* Desktop dropdown */
             <PopoverGroup className="hidden lg:block lg:ml-8">
-              {!category || !category.length ? (
-                ""
-              ) : (
+              {/* Only render when categories exist */}
+              {category?.length > 0 && (
                 <div className="flex h-full space-x-8">
                   {category.map((cat) => (
                     <Popover key={cat.name} className="flex">
+                      {/* Category button */}
                       <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
                         {cat.name}
                       </PopoverButton>
 
-                      <PopoverPanel className="absolute left-0 right-0 top-full bg-orange-100 border-y border-amber-950 shadow-md z-40">
-                        <div className="w-full px-8 py-10 grid grid-cols-4 gap-10">
-                          {!cat.child || !cat.child.length
-                            ? ""
-                            : cat.child.map((item) => (
-                                <>
-                                  <div
-                                    key={item.id}
-                                    className="space-y-3 col-span-1"
-                                  >
-                                    <div className="rounded-lg overflow-hidden border-2 border-amber-950">
-                                      <WomanPhoto images={cat.images} />
-                                    </div>
-                                    <Link
-                                      to={item.href}
-                                      className="ml-1 font-medium text-amber-950 hover:text-amber-800 block"
-                                    >
-                                      {item.name}
-                                    </Link>
-                                  </div>
+                      {/* Dropdown panel for the category */}
+                      <PopoverPanel className="absolute left-0 right-0 top-full w-full bg-orange-100 border-y border-amber-950 shadow-md z-40 ">
+                        <div className="w-full px-10 py-10 gap-10 flex flex-row justify-between items-center">
+                          {/* Main grid: iterate over direct children of the category */}
+                          <ul className="w-full h-full flex flex-row items-center justify-between">
+                            {cat.child?.map((child) => (
+                              <li
+                                key={child.id}
+                                className="space-y-3 w-full h-full flex flex-row items-start justify-between"
+                              >
+                                {/* Left: image area */}
+                                <div className="w-1/2 h-full rounded-lg overflow-hidden border-2 border-amber-950">
+                                  <WomanPhoto images={cat.images} />
+                                </div>
 
-                                  <div className="col-span-3 grid grid-cols-3 gap-10">
-                                    {item.child.map((section) => (
-                                      <div key={section.id}>
-                                        <p className="font-medium text-amber-950">
+                                {/* Right: child link and its sections */}
+                                <div className="w-1/2 ml-5 h-full flex flex-col justify-start items-center">
+                                  {/* Child link */}
+                                  <Link
+                                    to={child.href}
+                                    className="font-medium mb-2.5 text-amber-950 hover:text-amber-800 block w-full h-full flex-row justify-center items-center"
+                                  >
+                                    {child.name}
+                                  </Link>
+
+                                  {/* Sections under the child */}
+                                  <ul className="space-y-2 w-full h-full flex-row justify-center items-center ">
+                                    {child.child?.map((section) => (
+                                      <li
+                                        key={section.id}
+                                        className="text-amber-950 hover:text-amber-80"
+                                      >
+                                        <p className="text-md text-amber-950/50 ">
                                           {section.name}
                                         </p>
-                                        {/* <ul className="mt-4 space-y-4">
-                                          {section.items.map((item) => (
-                                            <li key={item.name}>
-                                              <Link
-                                                to={item.href}
-                                                className="text-amber-950 hover:text-amber-800"
-                                              >
-                                                {item.name}
-                                              </Link>
-                                            </li>
-                                          ))}
-                                        </ul> */}
-                                      </div>
+                                      </li>
                                     ))}
-                                  </div>
-                                </>
-                              ))}
+                                  </ul>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </PopoverPanel>
                     </Popover>
@@ -356,7 +351,6 @@ export default function Header() {
                 </div>
               )}
             </PopoverGroup>
-
             {/* RIGHT SIDE */}
             <div className="ml-auto flex items-center">
               {/* User (desktop) */}
