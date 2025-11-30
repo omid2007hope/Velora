@@ -8,23 +8,22 @@ export default function Preview() {
   const categories = [
     {
       name: "New Arrivals",
-      img: New, // model wearing trendy clothes
+      img: New,
       id: "New",
-      new: true,
     },
     {
       name: "Accessories",
-      img: Accessories, // watch + bracelet
+      img: Accessories,
       id: "Accessories",
     },
     {
-      name: "Men’s Collection",
-      img: Men, // men’s outfit
+      name: "Men's Collection",
+      img: Men,
       id: "Men",
     },
     {
-      name: "Women’s Collection",
-      img: Women, // women’s fashion
+      name: "Women's Collection",
+      img: Women,
       id: "Women",
     },
   ];
@@ -38,7 +37,7 @@ export default function Preview() {
             <div className="grid grid-cols-2 gap-6">
               {categories.slice(0, 2).map((cat) => (
                 <Link
-                  to={`/ProductListPage?category=${cat.id}`}
+                  to={`/products?category=${cat.id}`}
                   key={cat.name}
                   className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
                 >
@@ -60,7 +59,7 @@ export default function Preview() {
 
             {/* Wide Card */}
             <Link
-              to={`/ProductListPage?category=${categories[2].id}`}
+              to={`/products?category=${categories[2].id}`}
               key={categories[2].name}
               className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
             >
@@ -81,9 +80,9 @@ export default function Preview() {
             </Link>
           </div>
 
-          {/* Right Column → Tall Card */}
+          {/* Right Column + Tall Card */}
           <Link
-            to={`/ProductListPage?category=${categories[3].id}`}
+            to={`/products?category=${categories[3].id}`}
             key={categories[3].name}
             className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-72 sm:h-[500px] lg:h-full"
           >

@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { removeItem } from "../../Redux/basketRender";
+import { removeItem, updateQuantity } from "../../store/basketSlice";
 
 export default function ShoppingCart({ setStep, setProduct }) {
   const dispatch = useDispatch();
-  const loadItems = useSelector((state) => state.list) || [];
+  const loadItems = useSelector((state) => state.basket) || [];
 
   const subtotal = loadItems.reduce(
     (sum, item) => sum + item.newPrice * (item.quantity || 1),
@@ -21,15 +21,19 @@ export default function ShoppingCart({ setStep, setProduct }) {
     setStep(2);
   };
 
-  const updateQuantity = (id, quantity) => {
-    dispatch({
-      type: "basket/updateQuantity",
-      payload: { id, quantity: Number(quantity) },
-    });
+  const handleQuantityChange = (item, quantity) => {
+    dispatch(
+      updateQuantity({
+        id: item.id,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+        quantity,
+      })
+    );
   };
 
   return (
-    <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8 pt-28">
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10 w-full">
         <div className="lg:col-span-7 flex flex-col">
           <h1 className="text-2xl font-bold text-amber-950 border-b-2 border-amber-900 pb-3 mb-6">
@@ -58,13 +62,15 @@ export default function ShoppingCart({ setStep, setProduct }) {
                           {item.name}
                         </h3>
                         <p className="text-sm text-amber-900">
-                          {item.color} {item.size && `| ${item.size}`}
+                          {item.selectedColor && item.selectedSize
+                            ? `${item.selectedColor} | ${item.selectedSize}`
+                            : "Selected options"}
                         </p>
                         <p className="text-xs mt-2 text-green-700">In stock</p>
                       </div>
 
                       <p className="text-sm font-bold text-amber-950">
-                        ${item.newPrice.toFixed(2)}
+                        ${Number(item.newPrice).toFixed(2)}
                       </p>
                     </div>
 
@@ -72,7 +78,7 @@ export default function ShoppingCart({ setStep, setProduct }) {
                       <select
                         value={item.quantity || 1}
                         onChange={(e) =>
-                          updateQuantity(item.id, e.target.value)
+                          handleQuantityChange(item, e.target.value)
                         }
                         className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm"
                       >
@@ -84,7 +90,15 @@ export default function ShoppingCart({ setStep, setProduct }) {
                       </select>
 
                       <button
-                        onClick={() => dispatch(removeItem(item.id))}
+                        onClick={() =>
+                          dispatch(
+                            removeItem({
+                              id: item.id,
+                              selectedColor: item.selectedColor,
+                              selectedSize: item.selectedSize,
+                            })
+                          )
+                        }
                         className="text-sm text-red-700 hover:text-red-900 font-medium"
                       >
                         Remove

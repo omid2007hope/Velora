@@ -1,25 +1,24 @@
 import { ArrowLeft, Filter } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { products } from "../../dataBase/Index";
-import { useEffect, useState } from "react";
+import { products } from "../../utils/products";
+import { useEffect, useMemo, useState } from "react";
 
 export default function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("category");
 
-  const [data, setData] = useState(products);
   const [searchText, setSearchText] = useState("");
 
-  const categories = ["Men", "Women", "Accessories"];
+  const categories = ["Men", "Women", "Accessories", "Watch"];
 
   const quickLinks = [
-    { name: "New Arrivals", path: "/new" },
-    { name: "Best Sellers", path: "/bestsellers" },
-    { name: "On Sale", path: "/sale" },
+    { name: "All Products", path: "/products" },
+    { name: "New Arrivals", path: "/products?category=New" },
+    { name: "Accessories", path: "/products?category=Accessories" },
   ];
 
-  useEffect(() => {
+  const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
     // Category filter
@@ -38,13 +37,13 @@ export default function ProductList() {
       );
     }
 
-    setData(filtered);
+    return filtered;
   }, [query, searchText]);
 
   return (
-    <div className="flex flex-col md:flex-row w-screen h-screen bg-orange-50 overflow-hidden">
+    <div className="flex flex-col md:flex-row w-full min-h-screen bg-orange-50 overflow-hidden pt-24">
       {/* SIDEBAR */}
-      <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 h-full border-r-2 border-amber-900 bg-orange-100 shadow-lg">
+      <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 min-h-[calc(100vh-96px)] border-r-2 border-amber-900 bg-orange-100 shadow-lg">
         {/* SEARCH */}
         <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 pt-30">
           <SearchBar value={searchText} onChange={setSearchText} />
@@ -59,6 +58,14 @@ export default function ProductList() {
             </h3>
 
             <ul className="space-y-2 text-amber-900">
+              <li
+                className={`cursor-pointer hover:text-amber-950 transition ${
+                  !query ? "text-amber-800 font-bold" : ""
+                }`}
+                onClick={() => setSearchParams({})}
+              >
+                All
+              </li>
               {categories.map((cat) => (
                 <li
                   key={cat}
@@ -100,7 +107,7 @@ export default function ProductList() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 h-full overflow-y-auto pt-25">
+      <main className="flex-1 h-full overflow-y-auto">
         {/* Search (mobile only) */}
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 py-8">
           {/* Back Button */}
@@ -118,12 +125,12 @@ export default function ProductList() {
 
           {/* PRODUCTS */}
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {data.map((item) => (
+            {filteredProducts.map((item) => (
               <div
                 key={item.id}
                 className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 overflow-hidden"
               >
-                <Link to={`/product/${item.id}`}>
+                <Link to={`/products/${item.id}`}>
                   <div className="relative">
                     <img
                       src={item.image}
@@ -144,14 +151,14 @@ export default function ProductList() {
 
                   <div className="mt-2 flex items-center space-x-3">
                     <span className="text-lg font-bold text-amber-950">
-                      {item.newPrice}
+                      ${item.newPrice}
                     </span>
                     <span className="text-sm text-amber-800 line-through">
-                      {item.oldPrice}
+                      ${item.oldPrice}
                     </span>
                   </div>
 
-                  <Link to={`/product/${item.id}`}>
+                  <Link to={`/products/${item.id}`}>
                     <button className="mt-4 w-full rounded-lg bg-amber-950 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-800 transition">
                       Shop Now
                     </button>

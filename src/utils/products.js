@@ -278,3 +278,5 @@ export const products = [
       "https://images.augustman.com/wp-content/uploads/sites/2/2022/10/27044039/gold-watch-for-men.jpg",
   },
 ];
+
+export default products;

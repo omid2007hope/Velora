@@ -27,7 +27,6 @@ import { CircleUserRound } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import LoginPopup from "../SignUpAndLogIn/Login";
-import SearchBar from "../../ProductList/SearchBar";
 import WomanPhoto from "./WomanPhoto";
 import MenPhoto from "./MenPhoto";
 import Logo from "../../../assets/Images/Logo.png";
@@ -42,7 +41,7 @@ const navigation = {
           name: "Woman",
           imageSrc: <WomanPhoto />,
           imageAlt: "Women collection",
-          href: "/ProductListPage?category=Women",
+          href: "/products?category=Women",
         },
       ],
       sections: [
@@ -50,7 +49,7 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Browse All", href: "/ProductListPage?category=Women" },
+            { name: "Browse All", href: "/products?category=Women" },
           ],
         },
       ],
@@ -63,7 +62,7 @@ const navigation = {
           name: "Men",
           imageSrc: <MenPhoto />,
           imageAlt: "Men collection",
-          href: "/ProductListPage?category=Men",
+          href: "/products?category=Men",
         },
       ],
       sections: [
@@ -71,7 +70,7 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Browse All", href: "/ProductListPage?category=Men" },
+            { name: "Browse All", href: "/products?category=Men" },
           ],
         },
       ],
@@ -95,7 +94,7 @@ export default function Header() {
     }
   });
 
-  const cartItems = useSelector((state) => state.list) || [];
+  const cartItems = useSelector((state) => state.basket) || [];
 
   const cartCount = cartItems.reduce(
     (sum, item) => sum + (item.quantity || 1),
@@ -157,7 +156,7 @@ export default function Header() {
 
               <div className="p-2 border border-amber-950 rounded-md bg-orange-50">
                 {user ? (
-                  <Link to="/AccountPage">
+                  <Link to="/account">
                     <CircleUserRound />
                   </Link>
                 ) : (
@@ -328,7 +327,7 @@ export default function Header() {
               {/* User (desktop) */}
               <div className="hidden lg:flex items-center space-x-6">
                 {user ? (
-                  <Link to="/AccountPage">
+                  <Link to="/account">
                     <CircleUserRound className="text-amber-950" />
                   </Link>
                 ) : (
@@ -344,7 +343,7 @@ export default function Header() {
               </div>
 
               {/* Cart */}
-              <Link to="/Order" className="ml-4 flex items-center">
+              <Link to="/order" className="ml-4 flex items-center">
                 <ShoppingBagIcon className="size-6 text-amber-950" />
                 <span className="ml-2 text-sm text-gray-700">{cartCount}</span>
               </Link>

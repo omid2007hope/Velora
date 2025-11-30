@@ -19,9 +19,9 @@ function SideBarLayOut(WrappedComponent) {
     }, []);
 
     const links = [
-      { name: "Personal Information", to: "/AccountPage" },
-      { name: "Addresses", to: "/AccountPage/AddressForm" },
-      { name: "Payment Methods", to: "/AccountPage/PaymentForm" },
+      { name: "Personal Information", to: "/account" },
+      { name: "Addresses", to: "/account/address" },
+      { name: "Payment Methods", to: "/account/payment" },
     ];
 
     const navLinks = (onClickExtra) => (
@@ -58,7 +58,7 @@ function SideBarLayOut(WrappedComponent) {
     );
 
     return (
-      <div className="min-h-screen bg-orange-50 flex flex-col">
+      <div className="min-h-screen bg-orange-50 flex flex-col pt-8">
         {/* MOBILE TOP BAR */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-amber-950 bg-orange-100 md:hidden">
           <div className="flex items-center gap-3">

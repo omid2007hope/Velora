@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { products } from "../../dataBase/Index";
+import { products } from "../../utils/products";
 import { useDispatch } from "react-redux";
-import { addItem } from "../../Redux/basketRender";
+import { addItem } from "../../store/basketSlice";
 
 const preview = products.filter((x) => x.id < 5);
 
@@ -21,7 +21,7 @@ export default function Deals() {
       })
     );
 
-    navigate("/Order"); // go to checkout
+    navigate("/order"); // go to checkout
   }
 
   return (
@@ -33,7 +33,7 @@ export default function Deals() {
               key={item.id}
               className="rounded-xl bg-orange-200 shadow-md overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-transform border-2 border-amber-950"
             >
-              <Link to={`/product/${item.id}`}>
+              <Link to={`/products/${item.id}`}>
                 <div className="relative">
                   <img
                     src={item.image}
@@ -54,11 +54,11 @@ export default function Deals() {
 
                 <div className="mt-2 flex items-center space-x-3">
                   <span className="text-lg font-bold text-amber-950">
-                    {item.newPrice}
+                    ${item.newPrice}
                   </span>
 
                   <span className="text-sm text-amber-800 line-through">
-                    {item.oldPrice}
+                    ${item.oldPrice}
                   </span>
                 </div>
 

@@ -24,7 +24,7 @@ export default function Promo() {
 
             {/* Button */}
             <button
-              onClick={() => navigate("/ProductListPage")}
+              onClick={() => navigate("/products")}
               className="inline-block mt-8 lg:mt-12 rounded-md bg-amber-950 px-10 py-4 text-center font-medium text-white hover:bg-amber-900 self-start ml-0 sm:ml-8 lg:ml-0"
             >
               Shop Collection

@@ -1,7 +1,10 @@
 {
-  "name": "x",
+  "name": "velora",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Velora fashion storefront built and developed by Omid Teimory",
+  "author": "Omid Teimory",
+  "license": "SEE LICENSE IN License",
   "type": "module",
   "scripts": {
     "dev": "vite",

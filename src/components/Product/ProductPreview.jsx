@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
-import { products } from "../../dataBase/Index";
+import { products } from "../../utils/products";
 import { useDispatch } from "react-redux";
-import { addItem } from "../../Redux/basketRender";
+import { addItem } from "../../store/basketSlice";
 import withMenuLayout from "../Layout/Index";
+import { Seo } from "../../utils/seo";
 
 function ProductPreview() {
   const { id } = useParams();
@@ -47,10 +48,10 @@ function ProductPreview() {
       0
     ) / totalRatings;
 
-  function addToBasket(item) {
+  const addToBasket = (item) => {
     if (!item) return;
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
-  }
+  };
 
   useEffect(() => {
     const found = products.find((y) => String(y.id) === String(id));
@@ -64,18 +65,37 @@ function ProductPreview() {
       </div>
     );
 
-  function buyNow(item) {
+  const buyNow = (item) => {
     if (!item) return;
-
-    // Add to basket first
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
-
-    // Then go to checkout
-    navigate("/Order"); // or /Checkout depending on your routing
-  }
+    navigate("/order");
+  };
 
   return (
-    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-35">
+    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-28">
+      <Seo
+        title={`${product.name} | Velora`}
+        description={`${product.name} is available now at Velora. Choose your color and size, curated by Omid Teimory.`}
+        image={product.image}
+        type="product"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          image: product.image,
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: product.newPrice,
+            availability: "https://schema.org/InStock",
+          },
+          brand: {
+            "@type": "Brand",
+            name: "Velora",
+          },
+        }}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <button
@@ -107,17 +127,24 @@ function ProductPreview() {
               {product.name}
             </h1>
             <p className="mt-2 text-amber-900">
-              The Basic Tee 6-Pack allows you to fully express your personality
-              with multiple color options. Designed for comfort, style, and
-              durability — made from 100% soft cotton.
+              Express your style with breathable fabrics and modern tailoring.
+              Every piece is crafted for comfort, versatility, and longevity.
             </p>
           </div>
 
           {/* Price */}
           <div className="flex items-center justify-between">
-            <p className="text-2xl font-semibold text-amber-950">
-              {product.newPrice}
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-2xl font-semibold text-amber-950">
+                ${product.newPrice}
+              </p>
+              <p className="text-lg text-amber-800 line-through">
+                ${product.oldPrice}
+              </p>
+              <span className="text-sm font-semibold text-green-700">
+                Save {product.discount}
+              </span>
+            </div>
             <a href="#reviews" className="text-amber-950 hover:text-amber-800">
               {totalRatings} reviews
             </a>
@@ -136,6 +163,7 @@ function ProductPreview() {
                       ? "border-amber-950 scale-110"
                       : "border-amber-800 hover:scale-105"
                   } transition-transform`}
+                  aria-label={`Select ${color.name}`}
                 />
               ))}
             </div>
@@ -154,6 +182,7 @@ function ProductPreview() {
                       ? "border-amber-950 bg-orange-200 text-amber-950"
                       : "border-amber-950 text-amber-950 hover:bg-orange-50"
                   } transition`}
+                  aria-label={`Select size ${size}`}
                 >
                   {size}
                 </button>
@@ -184,8 +213,8 @@ function ProductPreview() {
             <ul className="mt-2 list-disc list-inside text-amber-900 space-y-1">
               <li>Hand cut and sewn locally</li>
               <li>Dyed with proprietary colors</li>
-              <li>Pre-washed & pre-shrunk</li>
-              <li>Ultra-soft 100% cotton</li>
+              <li>Pre-washed and pre-shrunk</li>
+              <li>Ultra-soft cotton blend</li>
             </ul>
           </div>
 
@@ -193,8 +222,8 @@ function ProductPreview() {
           <div className="pt-4">
             <h3 className="font-semibold text-amber-950 mb-1">Details</h3>
             <p className="text-amber-900">
-              Includes two black, two white, and two gray tees. Join our
-              subscription to get early access to limited-edition colors.
+              Built for everyday comfort with attention to stitching and fit.
+              Pair it with your favorite accessories for a full Velora look.
             </p>
           </div>
         </div>
@@ -226,7 +255,7 @@ function ProductPreview() {
                     key={stars}
                     className="flex items-center gap-3 text-amber-950"
                   >
-                    <span className="w-10 text-right">{stars}★</span>
+                    <span className="w-16 text-right">{stars} stars</span>
                     <div className="w-full bg-orange-200 rounded-full h-3 overflow-hidden">
                       <div
                         className="h-3 bg-amber-950 rounded-full"
@@ -272,8 +301,5 @@ function ProductPreview() {
   );
 }
 
-// Wrap with menu layout
 const WrappedProductPreview = withMenuLayout(ProductPreview);
-
-// Export the wrapped version
 export default WrappedProductPreview;

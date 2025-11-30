@@ -11,7 +11,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
   const navigate = useNavigate();
 
-  function Login() {
+  function handleLogin() {
     if (!email.trim()) {
       alert("Please enter your email");
       return;
@@ -34,15 +34,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
     localStorage.setItem("user", JSON.stringify(match));
     setUser(match);
-
-    // Close login popup
     setOpen(false);
-
-    navigate("/AccountPage");
+    navigate("/account");
   }
 
   function openSignupFlow() {
-    // Close Login → Open Signup
     setOpen(false);
     setTimeout(() => setOpenSignup(true), 250);
   }
@@ -56,10 +52,8 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
     let saved = JSON.parse(localStorage.getItem("savedUser")) || [];
 
-    // check if user exists
     let user = saved.find((u) => u.email === email);
 
-    // if not → create new user
     if (!user) {
       user = {
         fullName,
@@ -73,12 +67,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       localStorage.setItem("savedUser", JSON.stringify(saved));
     }
 
-    // log in the user
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
 
     setOpen(false);
-    navigate("/AccountPage");
+    navigate("/account");
   }
 
   useEffect(() => {
@@ -88,7 +81,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
     document.addEventListener("open-login-popup", openLogin);
     return () => document.removeEventListener("open-login-popup", openLogin);
-  }, []);
+  }, [setOpen]);
 
   return (
     <>
@@ -106,7 +99,6 @@ export default function LoginPopup({ open, setOpen, setUser }) {
               Sign in to continue your shopping
             </p>
 
-            {/* Inputs */}
             <div className="mt-6 space-y-4">
               <input
                 type="email"
@@ -123,9 +115,8 @@ export default function LoginPopup({ open, setOpen, setUser }) {
               />
             </div>
 
-            {/* Button */}
             <button
-              onClick={Login}
+              onClick={handleLogin}
               className="w-full mt-6 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
             >
               Sign in

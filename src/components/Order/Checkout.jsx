@@ -6,7 +6,7 @@ export default function Checkout({ product, setStep }) {
   const cartItems = product || [];
 
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + (item.newPrice || 0),
+    (sum, item) => sum + (item.newPrice || 0) * (item.quantity || 1),
     0
   );
 
@@ -17,12 +17,12 @@ export default function Checkout({ product, setStep }) {
   const goBack = () => setStep(1);
 
   return (
-    <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8 pt-28">
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10">
         {/* LEFT: FORM */}
         <div className="lg:col-span-7 bg-orange-200 p-6 rounded-xl border border-amber-950 shadow-lg flex flex-col">
           <button className="w-full bg-amber-950 text-white py-3 rounded-md font-semibold">
-             Pay
+            Pay securely
           </button>
 
           <div className="flex items-center my-6">
@@ -118,10 +118,14 @@ export default function Checkout({ product, setStep }) {
 
             <ul className="divide-y divide-amber-900">
               {cartItems.map((item) => (
-                <li key={item.id} className="flex py-4">
+                <li
+                  key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
+                  className="flex py-4"
+                >
                   <img
                     src={item.image}
                     className="h-16 w-16 rounded-md border border-amber-950 object-cover"
+                    alt={item.name}
                   />
 
                   <div className="ml-4 flex-1">
@@ -129,13 +133,14 @@ export default function Checkout({ product, setStep }) {
                       {item.name}
                     </h3>
                     <p className="text-sm text-amber-900">
-                      {item.color} {item.size && `| ${item.size}`}
+                      {item.selectedColor || "Selected color"} |{" "}
+                      {item.selectedSize || "Selected size"}
                     </p>
                     <p className="text-xs text-green-700 mt-1">In stock</p>
                   </div>
 
                   <p className="text-sm font-bold text-amber-950">
-                    ${item.newPrice.toFixed(2)}
+                    ${Number(item.newPrice).toFixed(2)} × {item.quantity || 1}
                   </p>
                 </li>
               ))}
