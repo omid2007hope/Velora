@@ -290,7 +290,6 @@ export default function Header() {
             {useEffect(() => {
               console.log(category);
             }, [category])}
-            /* Desktop dropdown */
             <PopoverGroup className="hidden lg:block lg:ml-8">
               {/* Only render when categories exist */}
               {category?.length > 0 && (
