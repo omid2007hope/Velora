@@ -29,9 +29,16 @@ export default function SignupPopup({ open, setOpen }) {
       alert("Please confirm you password");
       return;
     }
+    if (password.trim() !== confirmPass.trim()) {
+      alert("Passwords do not match");
+      return;
+    }
 
     const already = db.some((u) => u.email === email.trim());
-    if (already) return;
+    if (already) {
+      alert("An account with this email already exists. Please sign in.");
+      return;
+    }
 
     const newUser = {
       fullName: fullName.trim(),

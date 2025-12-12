@@ -14,6 +14,7 @@ export default function SignOutForm(props) {
 
   function signout() {
     localStorage.removeItem("user");
+    window.dispatchEvent(new Event("user-updated"));
     navigate("/");
   }
 

@@ -58,6 +58,7 @@ function AccountSettings() {
     };
 
     localStorage.setItem("user", JSON.stringify(formatted));
+    window.dispatchEvent(new Event("user-updated"));
     alert("Account updated");
   }
 

@@ -69,7 +69,7 @@ export function Seo(meta = {}) {
     setMetaTag(
       'meta[name="copyright"]',
       "content",
-      `© 2025 ${AUTHOR} — Developed by ${AUTHOR}`
+      `Copyright 2025 ${AUTHOR} - Developed by ${AUTHOR}`
     );
     setMetaTag('meta[name="theme-color"]', "content", "#f97316");
     setMetaTag('meta[name="robots"]', "content", merged.robots || "index,follow");
