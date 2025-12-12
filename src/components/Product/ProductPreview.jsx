@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
 import { products } from "../../utils/products";
@@ -25,7 +25,7 @@ function ProductPreview() {
 
   const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
-  const reviews = [
+  const [reviews, setReviews] = useState([
     { name: "John Doe", rating: 5, comment: "Perfect fit and quality." },
     {
       name: "Sarah W.",
@@ -38,15 +38,24 @@ function ProductPreview() {
       rating: 3,
       comment: "Color slightly off, but still nice.",
     },
-  ];
+  ]);
 
-  const ratingCounts = { 5: 64, 4: 22, 3: 10, 2: 3, 1: 1 };
-  const totalRatings = Object.values(ratingCounts).reduce((a, b) => a + b, 0);
+  const [newReview, setNewReview] = useState({
+    name: "",
+    rating: 5,
+    comment: "",
+  });
+
+  const ratingCounts = useMemo(() => {
+    return reviews.reduce((acc, r) => {
+      acc[r.rating] = (acc[r.rating] || 0) + 1;
+      return acc;
+    }, {});
+  }, [reviews]);
+
+  const totalRatings = reviews.length || 1;
   const average =
-    Object.entries(ratingCounts).reduce(
-      (sum, [stars, count]) => sum + stars * count,
-      0
-    ) / totalRatings;
+    reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / totalRatings;
 
   const addToBasket = (item) => {
     if (!item) return;
@@ -69,6 +78,25 @@ function ProductPreview() {
     if (!item) return;
     dispatch(addItem({ ...item, selectedColor, selectedSize }));
     navigate("/order");
+  };
+
+  const submitReview = (e) => {
+    e.preventDefault();
+    if (!newReview.name.trim() || !newReview.comment.trim()) {
+      alert("Please add your name and comment before submitting a review.");
+      return;
+    }
+
+    setReviews((prev) => [
+      ...prev,
+      {
+        name: newReview.name.trim(),
+        rating: Number(newReview.rating) || 5,
+        comment: newReview.comment.trim(),
+      },
+    ]);
+
+    setNewReview({ name: "", rating: 5, comment: "" });
   };
 
   return (
@@ -296,6 +324,60 @@ function ProductPreview() {
             </div>
           ))}
         </div>
+
+        {/* Add a review */}
+        <form
+          onSubmit={submitReview}
+          className="mt-10 bg-orange-50 border border-amber-950 rounded-lg p-5 space-y-4"
+        >
+          <h3 className="text-lg font-semibold text-amber-950">
+            Share your thoughts
+          </h3>
+          <input
+            type="text"
+            placeholder="Your name"
+            value={newReview.name}
+            onChange={(e) =>
+              setNewReview((p) => ({ ...p, name: e.target.value }))
+            }
+            className="w-full border border-amber-950 rounded-md p-3 bg-white text-amber-950"
+          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <label className="flex items-center gap-2 text-amber-900">
+              Rating
+              <select
+                value={newReview.rating}
+                onChange={(e) =>
+                  setNewReview((p) => ({
+                    ...p,
+                    rating: Number(e.target.value),
+                  }))
+                }
+                className="border border-amber-950 rounded-md p-2 bg-white text-amber-950"
+              >
+                {[5, 4, 3, 2, 1].map((val) => (
+                  <option key={val} value={val}>
+                    {val} star{val > 1 ? "s" : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <textarea
+            placeholder="What did you like? What could be better?"
+            value={newReview.comment}
+            onChange={(e) =>
+              setNewReview((p) => ({ ...p, comment: e.target.value }))
+            }
+            className="w-full min-h-[120px] border border-amber-950 rounded-md p-3 bg-white text-amber-950"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-amber-950 text-orange-50 rounded-md font-semibold hover:bg-amber-900"
+          >
+            Submit review
+          </button>
+        </form>
       </section>
     </div>
   );

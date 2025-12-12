@@ -139,7 +139,12 @@ export default function Checkout({ product, setStep }) {
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10">
         {/* LEFT: FORM */}
         <div className="lg:col-span-7 bg-orange-200 p-6 rounded-xl border border-amber-950 shadow-lg flex flex-col">
-          <button className="w-full bg-amber-950 text-white py-3 rounded-md font-semibold">
+          <button
+            type="button"
+            onClick={handlePay}
+            disabled={cartItems.length === 0}
+            className="w-full bg-amber-950 text-white py-3 rounded-md font-semibold disabled:opacity-50"
+          >
             Pay securely
           </button>
 

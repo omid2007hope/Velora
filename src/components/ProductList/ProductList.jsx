@@ -18,6 +18,10 @@ export default function ProductList() {
     { name: "Accessories", path: "/products?category=Accessories" },
   ];
 
+  const handleSearchSubmit = (text) => {
+    setSearchText(text);
+  };
+
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
@@ -46,7 +50,11 @@ export default function ProductList() {
       <aside className="hidden md:flex flex-col w-1/4 lg:w-1/6 min-h-[calc(100vh-96px)] border-r-2 border-amber-900 bg-orange-100 shadow-lg">
         {/* SEARCH */}
         <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 shadow-md p-4 pt-30">
-          <SearchBar value={searchText} onChange={setSearchText} />
+          <SearchBar
+            value={searchText}
+            onChange={setSearchText}
+            onSubmit={handleSearchSubmit}
+          />
         </div>
 
         {/* FILTERS */}
@@ -119,7 +127,11 @@ export default function ProductList() {
               <ArrowLeft /> Back
             </Link>
             <div className="visible md:hidden lg:hidden flex-grow">
-              <SearchBar value={searchText} onChange={setSearchText} />
+              <SearchBar
+                value={searchText}
+                onChange={setSearchText}
+                onSubmit={handleSearchSubmit}
+              />
             </div>
           </div>
 

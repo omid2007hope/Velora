@@ -25,5 +25,15 @@ export default function GoogleSignIn({ onLogin }) {
     onLogin(response.credential);
   }
 
-  return <div id="google-signin-btn" className="w-full mt-4"></div>;
+  return window.google ? (
+    <div id="google-signin-btn" className="w-full mt-4"></div>
+  ) : (
+    <button
+      type="button"
+      disabled
+      className="w-full mt-4 rounded-full bg-gray-300 text-gray-600 py-3 text-lg font-semibold cursor-not-allowed"
+    >
+      Google Sign-In unavailable
+    </button>
+  );
 }
