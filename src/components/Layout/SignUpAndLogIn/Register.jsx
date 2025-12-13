@@ -119,30 +119,46 @@ export default function SignupPopup({ open, setOpen }) {
           </h2>
 
           <div className="mt-6 space-y-4">
+            <label htmlFor="signup-fullname" className="sr-only">
+              Full name
+            </label>
             <input
               type="text"
               placeholder="Full Name"
+              id="signup-fullname"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
               onChange={(e) => setFullName(e.target.value)}
             />
 
+            <label htmlFor="signup-email" className="sr-only">
+              Email address
+            </label>
             <input
               type="email"
               placeholder="Email address"
+              id="signup-email"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
               onChange={(e) => setEmail(e.target.value)}
             />
 
+            <label htmlFor="signup-password" className="sr-only">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Password"
+              id="signup-password"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            <label htmlFor="signup-confirm" className="sr-only">
+              Confirm password
+            </label>
             <input
               type="password"
               placeholder="Confirm password"
+              id="signup-confirm"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
               onChange={(e) => setConfirmPass(e.target.value)}
             />

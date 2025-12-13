@@ -155,24 +155,36 @@ export default function Checkout({ product, setStep }) {
           </div>
 
           <form className="space-y-4 flex-1">
+            <label htmlFor="checkout-email" className="sr-only">
+              Email
+            </label>
             <input
               name="email"
+              id="checkout-email"
               value={form.email}
               onChange={onChange}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Email"
             />
 
+            <label htmlFor="checkout-name" className="sr-only">
+              Name on card
+            </label>
             <input
               name="fullName"
+              id="checkout-name"
               value={form.fullName}
               onChange={onChange}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
               placeholder="Name on card"
             />
 
+            <label htmlFor="checkout-card" className="sr-only">
+              Card number
+            </label>
             <input
               name="cardNumber"
+              id="checkout-card"
               value={form.cardNumber}
               onChange={onChange}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
@@ -180,15 +192,23 @@ export default function Checkout({ product, setStep }) {
             />
 
             <div className="grid grid-cols-2 gap-3">
+              <label htmlFor="checkout-expiry" className="sr-only">
+                Expiry date
+              </label>
               <input
                 name="expiry"
+                id="checkout-expiry"
                 value={form.expiry}
                 onChange={onChange}
                 className="border border-amber-950 p-2 rounded-md bg-orange-50"
                 placeholder="MM/YY"
               />
+              <label htmlFor="checkout-cvv" className="sr-only">
+                CVV
+              </label>
               <input
                 name="cvv"
+                id="checkout-cvv"
                 value={form.cvv}
                 onChange={onChange}
                 className="border border-amber-950 p-2 rounded-md bg-orange-50"
@@ -196,8 +216,12 @@ export default function Checkout({ product, setStep }) {
               />
             </div>
 
+            <label htmlFor="checkout-address" className="sr-only">
+              Address
+            </label>
             <input
               name="street"
+              id="checkout-address"
               value={form.street}
               onChange={onChange}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
@@ -205,22 +229,34 @@ export default function Checkout({ product, setStep }) {
             />
 
             <div className="grid grid-cols-3 gap-3">
+              <label htmlFor="checkout-country" className="sr-only">
+                Country
+              </label>
               <input
                 name="country"
+                id="checkout-country"
                 value={form.country}
                 onChange={onChange}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="Country"
               />
+              <label htmlFor="checkout-city" className="sr-only">
+                City
+              </label>
               <input
                 name="city"
+                id="checkout-city"
                 value={form.city}
                 onChange={onChange}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
                 placeholder="City"
               />
+              <label htmlFor="checkout-postal" className="sr-only">
+                Postal code
+              </label>
               <input
                 name="postal"
+                id="checkout-postal"
                 value={form.postal}
                 onChange={onChange}
                 className="border border-amber-950 rounded-md p-2 bg-orange-50"
@@ -261,6 +297,9 @@ export default function Checkout({ product, setStep }) {
                 >
                   <img
                     src={item.image}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                     className="h-16 w-16 rounded-md border border-amber-950 object-cover"
                     alt={item.name}
                   />

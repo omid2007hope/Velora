@@ -5,7 +5,7 @@ import Service from "../components/Home/Service";
 import Deals from "../components/Home/Deals";
 import WatchCollection from "../components/Home/WatchCollection";
 import { Seo } from "../utils/seo";
-import Banner from "../assets/Images/Banner.png";
+import Banner from "../assets/Images/Banner.webp";
 
 function HomePage() {
   return (

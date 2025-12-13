@@ -1,10 +1,10 @@
 // src/components/Home/PromoBanner.jsx
 import { Carousel } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
-import Banner from "../../assets/Images/Banner.png";
-import Men from "../../assets/Images/Men.png";
-import Accessories from "../../assets/Images/Accessories.png";
-import Watch from "../../assets/Images/Watch.png";
+import Banner from "../../assets/Images/Banner.webp";
+import Men from "../../assets/Images/Men.webp";
+import Accessories from "../../assets/Images/Accessories.webp";
+import Watch from "../../assets/Images/Watch.webp";
 
 export default function PromoCarousel() {
   return (
@@ -18,14 +18,50 @@ export default function PromoCarousel() {
           background: "#f7f3ef",
         }}
       >
-        <img src={Banner} alt="Banner" className="w-full h-full object-cover" />
-        <img src={Men} alt="Men" className="w-full h-full object-cover" />
+        <img
+          src={Banner}
+          alt="Banner"
+          width="1234"
+          height="690"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          sizes="(min-width: 1024px) 640px, 100vw"
+          className="w-full h-full object-cover"
+        />
+        <img
+          src={Men}
+          alt="Men"
+          width="1536"
+          height="1024"
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          sizes="(min-width: 1024px) 640px, 100vw"
+          className="w-full h-full object-cover"
+        />
         <img
           src={Accessories}
           alt="Accessories"
+          width="1536"
+          height="1024"
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          sizes="(min-width: 1024px) 640px, 100vw"
           className="w-full h-full object-cover"
         />
-        <img src={Watch} alt="Watch" className="w-full h-full object-cover" />
+        <img
+          src={Watch}
+          alt="Watch"
+          width="1536"
+          height="1024"
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          sizes="(min-width: 1024px) 640px, 100vw"
+          className="w-full h-full object-cover"
+        />
       </Carousel>
     </div>
   );

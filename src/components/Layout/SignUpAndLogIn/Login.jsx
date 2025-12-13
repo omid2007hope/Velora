@@ -100,16 +100,24 @@ export default function LoginPopup({ open, setOpen, setUser }) {
             </p>
 
             <div className="mt-6 space-y-4">
+              <label htmlFor="login-email" className="sr-only">
+                Email address
+              </label>
               <input
                 type="email"
                 placeholder="Email"
+                id="login-email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
                 onChange={(e) => setEmail(e.target.value)}
               />
 
+              <label htmlFor="login-password" className="sr-only">
+                Password
+              </label>
               <input
                 type="password"
                 placeholder="Password"
+                id="login-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
                 onChange={(e) => setPassword(e.target.value)}
               />

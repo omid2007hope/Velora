@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 import LoginPopup from "../SignUpAndLogIn/Login";
 import WomanPhoto from "./WomanPhoto";
 import MenPhoto from "./MenPhoto";
-import Logo from "../../../assets/Images/Logo.png";
+import Logo from "../../../assets/Images/Logo.webp";
 
 const navigation = {
   categories: [
@@ -261,6 +261,11 @@ export default function Header() {
               <Link to="/">
                 <img
                   src={Logo}
+                  width="1024"
+                  height="1024"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="h-8 w-auto border border-amber-950 rounded-md"
                   alt="Logo"
                 />

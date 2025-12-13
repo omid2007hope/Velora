@@ -38,6 +38,10 @@ export default function Deals() {
                   <img
                     src={item.image}
                     alt={item.name}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    sizes="(min-width: 1024px) 25vw, 50vw"
                     className="h-56 w-full object-cover"
                   />
 

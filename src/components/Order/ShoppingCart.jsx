@@ -52,6 +52,9 @@ export default function ShoppingCart({ setStep, setProduct }) {
                   <img
                     src={item.image}
                     alt={item.name}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                     className="h-24 w-24 rounded-lg object-cover border border-amber-900"
                   />
 
@@ -75,7 +78,11 @@ export default function ShoppingCart({ setStep, setProduct }) {
                     </div>
 
                     <div className="mt-3 flex items-center space-x-4">
+                      <label htmlFor={`quantity-${item.id}`} className="sr-only">
+                        Quantity for {item.name}
+                      </label>
                       <select
+                        id={`quantity-${item.id}`}
                         value={item.quantity || 1}
                         onChange={(e) =>
                           handleQuantityChange(item, e.target.value)

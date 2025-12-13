@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Banner from "../../assets/Images/Banner.png";
 import PromoCarousel from "./PromoBanner";
 
 export default function Promo() {

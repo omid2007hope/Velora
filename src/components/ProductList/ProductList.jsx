@@ -115,7 +115,10 @@ export default function ProductList() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 h-full overflow-y-auto">
+      <section
+        className="flex-1 h-full overflow-y-auto"
+        aria-label="Product catalog"
+      >
         {/* Search (mobile only) */}
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-12 py-8">
           {/* Back Button */}
@@ -147,6 +150,10 @@ export default function ProductList() {
                     <img
                       src={item.image}
                       alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                      sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
                       className="h-48 w-full object-cover sm:h-56 md:h-60"
                     />
 
@@ -180,7 +187,7 @@ export default function ProductList() {
             ))}
           </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

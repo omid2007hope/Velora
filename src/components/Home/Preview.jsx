@@ -1,7 +1,7 @@
-import Men from "../../assets/Images/Men.png";
-import Women from "../../assets/Images/Women.png";
-import New from "../../assets/Images/New.png";
-import Accessories from "../../assets/Images/Accessories.png";
+import Men from "../../assets/Images/Men.webp";
+import Women from "../../assets/Images/Women.webp";
+import New from "../../assets/Images/New.webp";
+import Accessories from "../../assets/Images/Accessories.webp";
 import { Link } from "react-router-dom";
 
 export default function Preview() {
@@ -44,6 +44,12 @@ export default function Preview() {
                   <img
                     src={cat.img}
                     alt={cat.name}
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
@@ -66,6 +72,12 @@ export default function Preview() {
               <img
                 src={categories[2].img}
                 alt={categories[2].name}
+                width="1536"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
@@ -89,6 +101,12 @@ export default function Preview() {
             <img
               src={categories[3].img}
               alt={categories[3].name}
+              width="1536"
+              height="1024"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />

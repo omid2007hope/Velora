@@ -5,7 +5,7 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 
-import S from "../../assets/Images/S.png";
+import S from "../../assets/Images/S.webp";
 
 export default function Service() {
   const features = [
@@ -52,6 +52,12 @@ export default function Service() {
             className="w-full h-full object-cover rounded-lg shadow-md border-2 border-amber-950"
             src={S}
             alt="Customer service desk"
+            width="1536"
+            height="1024"
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            sizes="(min-width: 1024px) 50vw, 100vw"
           />
         </div>
       </div>

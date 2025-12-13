@@ -12,15 +12,20 @@ export default function SearchBar({ value, onChange, onSubmit }) {
         onSubmit={submit}
         className="w-full h-full flex flex-row justify-center items-center"
       >
+        <label htmlFor="product-search" className="sr-only">
+          Search products
+        </label>
         <input
           type="text"
           placeholder="Search"
+          id="product-search"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="bg-orange-50 border-2 border-amber-950 rounded-l-lg pl-3 pr-0 lg:pr-10 py-1 lg:py-1.5 text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-700"
         />
         <button
           type="submit"
+          aria-label="Submit product search"
           className="bg-amber-950 text-orange-50 font-bold py-1.5 lg:py-2 px-2 flex items-center justify-center rounded-r-lg border-2 border-amber-950 hover:bg-amber-800"
         >
           <MagnifyingGlassIcon className="h-5 w-5 text-orange-50 font-bold" />
