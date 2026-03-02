@@ -1,0 +1,51 @@
+const customerService = require("../../service/version_1/Customer");
+
+async function CustomerData(req, res) {
+  try {
+    const { email, fullName, password } = req.body || {};
+
+    if (!email || !fullName || !password) {
+      return res.status(400).json({
+        error: "Missing required fields",
+        required: ["email", "fullName", "password"],
+      });
+    }
+
+    const customerDataNormalization = {
+      email,
+      fullName,
+      password,
+    };
+
+    const sendCustomerData = await customerService.customerRegister(
+      customerDataNormalization,
+    );
+
+    if (sendCustomerData?.existed) {
+      return res.status(409).json({
+        error: "Customer already exists with this email",
+        data: sendCustomerData.data,
+      });
+    }
+
+    console.log("Controller: customer registration request received");
+
+    return res.status(201).json(sendCustomerData);
+  } catch (error) {
+    console.error("CustomerData error:", error.message);
+
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        error: "Customer already exists with this email",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+}
+
+module.exports = {
+  CustomerData,
+};
