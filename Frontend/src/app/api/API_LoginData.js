@@ -1,13 +1,11 @@
 import axios from "axios";
 import { API_BaseURL } from "./API_BaseURL";
 
-async function FetchCustomerData(customerData) {
-  // console.log("customerData API:", customerData);
-
+async function FetchLoginData(loginData) {
   try {
     const response = await axios.post(
-      `${API_BaseURL}/server/customer`,
-      customerData,
+      `${API_BaseURL}/server/customer/login`,
+      loginData,
     );
     return response.data;
   } catch (error) {
@@ -18,4 +16,4 @@ async function FetchCustomerData(customerData) {
   }
 }
 
-export default FetchCustomerData;
+export default FetchLoginData;

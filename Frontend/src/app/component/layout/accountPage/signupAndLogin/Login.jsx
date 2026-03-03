@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SignupPopup from "./Register";
 import { useNavigate } from "react-router-dom";
 import GoogleSignIn from "./Google";
+import FetchLoginData from "../../../../api/API_LoginData";
 
 export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
   const navigate = useNavigate();
 
-  function handleLogin() {
+  async function handleLogin() {
     if (!email.trim()) {
       alert("Please enter your email");
       return;
@@ -21,6 +22,20 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     if (!password.trim() && email.trim()) {
       alert("Please enter your password");
       return;
+    }
+
+    if (email && password) {
+      try {
+        const givenLoginData = {
+          email: email.toLowerCase().trim(),
+          password: password.trim(),
+        };
+
+        await FetchLoginData(givenLoginData);
+      } catch (error) {
+        alert("Signup failed. Please try again.");
+        return;
+      }
     }
 
     const saved =

@@ -23,24 +23,6 @@ const CustomerSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
-
-    gender: {
-      type: String,
-      index: true,
-    },
-
-    dateOfBirth: {
-      type: String,
-      index: true,
-    },
-
-    phoneNumber: {
-      type: String,
-      index: true,
-      unique: true,
-      sparse: true,
-      trim: true,
-    },
   },
 
   { versionKey: false, timestamps: true },
