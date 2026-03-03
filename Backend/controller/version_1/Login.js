@@ -1,5 +1,4 @@
-const { loginService } = require("../../service/version_1/Login");
-const CustomerModel = require("../../model/Customer");
+const loginService = require("../../service/version_1/Login");
 
 async function loginIntoTheAccount(req, res) {
   try {
@@ -17,39 +16,22 @@ async function loginIntoTheAccount(req, res) {
       password: password.trim(),
     };
 
-    const userData = await CustomerModel.find({});
+    const sendLoginData = await loginService.loginService(loginDataNormalization);
 
-    const simplifiedCustomerData = await Promise.all(
-      userData.map(async (user) => {
-        return {
-          email: user.email,
-          password: user.password,
-          fullName: user.fullName,
-          id: user.id,
-        };
-      }),
-    );
-
-    const sendLoginData = await loginService(loginDataNormalization);
-
-    if (sendLoginData?.existed) {
-      return res.status(409).json({
-        error: "Customer already exists with this email",
-        data: sendLoginData.data,
+    if (!sendLoginData?.authenticated) {
+      return res.status(401).json({
+        error: "Invalid email or password",
       });
     }
 
-    console.log("Controller: customer registration request received");
+    console.log("Controller: customer login request received");
 
-    return res.status(201).json(sendLoginData);
+    return res.status(200).json({
+      message: "Login successful",
+      data: sendLoginData.data,
+    });
   } catch (error) {
-    console.error("CustomerData error:", error.message);
-
-    if (error?.code === 11000) {
-      return res.status(409).json({
-        error: "Customer already exists with this email",
-      });
-    }
+    console.error("loginIntoTheAccount error:", error.message);
 
     return res.status(500).json({
       error: "Internal server error",
