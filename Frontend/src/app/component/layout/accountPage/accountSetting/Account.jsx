@@ -31,8 +31,8 @@ function AccountSettings() {
       }
 
       setUser({
-        firstName,
-        lastName,
+        firstName: firstName || "",
+        lastName: lastName || "",
         email: parsed.email || "",
         phoneNumber: parsed.phoneNumber || "",
         dateOfBirth: parsed.dateOfBirth || "",
@@ -47,9 +47,7 @@ function AccountSettings() {
     setUser((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleSave(e) {
-    e.preventDefault();
-
+  async function handleSave() {
     const formatted = {
       fullName: `${user.firstName} ${user.lastName}`.trim(),
       email: user.email,
@@ -58,22 +56,20 @@ function AccountSettings() {
       gender: user.gender,
     };
 
-    localStorage.setItem("user", JSON.stringify(formatted));
-    window.dispatchEvent(new Event("user-updated"));
-    alert("Account updated");
-  }
+    console.log("Data in Account.js Frontend", formatted);
 
-  async function saveCustomerDetails() {
-    const detailsNormlization = {
-      phoneNumber: user.phoneNumber,
-      dateOfBirth: user.dateOfBirth,
-      gender: user.gender,
-    };
-
-    try {
-      await FetchCustomerDetails(detailsNormlization);
-    } catch (error) {
-      alert("Signup failed. Please try again.");
+    if (formatted) {
+      try {
+        await FetchCustomerDetails(formatted);
+      } catch (error) {
+        alert("Signup failed. Please try again.");
+        return;
+      }
+      localStorage.setItem("user", JSON.stringify(formatted));
+      window.dispatchEvent(new Event("user-updated"));
+      alert("Account updated");
+    } else {
+      alert("Data dose not exist");
       return;
     }
   }
@@ -89,7 +85,7 @@ function AccountSettings() {
         shipping.
       </p>
 
-      <form onSubmit={handleSave} className="space-y-4">
+      <form className="space-y-4">
         {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -192,7 +188,7 @@ function AccountSettings() {
         <div className="flex gap-3 mt-6">
           <button
             type="button"
-            onClick={() => saveCustomerDetails()}
+            onClick={() => handleSave()}
             className="px-4 py-2 bg-amber-950 text-orange-50 rounded-md shadow text-sm hover:bg-amber-900 transition"
           >
             Save

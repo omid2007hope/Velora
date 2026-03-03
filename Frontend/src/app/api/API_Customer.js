@@ -19,3 +19,8 @@ async function FetchCustomerData(customerData) {
 }
 
 export default FetchCustomerData;
+
+// !  the date comes from two seperated source, one is the register page, one is the account page.
+// ! what is the data, it's fullName, email, password, phonenumber, dateofBirth and geneder.
+// ! it is bieng send to the backend using one API localhost 3000
+// !
