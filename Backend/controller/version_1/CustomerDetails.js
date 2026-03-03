@@ -5,12 +5,12 @@ async function CustomerDetails(req, res) {
     const { phoneNumber, dateOfBirth, gender } = req.body || {};
 
     const customerDetailsNormalization = {
-      phoneNumber,
-      dateOfBirth,
-      gender,
+      phoneNumber: phoneNumber.trim(),
+      dateOfBirth: dateOfBirth.trim(),
+      gender: gender.trim(),
     };
 
-    const sendCustomerDetails = await customerDetailsService.customerRegister(
+    const sendCustomerDetails = await customerDetailsService.customerDetails(
       customerDetailsNormalization,
     );
 
