@@ -35,10 +35,15 @@ module.exports = new (class CustomerDetails extends BaseService {
       source: "created",
       existed: false,
       data: {
-        phoneNumber: searchTheDataBase.phoneNumber,
-        dateOfBirth: searchTheDataBase.dateOfBirth,
-        gender: searchTheDataBase.gender,
+        phoneNumber: saveCustomerData.phoneNumber,
+        dateOfBirth: saveCustomerData.dateOfBirth,
+        gender: saveCustomerData.gender,
       },
     };
+  }
+
+  // Backward-compatible alias for older controller calls.
+  async customerRegister(payload) {
+    return this.customerDetails(payload);
   }
 })(model);

@@ -3,11 +3,21 @@ const customerDetailsService = require("../../service/version_1/CustomerDetails"
 async function CustomerDetails(req, res) {
   try {
     const { phoneNumber, dateOfBirth, gender } = req.body || {};
+    const normalizedPhone = typeof phoneNumber === "string" ? phoneNumber.trim() : "";
+    const normalizedDateOfBirth =
+      typeof dateOfBirth === "string" ? dateOfBirth.trim() : "";
+    const normalizedGender = typeof gender === "string" ? gender.trim() : "";
+
+    if (!normalizedPhone || !normalizedDateOfBirth || !normalizedGender) {
+      return res.status(400).json({
+        error: "phoneNumber, dateOfBirth, and gender are required",
+      });
+    }
 
     const customerDetailsNormalization = {
-      phoneNumber: phoneNumber.trim(),
-      dateOfBirth: dateOfBirth.trim(),
-      gender: gender.trim(),
+      phoneNumber: normalizedPhone,
+      dateOfBirth: normalizedDateOfBirth,
+      gender: normalizedGender,
     };
 
     const sendCustomerDetails = await customerDetailsService.customerDetails(
@@ -16,7 +26,7 @@ async function CustomerDetails(req, res) {
 
     if (sendCustomerDetails?.existed) {
       return res.status(409).json({
-        error: "Customer already exists with this email",
+        error: "Customer details already exist for this phone number",
         data: sendCustomerDetails.data,
       });
     }
@@ -29,7 +39,7 @@ async function CustomerDetails(req, res) {
 
     if (error?.code === 11000) {
       return res.status(409).json({
-        error: "Customer already exists with this email",
+        error: "Customer details already exist for this phone number",
       });
     }
 
