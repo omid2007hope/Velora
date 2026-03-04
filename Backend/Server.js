@@ -14,16 +14,22 @@ const router = require("./router/index");
 const connectDB = require("./database/MongoDB");
 
 const allowedOrigins = (process.env.CLIENT_URL ||
-  "http://localhost:3001,http://localhost:5173"
+  "http://localhost:3000,http://localhost:3001,http://localhost:5173"
 )
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+const localhostPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        localhostPattern.test(origin)
+      ) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));

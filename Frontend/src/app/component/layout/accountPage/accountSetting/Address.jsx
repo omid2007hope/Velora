@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import SideBarLayOut from "./AccountLayout";
+import FetchCustomerAddress from "../../../../api/API_Address";
 
 function AddressForm() {
   const [address, setAddress] = useState({
@@ -11,31 +12,41 @@ function AddressForm() {
     postal: "",
     street: "",
   });
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("savedAddress");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setAddress((prev) => ({
-          ...prev,
-          ...parsed,
-        }));
-      }
-    } catch {
-      // ignore invalid JSON
-    }
-  }, []);
+  const [isSaving, setIsSaving] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
     setAddress((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault();
-    localStorage.setItem("savedAddress", JSON.stringify(address));
-    alert("Address saved");
+
+    setIsSaving(true);
+    try {
+      const payload = {
+        country: address.country,
+        city: address.city,
+        street: address.street,
+        postalCode: address.postal,
+      };
+      const response = await FetchCustomerAddress(payload);
+      const savedAddress = response?.data || payload;
+
+      setAddress({
+        country: savedAddress.country || "",
+        city: savedAddress.city || "",
+        postal: savedAddress.postalCode || "",
+        street: savedAddress.street || "",
+      });
+      alert("Address saved");
+    } catch (error) {
+      const message =
+        error.response?.data?.error || error.response?.data || error.message;
+      alert(message || "Failed to save address");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -76,9 +87,10 @@ function AddressForm() {
         <div className="flex flex-wrap gap-3 mt-6">
           <button
             type="submit"
+            disabled={isSaving}
             className="bg-[#5B2C00] text-white py-2 px-4 rounded text-sm hover:bg-amber-900"
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </button>
 
           <Link to="/">

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import SideBarLayOut from "./AccountLayout";
+import FetchCustomerPaymentDetails from "../../../../api/API_Payment";
 
 function PaymentForm() {
   const [payment, setPayment] = useState({
@@ -11,44 +12,35 @@ function PaymentForm() {
     expiry: "",
     cvv: "",
   });
-
-  useEffect(() => {
-    try {
-      const userRaw = localStorage.getItem("user");
-      const paymentRaw = localStorage.getItem("savedPayment");
-
-      let base = {
-        name: "",
-        cardNumber: "",
-        expiry: "",
-        cvv: "",
-      };
-
-      if (userRaw) {
-        const user = JSON.parse(userRaw);
-        if (user?.fullName) base.name = user.fullName;
-      }
-
-      if (paymentRaw) {
-        const saved = JSON.parse(paymentRaw);
-        base = { ...base, ...saved };
-      }
-
-      setPayment(base);
-    } catch {
-      // ignore parsing errors
-    }
-  }, []);
+  const [isSaving, setIsSaving] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
     setPayment((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault();
-    localStorage.setItem("savedPayment", JSON.stringify(payment));
-    alert("Payment method saved");
+
+    setIsSaving(true);
+    try {
+      const response = await FetchCustomerPaymentDetails(payment);
+      const savedPayment = response?.data || {};
+
+      setPayment((prev) => ({
+        ...prev,
+        name: savedPayment.name || prev.name,
+        expiry: savedPayment.expiry || prev.expiry,
+        cvv: "",
+      }));
+      alert("Payment method saved");
+    } catch (error) {
+      const message =
+        error.response?.data?.error || error.response?.data || error.message;
+      alert(message || "Failed to save payment method");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -94,9 +86,10 @@ function PaymentForm() {
         <div className="flex flex-wrap gap-3 mt-6">
           <button
             type="submit"
+            disabled={isSaving}
             className="bg-[#5B2C00] text-white py-2 px-4 rounded text-sm hover:bg-amber-900"
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </button>
 
           <Link to="/">
