@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -151,3 +153,5 @@ export default function SignupPopup({ open, setOpen }) {
     </Dialog>
   );
 }
+
+

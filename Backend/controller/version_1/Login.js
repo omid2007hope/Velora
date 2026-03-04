@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const loginService = require("../../service/version_1/Login");
 
 async function loginIntoTheAccount(req, res) {
@@ -45,3 +47,5 @@ async function loginIntoTheAccount(req, res) {
 module.exports = {
   loginIntoTheAccount,
 };
+
+

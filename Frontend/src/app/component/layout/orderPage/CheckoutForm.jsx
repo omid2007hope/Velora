@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -361,3 +363,5 @@ export default function Checkout({ product, setStep }) {
     </div>
   );
 }
+
+

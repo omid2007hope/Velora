@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import Header from "./header/Header";
 
 function withMenuLayout(WrappedComponent) {
@@ -24,3 +26,5 @@ function withMenuLayout(WrappedComponent) {
   return HOC;
 }
 export default withMenuLayout;
+
+

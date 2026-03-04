@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import React from "react";
 import {
   TruckIcon,
@@ -84,3 +86,5 @@ export default function Service() {
     </section>
   );
 }
+
+

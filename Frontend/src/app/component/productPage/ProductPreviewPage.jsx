@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
@@ -361,3 +363,5 @@ function ProductPreview() {
 
 const WrappedProductPreview = withMenuLayout(ProductPreview);
 export default WrappedProductPreview;
+
+

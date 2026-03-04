@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 const orderService = require("../../service/version_1/Order");
 const paymentIntentService = require("../../service/version_1/PaymentIntent");
@@ -136,3 +138,5 @@ module.exports = {
   listOrders,
   updateOrderStatus,
 };
+
+

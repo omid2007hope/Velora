@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const CartItemSchema = new mongoose.Schema(
@@ -89,3 +91,5 @@ CartSchema.index({ userId: 1 }, { unique: true, sparse: true });
 CartSchema.index({ sessionId: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model("Cart", CartSchema);
+
+

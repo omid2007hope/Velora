@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
@@ -23,3 +25,5 @@ const connectDB = async () => {
 console.log("MONGO_URL set:", Boolean(process.env.MONGO_URL));
 
 module.exports = connectDB;
+
+

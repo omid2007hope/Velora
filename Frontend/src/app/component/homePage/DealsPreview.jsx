@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { Link, useNavigate } from "react-router-dom";
 import { products } from "../../../../utils/Products";
 import { useDispatch } from "react-redux";
@@ -80,3 +82,5 @@ export default function Deals() {
     </section>
   );
 }
+
+

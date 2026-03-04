@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 export const products = [
   // ---- Men's Collection ----
   {
@@ -280,3 +282,5 @@ export const products = [
 ];
 
 export default products;
+
+

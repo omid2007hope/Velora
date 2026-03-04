@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const customerService = require("../../service/version_1/Register");
 
 async function CustomerData(req, res) {
@@ -44,3 +46,5 @@ async function CustomerData(req, res) {
 module.exports = {
   CustomerData,
 };
+
+

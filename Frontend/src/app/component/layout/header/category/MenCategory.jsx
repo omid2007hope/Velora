@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 // src/components/Home/PromoBanner.jsx
 import { Carousel } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
@@ -54,3 +56,5 @@ export default function MenPhoto() {
     </div>
   );
 }
+
+

@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const OrderItemSchema = new mongoose.Schema(
@@ -144,3 +146,5 @@ const OrderSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Order", OrderSchema);
+
+

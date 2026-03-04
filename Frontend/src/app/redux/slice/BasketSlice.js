@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { createSlice } from "@reduxjs/toolkit";
 
 const loadInitialBasket = () => {
@@ -76,3 +78,5 @@ const basketSlice = createSlice({
 export const { addItem, updateQuantity, removeItem, clearBasket } =
   basketSlice.actions;
 export default basketSlice.reducer;
+
+

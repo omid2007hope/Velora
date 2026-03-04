@@ -1,3 +1,7 @@
+/*
+ * © 2026 Omid Teimory. All rights reserved.
+ * Signature: OmidTeimory-2026
+ */
 @import "tailwindcss";
 
 :root {
@@ -24,3 +28,5 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+

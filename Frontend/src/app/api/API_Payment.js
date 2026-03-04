@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import axios from "axios";
 import { API_BaseURL } from "./API_BaseURL";
 
@@ -24,3 +26,5 @@ async function FetchCustomerPaymentDetails(customerPaymentDetails) {
 }
 
 export default FetchCustomerPaymentDetails;
+
+

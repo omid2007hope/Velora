@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 const cartService = require("../../service/version_1/Cart");
 
@@ -127,3 +129,5 @@ module.exports = {
   removeItem,
   clearCart,
 };
+
+

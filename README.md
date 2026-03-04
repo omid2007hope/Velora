@@ -1,3 +1,4 @@
+<!-- © 2026 Omid Teimory. All rights reserved. Signature: OmidTeimory-2026 -->
 # Better Velora Backend Plan
 
 ## Goal
@@ -152,3 +153,5 @@ Use the current product list in `frontend/utils/Products.js` to seed MongoDB in 
 - Payment fields in `CheckoutForm.jsx` should be replaced by Stripe Elements or an equivalent tokenized flow.
 - Review moderation can be added via a `status` field and admin routes.
 - Consider storing images in S3 or Cloudinary and only keeping URLs in MongoDB.
+
+

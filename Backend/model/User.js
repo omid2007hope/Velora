@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
@@ -57,3 +59,5 @@ const UserSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("User", UserSchema);
+
+

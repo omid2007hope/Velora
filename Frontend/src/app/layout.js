@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -28,3 +30,5 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+

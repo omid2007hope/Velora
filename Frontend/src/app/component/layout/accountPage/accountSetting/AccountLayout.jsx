@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 "use client";
 
 import { useState, useEffect } from "react";
@@ -133,3 +135,5 @@ function SideBarLayOut(WrappedComponent) {
 }
 
 export default SideBarLayOut;
+
+

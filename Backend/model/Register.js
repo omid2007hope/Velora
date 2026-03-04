@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const CustomerSchema = new mongoose.Schema(
@@ -31,3 +33,5 @@ const CustomerSchema = new mongoose.Schema(
 module.exports = mongoose.model("Customer", CustomerSchema);
 
 // Mongoose model for caching X user data
+
+

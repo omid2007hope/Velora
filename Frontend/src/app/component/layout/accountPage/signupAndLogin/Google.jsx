@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 /* global google */
 "use client";
 
@@ -46,3 +48,5 @@ export default function GoogleSignIn({ onLogin }) {
     </button>
   );
 }
+
+

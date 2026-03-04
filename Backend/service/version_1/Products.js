@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const model = require("../../model/Products");
 const BaseService = require("../BaseService");
 
@@ -28,3 +30,5 @@ module.exports = new (class Products extends BaseService {
     return this.createObject(payload);
   }
 })(model);
+
+

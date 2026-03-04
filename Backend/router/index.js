@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const express = require("express");
 const router = express.Router();
 
@@ -65,3 +67,5 @@ router.get("/server/checkout/order", listOrders);
 router.patch("/server/checkout/order/:id", updateOrderStatus);
 
 module.exports = router;
+
+

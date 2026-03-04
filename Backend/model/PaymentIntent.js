@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const PaymentIntentSchema = new mongoose.Schema(
@@ -58,3 +60,5 @@ const PaymentIntentSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("PaymentIntent", PaymentIntentSchema);
+
+

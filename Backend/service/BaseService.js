@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 /** @format */
 // File header used by some tooling to enforce formatting.
 
@@ -194,3 +196,5 @@ class BaseService {
 
 // Export the class for use in other modules.
 module.exports = BaseService;
+
+

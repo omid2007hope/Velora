@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { useState } from "react";
 import ShoppingCart from "../component/layout/orderPage/BasketPage";
 import Checkout from "../component/layout/orderPage/CheckoutForm";
@@ -31,3 +33,5 @@ function OrderPage() {
 }
 
 export default WithMenuLayout(OrderPage);
+
+

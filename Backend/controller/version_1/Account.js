@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const customerDetailsService = require("../../service/version_1/Account");
 
 async function CustomerDetails(req, res) {
@@ -58,3 +60,5 @@ async function CustomerDetails(req, res) {
 module.exports = {
   CustomerDetails,
 };
+
+

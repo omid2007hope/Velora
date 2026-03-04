@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function SearchBar({ value, onChange, onSubmit }) {
@@ -34,3 +36,5 @@ export default function SearchBar({ value, onChange, onSubmit }) {
     </div>
   );
 }
+
+

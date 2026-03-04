@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import PromoBanner from "./WatchBanner";
 import { Link } from "react-router-dom";
 
@@ -41,3 +43,5 @@ export default function WatchCollection() {
     </section>
   );
 }
+
+

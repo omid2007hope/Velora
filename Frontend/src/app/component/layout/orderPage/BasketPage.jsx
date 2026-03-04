@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -180,3 +182,5 @@ export default function ShoppingCart({ setStep, setProduct }) {
     </div>
   );
 }
+
+

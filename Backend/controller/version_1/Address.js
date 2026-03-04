@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const CustomerAddressService = require("../../service/version_1/Address");
 
 async function CustomerAddress(req, res) {
@@ -49,3 +51,5 @@ async function CustomerAddress(req, res) {
 module.exports = {
   CustomerAddress,
 };
+
+

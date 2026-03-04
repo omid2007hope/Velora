@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { ArrowLeft, Filter } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import SearchBar from "./Searchbar.jsx";
@@ -191,3 +193,5 @@ export default function ProductList() {
     </div>
   );
 }
+
+

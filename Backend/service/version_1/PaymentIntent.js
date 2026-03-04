@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const crypto = require("crypto");
 const model = require("../../model/PaymentIntent");
 const BaseService = require("../BaseService");
@@ -20,3 +22,5 @@ module.exports = new (class PaymentIntentService extends BaseService {
     return this.update({ orderId }, { status });
   }
 })(model);
+
+

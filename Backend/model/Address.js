@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const AddressSchema = new mongoose.Schema(
@@ -46,3 +48,5 @@ AddressSchema.index(
 module.exports = mongoose.model("Address", AddressSchema);
 
 // Mongoose model for caching X user data
+
+

@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 "use client";
 
 import { useState } from "react";
@@ -109,3 +111,5 @@ function PaymentForm() {
 const WrappedPaymentForm = SideBarLayOut(PaymentForm);
 
 export default WrappedPaymentForm;
+
+

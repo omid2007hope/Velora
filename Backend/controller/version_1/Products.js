@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const productService = require("../../service/version_1/Products");
 
 async function listProducts(req, res) {
@@ -55,3 +57,5 @@ module.exports = {
   getProduct,
   createProduct,
 };
+
+

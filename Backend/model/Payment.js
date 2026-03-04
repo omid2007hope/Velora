@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
 
 const PaymentSchema = new mongoose.Schema(
@@ -37,3 +39,5 @@ const PaymentSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Payment", PaymentSchema);
+
+

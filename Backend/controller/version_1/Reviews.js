@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const reviewService = require("../../service/version_1/Reviews");
 
 async function listReviews(req, res) {
@@ -42,3 +44,5 @@ module.exports = {
   listReviews,
   createReview,
 };
+
+

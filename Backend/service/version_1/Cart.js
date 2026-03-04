@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const model = require("../../model/Cart");
 const BaseService = require("../BaseService");
 
@@ -91,3 +93,5 @@ module.exports = new (class CartService extends BaseService {
       .lean();
   }
 })(model);
+
+

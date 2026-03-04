@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const path = require("path");
 
 // Load env vars from backend/.env and backend/.env.local (local overrides)
@@ -56,3 +58,5 @@ connectDB()
   .catch((err) => {
     console.error("Failed to connect to database:", err);
   });
+
+

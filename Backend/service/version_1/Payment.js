@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const model = require("../../model/Payment");
 const BaseService = require("../BaseService");
 const crypto = require("crypto");
@@ -65,3 +67,5 @@ module.exports = new (class PaymentService extends BaseService {
     };
   }
 })(model);
+
+

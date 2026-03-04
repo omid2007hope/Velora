@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 "use client";
 
 // src/pages/AccountSettings.jsx
@@ -192,3 +194,5 @@ const WrappedAccountSettings = SideBarLayOut(AccountSettings);
 
 // Export wrapped component
 export default WrappedAccountSettings;
+
+

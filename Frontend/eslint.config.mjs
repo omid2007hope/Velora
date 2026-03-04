@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
@@ -21,3 +23,5 @@ export default defineConfig([
     },
   },
 ]);
+
+

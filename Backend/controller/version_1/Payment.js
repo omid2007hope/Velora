@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const PaymentService = require("../../service/version_1/Payment");
 
 async function PaymentDetails(req, res) {
@@ -64,3 +66,5 @@ async function PaymentDetails(req, res) {
 module.exports = {
   PaymentDetails,
 };
+
+

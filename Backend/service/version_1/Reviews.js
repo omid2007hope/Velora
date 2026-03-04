@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 const model = require("../../model/Review");
 const BaseService = require("../BaseService");
 
@@ -18,3 +20,5 @@ module.exports = new (class Reviews extends BaseService {
     return this.createObject(payload);
   }
 })(model);
+
+

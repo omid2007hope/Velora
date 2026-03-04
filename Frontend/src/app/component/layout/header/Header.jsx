@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 "use client";
 
 import { useEffect, useState } from "react";
@@ -355,3 +357,5 @@ export default function Header() {
     </div>
   );
 }
+
+

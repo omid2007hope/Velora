@@ -1,3 +1,5 @@
+// © 2026 Omid Teimory. All rights reserved.
+// Signature: OmidTeimory-2026
 import { useNavigate } from "react-router-dom";
 import PromoCarousel from "./PromoBanner";
 
@@ -39,3 +41,5 @@ export default function Promo() {
     </div>
   );
 }
+
+
