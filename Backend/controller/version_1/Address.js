@@ -4,32 +4,37 @@ async function CustomerAddress(req, res) {
   try {
     const { country, city, street, postalCode } = req.body || {};
 
-    if (!country || !city || !street || !postalCode) {
+    const normalizedInput = {
+      country: typeof country === "string" ? country.trim() : "",
+      city: typeof city === "string" ? city.trim() : "",
+      street: typeof street === "string" ? street.trim() : "",
+      postalCode: typeof postalCode === "string" ? postalCode.trim() : "",
+    };
+
+    if (
+      !normalizedInput.country ||
+      !normalizedInput.city ||
+      !normalizedInput.street ||
+      !normalizedInput.postalCode
+    ) {
       return res.status(400).json({
         error: "Missing required fields",
         required: ["country", "city", "street", "postalCode"],
       });
     }
 
-    const customerAddressNormalization = {
-      country,
-      city,
-      street,
-      postalCode,
-    };
-
     const sendCustomerAddress = await CustomerAddressService.CustomerAddress(
-      customerAddressNormalization,
+      normalizedInput,
     );
 
     if (sendCustomerAddress?.existed) {
       return res.status(409).json({
-        error: "Customer already exists with this email",
+        error: "Address already exists",
         data: sendCustomerAddress.data,
       });
     }
 
-    console.log("Controller: customer registration request received");
+    console.log("Controller: address create request received");
 
     return res.status(201).json(sendCustomerAddress);
   } catch (error) {
@@ -37,7 +42,7 @@ async function CustomerAddress(req, res) {
 
     if (error?.code === 11000) {
       return res.status(409).json({
-        error: "Customer already exists with this email",
+        error: "Address already exists",
       });
     }
 

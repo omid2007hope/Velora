@@ -3,18 +3,21 @@ const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerAddress extends BaseService {
   async CustomerAddress({ country, city, street, postalCode }) {
-    console.log("Service: processing customer registration");
+    console.log("Service: processing address request");
 
     const customerAddressNormalization = {
-      country: country.toLowerCase().trim(),
-      city: city.toLowerCase().trim(),
-      street: street.toLowerCase().trim(),
-      postalCode: postalCode.toLowerCase().trim(),
+      country: String(country).toLowerCase().trim(),
+      city: String(city).toLowerCase().trim(),
+      street: String(street).toLowerCase().trim(),
+      postalCode: String(postalCode).toLowerCase().trim(),
     };
 
     const searchTheDataBase = await this.model
       .findOne({
+        country: customerAddressNormalization.country,
+        city: customerAddressNormalization.city,
         street: customerAddressNormalization.street,
+        postalCode: customerAddressNormalization.postalCode,
       })
       .lean();
 
@@ -23,10 +26,10 @@ module.exports = new (class CustomerAddress extends BaseService {
         source: "database",
         existed: true,
         data: {
-          country: customerAddressNormalization.country,
-          city: customerAddressNormalization.city,
-          street: customerAddressNormalization.street,
-          postalCode: customerAddressNormalization.postalCode,
+          country: searchTheDataBase.country,
+          city: searchTheDataBase.city,
+          street: searchTheDataBase.street,
+          postalCode: searchTheDataBase.postalCode,
         },
       };
     }
