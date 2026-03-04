@@ -26,6 +26,7 @@ module.exports = new (class CustomerAddress extends BaseService {
         source: "database",
         existed: true,
         data: {
+          _id: searchTheDataBase._id,
           country: searchTheDataBase.country,
           city: searchTheDataBase.city,
           street: searchTheDataBase.street,
@@ -42,6 +43,7 @@ module.exports = new (class CustomerAddress extends BaseService {
       source: "created",
       existed: false,
       data: {
+        _id: saveCustomerAddress._id,
         country: saveCustomerAddress.country,
         city: saveCustomerAddress.city,
         street: saveCustomerAddress.street,

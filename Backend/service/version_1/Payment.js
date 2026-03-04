@@ -41,6 +41,7 @@ module.exports = new (class PaymentService extends BaseService {
         source: "database",
         existed: true,
         data: {
+          _id: searchTheDataBase._id,
           expiry: searchTheDataBase.expiry,
           name: searchTheDataBase.name,
           cardLast4: searchTheDataBase.cardLast4,
@@ -56,6 +57,7 @@ module.exports = new (class PaymentService extends BaseService {
       source: "created",
       existed: false,
       data: {
+        _id: saveCustomerPaymentDetails._id,
         expiry: saveCustomerPaymentDetails.expiry,
         name: saveCustomerPaymentDetails.name,
         cardLast4: saveCustomerPaymentDetails.cardLast4,

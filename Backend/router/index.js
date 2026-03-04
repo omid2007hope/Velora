@@ -53,6 +53,7 @@ router.post("/server/products/:productId/reviews", createReview);
 
 // Cart
 router.post("/server/cart", getCart);
+router.get("/server/cart", getCart); // support GET for tests/tools
 router.post("/server/cart/item", addItem);
 router.patch("/server/cart/item", updateQuantity);
 router.delete("/server/cart/item", removeItem);

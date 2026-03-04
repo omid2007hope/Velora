@@ -31,6 +31,7 @@ module.exports = new (class CustomerDetails extends BaseService {
         source: "updated",
         existed: true,
         data: {
+          _id: updatedCustomerDetails._id,
           phoneNumber: updatedCustomerDetails.phoneNumber,
           dateOfBirth: updatedCustomerDetails.dateOfBirth,
           gender: updatedCustomerDetails.gender,
@@ -46,6 +47,7 @@ module.exports = new (class CustomerDetails extends BaseService {
       source: "created",
       existed: false,
       data: {
+        _id: saveCustomerData._id,
         phoneNumber: saveCustomerData.phoneNumber,
         dateOfBirth: saveCustomerData.dateOfBirth,
         gender: saveCustomerData.gender,

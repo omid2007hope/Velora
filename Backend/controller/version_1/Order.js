@@ -65,7 +65,13 @@ async function createOrder(req, res) {
       currency,
     });
 
-    return res.status(201).json({ data: order, paymentIntent: intent });
+    const responseBody = {
+      _id: order?._id,
+      data: order,
+      paymentIntent: intent,
+    };
+
+    return res.status(201).json(responseBody);
   } catch (error) {
     console.error("createOrder error:", error.message);
     return res.status(500).json({ error: "Internal server error" });

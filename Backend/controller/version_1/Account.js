@@ -28,13 +28,18 @@ async function CustomerDetails(req, res) {
       customerDetailsNormalization,
     );
 
+    const responseBody = {
+      _id: sendCustomerDetails?.data?._id,
+      ...sendCustomerDetails,
+    };
+
     if (sendCustomerDetails?.existed) {
-      return res.status(200).json(sendCustomerDetails);
+      return res.status(200).json(responseBody);
     }
 
     console.log("Controller: customer details request received");
 
-    return res.status(201).json(sendCustomerDetails);
+    return res.status(201).json(responseBody);
   } catch (error) {
     console.error("CustomerDetails error:", error.message);
 
