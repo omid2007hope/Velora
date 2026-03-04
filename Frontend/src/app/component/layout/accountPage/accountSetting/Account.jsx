@@ -1,8 +1,8 @@
 // src/pages/AccountSettings.jsx
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SideBarLayOut from "./AccountLayout";
-import FetchCustomerDetails from "../../../../api/API_CustomerDetails";
+import FetchCustomerDetails from "../../../../api/API_Account";
 
 function AccountSettings() {
   const [user, setUser] = useState({
@@ -13,35 +13,6 @@ function AccountSettings() {
     dateOfBirth: "",
     gender: "",
   });
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("user");
-      if (!raw) return;
-
-      const parsed = JSON.parse(raw);
-
-      let firstName = "";
-      let lastName = "";
-
-      if (parsed.fullName) {
-        const split = parsed.fullName.split(" ");
-        firstName = split[0] || "";
-        lastName = split.slice(1).join(" ") || "";
-      }
-
-      setUser({
-        firstName: firstName || "",
-        lastName: lastName || "",
-        email: parsed.email || "",
-        phoneNumber: parsed.phoneNumber || "",
-        dateOfBirth: parsed.dateOfBirth || "",
-        gender: parsed.gender || "",
-      });
-    } catch {
-      // ignore invalid JSON
-    }
-  }, []);
 
   function onChange(name, value) {
     setUser((prev) => ({ ...prev, [name]: value }));
@@ -60,13 +31,19 @@ function AccountSettings() {
 
     if (formatted) {
       try {
-        await FetchCustomerDetails(formatted);
+        const response = await FetchCustomerDetails(formatted);
+        const savedData = response?.data || formatted;
+
+        setUser((prev) => ({
+          ...prev,
+          phoneNumber: savedData.phoneNumber || prev.phoneNumber,
+          dateOfBirth: savedData.dateOfBirth || prev.dateOfBirth,
+          gender: savedData.gender || prev.gender,
+        }));
       } catch (error) {
         alert("Signup failed. Please try again.");
         return;
       }
-      localStorage.setItem("user", JSON.stringify(formatted));
-      window.dispatchEvent(new Event("user-updated"));
       alert("Account updated");
     } else {
       alert("Data dose not exist");

@@ -7,7 +7,7 @@ async function FetchCustomerDetails(customerDetails) {
   if (customerDetails) {
     try {
       const response = await axios.post(
-        `${API_BaseURL}/server/customer/details`,
+        `${API_BaseURL}/server/customer/login/account`,
         customerDetails,
       );
       return response.data;

@@ -16,7 +16,9 @@ async function loginIntoTheAccount(req, res) {
       password: password.trim(),
     };
 
-    const sendLoginData = await loginService.loginService(loginDataNormalization);
+    const sendLoginData = await loginService.loginService(
+      loginDataNormalization,
+    );
 
     if (!sendLoginData?.authenticated) {
       return res.status(401).json({

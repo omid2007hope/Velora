@@ -1,20 +1,15 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GoogleSignIn from "./Google";
-import FetchCustomerData from "../../../../api/API_Customer";
+import FetchCustomerData from "../../../../api/API_Register";
 
 export default function SignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-
-  const [db, setDb] = useState(() => {
-    if (typeof window === "undefined") return [];
-    return JSON.parse(localStorage.getItem("savedUser")) || [];
-  });
 
   async function Signup() {
     if (!fullName.trim()) {
@@ -38,12 +33,6 @@ export default function SignupPopup({ open, setOpen }) {
       return;
     }
 
-    const already = db.some((u) => u.email === email.trim());
-    if (already) {
-      alert("An account with this email already exists. Please sign in.");
-      return;
-    }
-
     const newUser = {
       fullName: fullName.trim(),
       email: email.trim(),
@@ -59,9 +48,6 @@ export default function SignupPopup({ open, setOpen }) {
       return;
     }
 
-    const newDB = [...db, newUser];
-    setDb(newDB);
-
     // Close signup popup
     setOpen(false);
 
@@ -73,34 +59,7 @@ export default function SignupPopup({ open, setOpen }) {
 
   function handleGoogleSignup(token) {
     const payload = JSON.parse(atob(token.split(".")[1]));
-
-    const fullName = payload.name;
-    const email = payload.email;
-    const picture = payload.picture;
-
-    let db = JSON.parse(localStorage.getItem("savedUser")) || [];
-
-    const exists = db.find((u) => u.email === email);
-
-    // If already registered → show login popup instead
-    if (exists) {
-      setOpen(false);
-      setTimeout(() => {
-        document.dispatchEvent(new CustomEvent("open-login-popup"));
-      }, 200);
-      return;
-    }
-
-    const newUser = {
-      fullName,
-      email,
-      password: null,
-      picture,
-      google: true,
-    };
-
-    db.push(newUser);
-    localStorage.setItem("savedUser", JSON.stringify(db));
+    console.log("Google signup requested for:", payload.email);
 
     setOpen(false);
 
@@ -109,11 +68,6 @@ export default function SignupPopup({ open, setOpen }) {
       document.dispatchEvent(new CustomEvent("open-login-popup"));
     }, 200);
   }
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("savedUser", JSON.stringify(db));
-  }, [db]);
 
   function goBack() {
     setOpen(false);

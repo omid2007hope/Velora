@@ -24,38 +24,29 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       return;
     }
 
-    if (email && password) {
-      try {
-        const givenLoginData = {
-          email: email.toLowerCase().trim(),
-          password: password.trim(),
-        };
+    try {
+      const givenLoginData = {
+        email: email.toLowerCase().trim(),
+        password: password.trim(),
+      };
 
-        await FetchLoginData(givenLoginData);
-      } catch (error) {
-        alert("Signup failed. Please try again.");
+      const response = await FetchLoginData(givenLoginData);
+      const user = response?.data;
+
+      if (!user?.fullName) {
+        alert("Login failed. Please try again.");
         return;
       }
+
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+      setOpen(false);
+      navigate("/account");
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || "Incorrect email or password";
+      alert(message);
     }
-
-    const saved =
-      typeof window === "undefined"
-        ? []
-        : JSON.parse(localStorage.getItem("savedUser")) || [];
-
-    const match = saved.find(
-      (x) => x.email === email.trim() && x.password === password.trim(),
-    );
-
-    if (!match) {
-      alert("Incorrect password or email");
-      return;
-    }
-
-    localStorage.setItem("user", JSON.stringify(match));
-    setUser(match);
-    setOpen(false);
-    navigate("/account");
   }
 
   function openSignupFlow() {
@@ -70,25 +61,12 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     const fullName = payload.name;
     const picture = payload.picture;
 
-    let saved =
-      typeof window === "undefined"
-        ? []
-        : JSON.parse(localStorage.getItem("savedUser")) || [];
-
-    let user = saved.find((u) => u.email === email);
-
-    if (!user) {
-      user = {
-        fullName,
-        email,
-        password: null,
-        picture,
-        google: true,
-      };
-
-      saved = [...saved, user];
-      localStorage.setItem("savedUser", JSON.stringify(saved));
-    }
+    const user = {
+      fullName,
+      email,
+      picture,
+      google: true,
+    };
 
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);

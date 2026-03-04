@@ -1,9 +1,10 @@
-const customerDetailsService = require("../../service/version_1/CustomerDetails");
+const customerDetailsService = require("../../service/version_1/Account");
 
 async function CustomerDetails(req, res) {
   try {
     const { phoneNumber, dateOfBirth, gender } = req.body || {};
-    const normalizedPhone = typeof phoneNumber === "string" ? phoneNumber.trim() : "";
+    const normalizedPhone =
+      typeof phoneNumber === "string" ? phoneNumber.trim() : "";
     const normalizedDateOfBirth =
       typeof dateOfBirth === "string" ? dateOfBirth.trim() : "";
     const normalizedGender = typeof gender === "string" ? gender.trim() : "";

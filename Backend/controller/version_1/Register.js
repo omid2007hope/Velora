@@ -1,4 +1,4 @@
-const customerService = require("../../service/version_1/Customer");
+const customerService = require("../../service/version_1/Register");
 
 async function CustomerData(req, res) {
   try {

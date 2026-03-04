@@ -1,4 +1,4 @@
-const model = require("../../model/Customer");
+const model = require("../../model/Register");
 const BaseService = require("../BaseService");
 const crypto = require("crypto");
 
