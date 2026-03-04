@@ -22,6 +22,21 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
+    oldPrice: {
+      type: Number,
+      min: 0,
+    },
+
+    newPrice: {
+      type: Number,
+      min: 0,
+    },
+
+    discount: {
+      type: String,
+      trim: true,
+    },
+
     category: {
       type: String,
       required: true,
@@ -33,6 +48,17 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+
+    image: {
+      type: String,
+      trim: true,
+    },
+
+    NewArrivals: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
 
     color: [
@@ -48,6 +74,18 @@ const ProductSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+
+    highlights: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    details: {
+      type: String,
+      trim: true,
+    },
 
     reviews: [
       {
