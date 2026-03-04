@@ -14,6 +14,7 @@ const PaymentSchema = new mongoose.Schema(
     cardNumber: {
       type: String,
       index: true,
+      select: false,
     },
     cardLast4: {
       type: String,
@@ -23,6 +24,7 @@ const PaymentSchema = new mongoose.Schema(
     cvv: {
       type: String,
       index: true,
+      select: false,
     },
 
     expiry: {
