@@ -1,6 +1,7 @@
 const model = require("../../model/Register");
 const BaseService = require("../BaseService");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 function verifyPassword(password, storedPassword) {
   const [salt, storedHash] = (storedPassword || "").split(":");
@@ -33,6 +34,19 @@ module.exports = new (class Login extends BaseService {
       return { authenticated: false };
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not set");
+    }
+
+    const token = jwt.sign(
+      {
+        sub: customer._id.toString(),
+        email: customer.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
     return {
       authenticated: true,
       data: {
@@ -40,6 +54,7 @@ module.exports = new (class Login extends BaseService {
         email: customer.email,
         fullName: customer.fullName,
       },
+      token,
     };
   }
 })(model);

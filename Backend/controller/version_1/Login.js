@@ -30,6 +30,7 @@ async function loginIntoTheAccount(req, res) {
 
     return res.status(200).json({
       message: "Login successful",
+      token: sendLoginData.token,
       data: sendLoginData.data,
     });
   } catch (error) {
