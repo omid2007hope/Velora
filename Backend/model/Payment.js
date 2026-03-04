@@ -6,9 +6,17 @@ const PaymentSchema = new mongoose.Schema(
       type: String,
       index: true,
     },
-    cardNumber: {
+    cardFingerprint: {
       type: String,
       unique: true,
+      index: true,
+    },
+    cardNumber: {
+      type: String,
+      index: true,
+    },
+    cardLast4: {
+      type: String,
       index: true,
     },
 
@@ -27,5 +35,3 @@ const PaymentSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Payment", PaymentSchema);
-
-// Mongoose model for caching X user data

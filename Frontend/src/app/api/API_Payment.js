@@ -1,0 +1,26 @@
+import axios from "axios";
+import { API_BaseURL } from "./API_BaseURL";
+
+async function FetchCustomerPaymentDetails(customerPaymentDetails) {
+  console.log("customerPaymentDetails API:", customerPaymentDetails);
+
+  if (customerPaymentDetails) {
+    try {
+      const response = await axios.post(
+        `${API_BaseURL}/server/customer/login/account/payment`,
+        customerPaymentDetails,
+      );
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.error || error.response?.data || error.message;
+      console.error("Request failed:", message);
+      throw error;
+    }
+  } else {
+    alert("Failed to get CustomerDetails from API_CustomerDetails.js");
+    return;
+  }
+}
+
+export default FetchCustomerPaymentDetails;
