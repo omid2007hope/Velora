@@ -2,13 +2,8 @@
 // Signature: OmidTeimory-2026
 const model = require("../../model/Register");
 const BaseService = require("../BaseService");
-const crypto = require("crypto");
-
-function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
-  return `${salt}:${hash}`;
-}
+const bcrypt = require("bcryptjs");
+const SALT_ROUNDS = 12;
 
 module.exports = new (class Customer extends BaseService {
   async customerRegister({ email, fullName, password }) {
@@ -17,7 +12,7 @@ module.exports = new (class Customer extends BaseService {
     const customerDataNormalization = {
       email: email.trim().toLowerCase(),
       fullName: fullName.trim(),
-      password: hashPassword(password),
+      password: await bcrypt.hash(password, SALT_ROUNDS),
     };
 
     const searchTheDataBase = await this.model

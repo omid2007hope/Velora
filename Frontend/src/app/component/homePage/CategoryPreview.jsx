@@ -4,7 +4,7 @@ import Men from "../../assets/image/Men.webp";
 import Women from "../../assets/image/Women.webp";
 import New from "../../assets/image/New.webp";
 import Accessories from "../../assets/image/Accessories.webp";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Preview() {
   const categories = [

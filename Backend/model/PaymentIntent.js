@@ -55,6 +55,11 @@ const PaymentIntentSchema = new mongoose.Schema(
       uppercase: true,
       default: "USD",
     },
+    clientSecret: {
+      type: String,
+      trim: true,
+      select: false,
+    },
   },
   { versionKey: false, timestamps: true },
 );

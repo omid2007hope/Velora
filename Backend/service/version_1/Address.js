@@ -4,10 +4,11 @@ const model = require("../../model/Address");
 const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerAddress extends BaseService {
-  async CustomerAddress({ country, city, street, postalCode }) {
+  async CustomerAddress({ userId, country, city, street, postalCode }) {
     console.log("Service: processing address request");
 
     const customerAddressNormalization = {
+      userId,
       country: String(country).toLowerCase().trim(),
       city: String(city).toLowerCase().trim(),
       street: String(street).toLowerCase().trim(),
@@ -16,6 +17,7 @@ module.exports = new (class CustomerAddress extends BaseService {
 
     const searchTheDataBase = await this.model
       .findOne({
+        userId: customerAddressNormalization.userId,
         country: customerAddressNormalization.country,
         city: customerAddressNormalization.city,
         street: customerAddressNormalization.street,
@@ -29,6 +31,7 @@ module.exports = new (class CustomerAddress extends BaseService {
         existed: true,
         data: {
           _id: searchTheDataBase._id,
+          userId: searchTheDataBase.userId,
           country: searchTheDataBase.country,
           city: searchTheDataBase.city,
           street: searchTheDataBase.street,
@@ -46,6 +49,7 @@ module.exports = new (class CustomerAddress extends BaseService {
       existed: false,
       data: {
         _id: saveCustomerAddress._id,
+        userId: saveCustomerAddress.userId,
         country: saveCustomerAddress.country,
         city: saveCustomerAddress.city,
         street: saveCustomerAddress.street,

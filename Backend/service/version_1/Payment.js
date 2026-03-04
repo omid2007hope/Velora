@@ -1,69 +1,55 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+const crypto = require("crypto");
+const stripe = require("../../utils/stripeClient");
 const model = require("../../model/Payment");
 const BaseService = require("../BaseService");
-const crypto = require("crypto");
-
-function hashSensitiveValue(value) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(String(value), salt, 64).toString("hex");
-  return `${salt}:${hash}`;
-}
-
-function createCardFingerprint(cardNumber) {
-  return crypto
-    .createHash("sha256")
-    .update(String(cardNumber))
-    .digest("hex");
-}
 
 module.exports = new (class PaymentService extends BaseService {
-  async PaymentDetails({ name, cardNumber, cvv, expiry }) {
-    console.log("Service: processing payment request");
+  async savePaymentMethod({ userId, paymentMethodId, billingName }) {
+    console.log("Service: saving payment method");
 
-    const normalizedCardNumber = String(cardNumber).replace(/\D/g, "");
+    const stripeMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
 
-    const customerPaymentDetailsNormalization = {
-      expiry: String(expiry).trim(),
-      name: String(name).trim(),
-      cardNumber: hashSensitiveValue(normalizedCardNumber),
-      cvv: hashSensitiveValue(cvv),
-      cardFingerprint: createCardFingerprint(normalizedCardNumber),
-      cardLast4: normalizedCardNumber.slice(-4),
+    if (!stripeMethod || stripeMethod.type !== "card") {
+      throw Object.assign(new Error("Unsupported payment method"), {
+        status: 400,
+      });
+    }
+
+    const card = stripeMethod.card || {};
+
+    const payload = {
+      userId,
+      provider: "stripe",
+      paymentMethodId,
+      brand: card.brand,
+      last4: card.last4,
+      expMonth: card.exp_month,
+      expYear: card.exp_year,
+      billingName:
+        billingName || stripeMethod.billing_details?.name || undefined,
     };
 
-    const searchTheDataBase = await this.model
-      .findOne({
-        cardFingerprint: customerPaymentDetailsNormalization.cardFingerprint,
-      })
-      .lean();
+    const existing = await this.model
+      .findOne({ paymentMethodId })
+      .lean()
+      .catch(() => null);
 
-    if (searchTheDataBase) {
+    if (existing) {
       return {
         source: "database",
         existed: true,
-        data: {
-          _id: searchTheDataBase._id,
-          expiry: searchTheDataBase.expiry,
-          name: searchTheDataBase.name,
-          cardLast4: searchTheDataBase.cardLast4,
-        },
+        data: existing,
       };
     }
 
-    const saveCustomerPaymentDetails = await this.createObject(
-      customerPaymentDetailsNormalization,
-    );
+    const saved = await this.createObject(payload);
 
     return {
       source: "created",
       existed: false,
-      data: {
-        _id: saveCustomerPaymentDetails._id,
-        expiry: saveCustomerPaymentDetails.expiry,
-        name: saveCustomerPaymentDetails.name,
-        cardLast4: saveCustomerPaymentDetails.cardLast4,
-      },
+      data: saved,
     };
   }
 })(model);

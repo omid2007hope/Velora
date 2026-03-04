@@ -1,1 +1,28 @@
-.env.local
+# Root ignores
+.env
+.env.*
+*.log
+.DS_Store
+node_modules
+.next
+dist
+build
+
+# Backend
+Backend/node_modules
+Backend/.env
+Backend/.env.local
+Backend/coverage
+
+# Frontend
+Frontend/node_modules
+Frontend/node_modules.old
+Frontend/.next
+Frontend/.env
+Frontend/.env.local
+Frontend/coverage
+
+# Editors/IDE
+.vscode
+.idea
+.npmrc

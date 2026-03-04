@@ -4,6 +4,13 @@ const mongoose = require("mongoose");
 
 const CustomerDetailsSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
+      unique: true,
+      index: true,
+    },
     gender: {
       type: String,
       index: true,
@@ -18,7 +25,6 @@ const CustomerDetailsSchema = new mongoose.Schema(
       type: String,
       index: true,
       unique: true,
-      sparse: true,
       trim: true,
     },
   },

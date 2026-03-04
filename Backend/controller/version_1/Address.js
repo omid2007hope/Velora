@@ -5,6 +5,11 @@ const CustomerAddressService = require("../../service/version_1/Address");
 async function CustomerAddress(req, res) {
   try {
     const { country, city, street, postalCode } = req.body || {};
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     const normalizedInput = {
       country: typeof country === "string" ? country.trim() : "",
@@ -25,9 +30,10 @@ async function CustomerAddress(req, res) {
       });
     }
 
-    const sendCustomerAddress = await CustomerAddressService.CustomerAddress(
-      normalizedInput,
-    );
+    const sendCustomerAddress = await CustomerAddressService.CustomerAddress({
+      userId,
+      ...normalizedInput,
+    });
 
     const responseBody = {
       _id: sendCustomerAddress?.data?._id,

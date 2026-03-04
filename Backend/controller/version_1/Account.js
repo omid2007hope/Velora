@@ -5,6 +5,11 @@ const customerDetailsService = require("../../service/version_1/Account");
 async function CustomerDetails(req, res) {
   try {
     const { phoneNumber, dateOfBirth, gender } = req.body || {};
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     console.log(phoneNumber, dateOfBirth, gender);
 
@@ -26,9 +31,10 @@ async function CustomerDetails(req, res) {
       gender: normalizedGender,
     };
 
-    const sendCustomerDetails = await customerDetailsService.customerDetails(
-      customerDetailsNormalization,
-    );
+    const sendCustomerDetails = await customerDetailsService.customerDetails({
+      userId,
+      ...customerDetailsNormalization,
+    });
 
     const responseBody = {
       _id: sendCustomerDetails?.data?._id,

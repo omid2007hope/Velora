@@ -9,15 +9,15 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { Link, useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export default function SignOutForm(props) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   function signout() {
     localStorage.removeItem("user");
     window.dispatchEvent(new Event("user-updated"));
-    navigate("/");
+    router.push("/");
   }
 
   return (

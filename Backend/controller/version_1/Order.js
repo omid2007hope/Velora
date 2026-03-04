@@ -1,70 +1,37 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-const mongoose = require("mongoose");
 const orderService = require("../../service/version_1/Order");
 const paymentIntentService = require("../../service/version_1/PaymentIntent");
-
-function isValidObjectId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
+const { isValidObjectId } = require("../../utils/validators");
 
 async function createOrder(req, res) {
   try {
+    const userId = req.user?.id;
+    if (!isValidObjectId(userId)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const {
-      userId,
-      guestEmail,
       items,
-      subtotal,
       shipping = 0,
       tax = 0,
-      total,
       currency = "USD",
       addressSnapshot,
     } = req.body || {};
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: "Order items are required" });
-    }
-
-    if (!total && total !== 0) {
-      return res.status(400).json({ error: "Order total is required" });
-    }
-
-    if (!addressSnapshot?.street || !addressSnapshot?.country) {
-      return res.status(400).json({
-        error: "Address snapshot is required",
-        required: ["street", "country", "city", "postalCode"],
-      });
-    }
-    if (userId && !isValidObjectId(userId)) {
-      return res.status(400).json({ error: "Invalid userId" });
-    }
-    const invalidItem = items.find(
-      (item) => !isValidObjectId(item.productId),
-    );
-    if (invalidItem) {
-      return res.status(400).json({
-        error: "Invalid productId in items",
-        value: invalidItem.productId,
-      });
-    }
-
     const order = await orderService.createOrder({
       userId,
-      guestEmail,
       items,
-      subtotal,
       shipping,
       tax,
-      total,
       currency,
       addressSnapshot,
     });
 
     const intent = await paymentIntentService.createForOrder({
       orderId: order._id,
-      amount: total,
-      currency,
+      amount: order.total,
+      currency: order.currency,
     });
 
     const responseBody = {
@@ -76,19 +43,21 @@ async function createOrder(req, res) {
     return res.status(201).json(responseBody);
   } catch (error) {
     console.error("createOrder error:", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res
+      .status(error.status || 500)
+      .json({ error: error.status ? error.message : "Internal server error" });
   }
 }
 
 async function listOrders(req, res) {
   try {
-    const { userId, guestEmail } = req.query || {};
+    const userId = req.user?.id;
+    if (!isValidObjectId(userId)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-    // Accept any userId value; ignore invalid ObjectId strings so tests with
-    // placeholder ids still succeed.
     const filter = {
-      userId: isValidObjectId(userId) ? userId : undefined,
-      guestEmail: guestEmail || undefined,
+      userId,
     };
 
     const orders = await orderService.listByUser(filter);
@@ -103,6 +72,11 @@ async function updateOrderStatus(req, res) {
   try {
     const { id } = req.params;
     const { paymentStatus, orderStatus } = req.body || {};
+    const userId = req.user?.id;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     if (!paymentStatus && !orderStatus) {
       return res.status(400).json({
@@ -114,6 +88,7 @@ async function updateOrderStatus(req, res) {
     }
 
     const updated = await orderService.updateStatus(id, {
+      userId,
       paymentStatus,
       orderStatus,
     });
@@ -123,7 +98,13 @@ async function updateOrderStatus(req, res) {
     }
 
     if (paymentStatus) {
-      await paymentIntentService.markStatus(id, paymentStatus);
+      const intentStatusMap = {
+        paid: "succeeded",
+        failed: "failed",
+        requires_action: "requires_action",
+      };
+      const intentStatus = intentStatusMap[paymentStatus] || paymentStatus;
+      await paymentIntentService.markStatus(id, intentStatus);
     }
 
     return res.status(200).json({ data: updated });

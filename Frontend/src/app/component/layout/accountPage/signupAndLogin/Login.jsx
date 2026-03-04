@@ -5,7 +5,7 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import SignupPopup from "./Register";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import GoogleSignIn from "./Google";
 import FetchLoginData from "../../../../api/API_LoginData";
 
@@ -14,7 +14,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   async function handleLogin() {
     if (!email.trim()) {
@@ -35,15 +35,19 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       const response = await FetchLoginData(givenLoginData);
       const user = response?.data;
 
-      if (!user?.fullName) {
+      if (!user?.fullName || !response?.token) {
         alert("Login failed. Please try again.");
         return;
       }
 
+      localStorage.setItem("token", response.token);
+      if (response.refreshToken) {
+        localStorage.setItem("refreshToken", response.refreshToken);
+      }
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
       setOpen(false);
-      navigate("/account");
+      router.push("/account");
     } catch (error) {
       const message =
         error?.response?.data?.error || "Incorrect email or password";
@@ -74,7 +78,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     setUser(user);
 
     setOpen(false);
-    navigate("/account");
+    router.push("/account");
   }
 
   useEffect(() => {

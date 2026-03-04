@@ -4,6 +4,12 @@ const mongoose = require("mongoose");
 
 const AddressSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
+      index: true,
+    },
     country: {
       type: String,
       index: true,
@@ -41,7 +47,7 @@ const AddressSchema = new mongoose.Schema(
 );
 
 AddressSchema.index(
-  { country: 1, city: 1, street: 1, postalCode: 1 },
+  { userId: 1, country: 1, city: 1, street: 1, postalCode: 1 },
   { unique: true },
 );
 

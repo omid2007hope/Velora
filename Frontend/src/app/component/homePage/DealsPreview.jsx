@@ -1,15 +1,23 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-import { Link, useNavigate } from "react-router-dom";
-import { products } from "../../../../utils/Products";
+"use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 import { addItem } from "../../redux/slice/BasketSlice";
-
-const preview = products.filter((x) => x.id < 5);
+import { fetchProducts } from "../../api/API_Products";
 
 export default function Deals() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const [preview, setPreview] = useState([]);
+
+  useEffect(() => {
+    fetchProducts({ isNew: true })
+      .then((data) => setPreview(data.slice(0, 4)))
+      .catch(() => setPreview([]));
+  }, []);
 
   function shopNow(item) {
     if (!item) return;
@@ -23,7 +31,7 @@ export default function Deals() {
       }),
     );
 
-    navigate("/order"); // go to checkout
+    router.push("/order"); // go to checkout
   }
 
   return (

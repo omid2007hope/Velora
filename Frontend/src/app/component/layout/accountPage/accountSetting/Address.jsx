@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
 import FetchCustomerAddress from "../../../../api/API_Address";
 
@@ -95,7 +95,7 @@ function AddressForm() {
             {isSaving ? "Saving..." : "Save"}
           </button>
 
-          <Link to="/">
+          <Link href="/">
             <button
               type="button"
               className="py-2 px-4 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"

@@ -24,7 +24,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { CircleUserRound } from "lucide-react";
 import { useSelector } from "react-redux";
 

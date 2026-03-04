@@ -1,20 +1,19 @@
+"use client";
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { clearBasket } from "../../../redux/slice/BasketSlice";
+import { createOrder } from "../../../api/API_Order";
 
 export default function Checkout({ product, setStep }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const [form, setForm] = useState({
     email: "",
     fullName: "",
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
     street: "",
     country: "",
     city: "",
@@ -26,16 +25,11 @@ export default function Checkout({ product, setStep }) {
       const loadUser = JSON.parse(localStorage.getItem("user")) || {};
       const loadAddress =
         JSON.parse(localStorage.getItem("savedAddress")) || {};
-      const loadPayment =
-        JSON.parse(localStorage.getItem("savedPayment")) || {};
 
       setForm((prev) => ({
         ...prev,
         email: loadUser.email || prev.email,
         fullName: loadUser.fullName || prev.fullName,
-        cardNumber: loadPayment.cardNumber || prev.cardNumber,
-        expiry: loadPayment.expiry || prev.expiry,
-        cvv: loadPayment.cvv || prev.cvv,
         street: loadAddress.street || prev.street,
         country: loadAddress.country || prev.country,
         city: loadAddress.city || prev.city,
@@ -69,17 +63,7 @@ export default function Checkout({ product, setStep }) {
   };
 
   const validate = () => {
-    const required = [
-      "email",
-      "fullName",
-      "cardNumber",
-      "expiry",
-      "cvv",
-      "street",
-      "country",
-      "city",
-      "postal",
-    ];
+    const required = ["email", "fullName", "street", "country", "city", "postal"];
 
     for (const key of required) {
       if (!form[key]?.trim()) {
@@ -88,54 +72,71 @@ export default function Checkout({ product, setStep }) {
       }
     }
 
-    if (form.cardNumber.replace(/\D/g, "").length < 12) {
-      alert("Card number looks too short.");
-      return false;
-    }
-
-    if (form.cvv.replace(/\D/g, "").length < 3) {
-      alert("CVV looks too short.");
-      return false;
-    }
-
     return true;
   };
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!validate()) return;
+    if (!cartItems.length) {
+      alert("Add items to your cart first.");
+      return;
+    }
 
-    localStorage.setItem(
-      "savedPayment",
-      JSON.stringify({
-        cardNumber: form.cardNumber,
-        expiry: form.expiry,
-        cvv: form.cvv,
-      }),
-    );
+    try {
+      localStorage.setItem(
+        "savedAddress",
+        JSON.stringify({
+          street: form.street,
+          country: form.country,
+          city: form.city,
+          postal: form.postal,
+        }),
+      );
 
-    localStorage.setItem(
-      "savedAddress",
-      JSON.stringify({
-        street: form.street,
-        country: form.country,
-        city: form.city,
-        postal: form.postal,
-      }),
-    );
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          fullName: form.fullName,
+          email: form.email,
+        }),
+      );
+      window.dispatchEvent(new Event("user-updated"));
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        fullName: form.fullName,
-        email: form.email,
-      }),
-    );
-    window.dispatchEvent(new Event("user-updated"));
+      const payload = {
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+          selectedColor: item.selectedColor,
+          selectedSize: item.selectedSize,
+        })),
+        shipping,
+        tax,
+        currency: "USD",
+        addressSnapshot: {
+          street: form.street,
+          country: form.country,
+          city: form.city,
+          postalCode: form.postal,
+        },
+      };
 
-    dispatch(clearBasket());
-    alert("Payment submitted! A confirmation email is on its way.");
-    setStep(1);
-    navigate("/");
+      const orderResponse = await createOrder(payload);
+      dispatch(clearBasket());
+
+      if (orderResponse?.paymentIntent?.clientSecret) {
+        alert(
+          "Payment intent created. Use Stripe Elements to complete the payment with client secret:\n" +
+            orderResponse.paymentIntent.clientSecret,
+        );
+      } else {
+        alert("Order created. Payment pending.");
+      }
+      setStep(1);
+      router.push("/order");
+    } catch (err) {
+      console.error(err);
+      alert("Unable to submit order. Please login and try again.");
+    }
   };
 
   return (
@@ -172,7 +173,7 @@ export default function Checkout({ product, setStep }) {
             />
 
             <label htmlFor="checkout-name" className="sr-only">
-              Name on card
+              Full name
             </label>
             <input
               name="fullName"
@@ -180,45 +181,8 @@ export default function Checkout({ product, setStep }) {
               value={form.fullName}
               onChange={onChange}
               className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
-              placeholder="Name on card"
+              placeholder="Full name"
             />
-
-            <label htmlFor="checkout-card" className="sr-only">
-              Card number
-            </label>
-            <input
-              name="cardNumber"
-              id="checkout-card"
-              value={form.cardNumber}
-              onChange={onChange}
-              className="w-full border border-amber-950 rounded-md p-2 bg-orange-50"
-              placeholder="Card number"
-            />
-
-            <div className="grid grid-cols-2 gap-3">
-              <label htmlFor="checkout-expiry" className="sr-only">
-                Expiry date
-              </label>
-              <input
-                name="expiry"
-                id="checkout-expiry"
-                value={form.expiry}
-                onChange={onChange}
-                className="border border-amber-950 p-2 rounded-md bg-orange-50"
-                placeholder="MM/YY"
-              />
-              <label htmlFor="checkout-cvv" className="sr-only">
-                CVV
-              </label>
-              <input
-                name="cvv"
-                id="checkout-cvv"
-                value={form.cvv}
-                onChange={onChange}
-                className="border border-amber-950 p-2 rounded-md bg-orange-50"
-                placeholder="CVV"
-              />
-            </div>
 
             <label htmlFor="checkout-address" className="sr-only">
               Address
@@ -363,5 +327,3 @@ export default function Checkout({ product, setStep }) {
     </div>
   );
 }
-
-

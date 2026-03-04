@@ -4,34 +4,42 @@ const mongoose = require("mongoose");
 
 const PaymentSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
       index: true,
     },
-    cardFingerprint: {
+    provider: {
+      type: String,
+      default: "stripe",
+      index: true,
+    },
+    paymentMethodId: {
       type: String,
       unique: true,
+      required: true,
       index: true,
     },
-    cardNumber: {
+    brand: {
       type: String,
-      index: true,
-      select: false,
+      trim: true,
     },
-    cardLast4: {
+    last4: {
       type: String,
-      index: true,
+      trim: true,
     },
-
-    cvv: {
-      type: String,
-      index: true,
-      select: false,
+    expMonth: {
+      type: Number,
+      min: 1,
+      max: 12,
     },
-
-    expiry: {
+    expYear: {
+      type: Number,
+      min: 2000,
+    },
+    billingName: {
       type: String,
-      index: true,
+      trim: true,
     },
   },
 

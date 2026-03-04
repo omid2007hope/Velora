@@ -2,10 +2,27 @@
 // Signature: OmidTeimory-2026
 const express = require("express");
 const router = express.Router();
+const { requireAuth } = require("../middleware/auth");
+const { validateBody, validateQuery } = require("../middleware/validate");
+const {
+  registerSchema,
+  loginSchema,
+  addressSchema,
+  profileSchema,
+  cartItemSchema,
+  updateQuantitySchema,
+  orderSchema,
+  paymentMethodSchema,
+  refreshSchema,
+  removeItemSchema,
+} = require("../validation/schemas");
 
 const { CustomerData } = require("../controller/version_1/Register");
 const { CustomerDetails } = require("../controller/version_1/Account");
-const { loginIntoTheAccount } = require("../controller/version_1/Login");
+const {
+  loginIntoTheAccount,
+  refreshAccessToken,
+} = require("../controller/version_1/Login");
 const { CustomerAddress } = require("../controller/version_1/Address");
 const { PaymentDetails } = require("../controller/version_1/Payment");
 const {
@@ -34,15 +51,44 @@ router.get("/server", (req, res) => {
   return res.status(200).send("server is running");
 });
 
-router.post("/server/customer", CustomerData);
+router.post(
+  "/server/customer",
+  validateBody(registerSchema),
+  CustomerData,
+);
 
-router.post("/server/customer/login", loginIntoTheAccount);
+router.post(
+  "/server/customer/login",
+  validateBody(loginSchema),
+  loginIntoTheAccount,
+);
 
-router.post("/server/customer/login/account", CustomerDetails);
+router.post(
+  "/server/customer/token/refresh",
+  validateBody(refreshSchema),
+  refreshAccessToken,
+);
 
-router.post("/server/customer/login/account/address", CustomerAddress);
+router.post(
+  "/server/customer/login/account",
+  requireAuth,
+  validateBody(profileSchema),
+  CustomerDetails,
+);
 
-router.post("/server/customer/login/account/payment", PaymentDetails);
+router.post(
+  "/server/customer/login/account/address",
+  requireAuth,
+  validateBody(addressSchema),
+  CustomerAddress,
+);
+
+router.post(
+  "/server/customer/login/account/payment",
+  requireAuth,
+  validateBody(paymentMethodSchema),
+  PaymentDetails,
+);
 
 // Products
 router.post("/server/products", createProduct);
@@ -54,17 +100,41 @@ router.get("/server/products/:productId/reviews", listReviews);
 router.post("/server/products/:productId/reviews", createReview);
 
 // Cart
-router.post("/server/cart", getCart);
-router.get("/server/cart", getCart); // support GET for tests/tools
-router.post("/server/cart/item", addItem);
-router.patch("/server/cart/item", updateQuantity);
-router.delete("/server/cart/item", removeItem);
-router.delete("/server/cart", clearCart);
+router.post("/server/cart", requireAuth, getCart);
+router.get("/server/cart", requireAuth, getCart);
+router.post(
+  "/server/cart/item",
+  requireAuth,
+  validateBody(cartItemSchema),
+  addItem,
+);
+router.patch(
+  "/server/cart/item",
+  requireAuth,
+  validateBody(updateQuantitySchema),
+  updateQuantity,
+);
+router.delete(
+  "/server/cart/item",
+  requireAuth,
+  validateBody(removeItemSchema),
+  removeItem,
+);
+router.delete("/server/cart", requireAuth, clearCart);
 
 // Orders / Checkout
-router.post("/server/checkout/order", createOrder);
-router.get("/server/checkout/order", listOrders);
-router.patch("/server/checkout/order/:id", updateOrderStatus);
+router.post(
+  "/server/checkout/order",
+  requireAuth,
+  validateBody(orderSchema),
+  createOrder,
+);
+router.get("/server/checkout/order", requireAuth, listOrders);
+router.patch(
+  "/server/checkout/order/:id",
+  requireAuth,
+  updateOrderStatus,
+);
 
 module.exports = router;
 

@@ -3,7 +3,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { UserIcon, Menu, X } from "lucide-react";
 import SignOutForm from "./Signout";
 
@@ -12,6 +13,7 @@ function SideBarLayOut(WrappedComponent) {
     const [openSignOut, setOpenSignOut] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const pathname = usePathname();
 
     useEffect(() => {
       try {
@@ -31,22 +33,19 @@ function SideBarLayOut(WrappedComponent) {
     const navLinks = (onClickExtra) => (
       <>
         {links.map((link) => (
-          <NavLink
+          <Link
             key={link.name}
-            to={link.to}
-            end
+            href={link.to}
             onClick={onClickExtra}
-            className={({ isActive }) =>
-              [
-                "block w-full text-left px-3 py-2 rounded-md border-b border-l border-amber-950 shadow-md shadow-amber-950 text-sm transition",
-                isActive
-                  ? "bg-amber-950 text-white font-semibold"
-                  : "text-amber-950 hover:text-white hover:bg-amber-950",
-              ].join(" ")
-            }
+            className={[
+              "block w-full text-left px-3 py-2 rounded-md border-b border-l border-amber-950 shadow-md shadow-amber-950 text-sm transition",
+              pathname === link.to
+                ? "bg-amber-950 text-white font-semibold"
+                : "text-amber-950 hover:text-white hover:bg-amber-950",
+            ].join(" ")}
           >
             {link.name}
-          </NavLink>
+          </Link>
         ))}
 
         <button

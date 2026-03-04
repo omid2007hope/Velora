@@ -1,26 +1,49 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 const model = require("../../model/Cart");
+const Product = require("../../model/Products");
 const BaseService = require("../BaseService");
 
 module.exports = new (class CartService extends BaseService {
-  async getOrCreate({ userId, sessionId }) {
-    const query = userId ? { userId } : { sessionId };
-
-    let cart = await this.model.findOne(query).lean();
+  async getOrCreate({ userId }) {
+    let cart = await this.model.findOne({ userId }).lean();
     if (!cart) {
-      cart = await this.createObject({
-        userId: userId || null,
-        sessionId: sessionId || null,
+      const created = await this.createObject({
+        userId,
+        sessionId: null,
         items: [],
       });
-      cart = cart.toObject();
+      cart = created.toObject();
     }
     return cart;
   }
 
-  async upsertItem({ userId, sessionId, item }) {
-    const cart = await this.getOrCreate({ userId, sessionId });
+  async upsertItem({ userId, item }) {
+    const cart = await this.getOrCreate({ userId });
+
+    const product = await Product.findById(item.productId).lean();
+    if (!product) {
+      const error = new Error("Product not found");
+      error.status = 404;
+      throw error;
+    }
+
+    const priceValue =
+      typeof product.newPrice === "number" && product.newPrice > 0
+        ? product.newPrice
+        : product.price;
+    const priceSnapshot = {
+      oldPrice: product.oldPrice ?? product.price,
+      newPrice: priceValue,
+      discount: product.discount || "",
+      currency: "USD",
+    };
+
+    const productSnapshot = {
+      name: product.name,
+      image: product.imageUrl || product.image,
+      category: product.category,
+    };
 
     const items = cart.items || [];
     const idx = items.findIndex(
@@ -32,11 +55,16 @@ module.exports = new (class CartService extends BaseService {
 
     if (idx >= 0) {
       items[idx].quantity = item.quantity ?? items[idx].quantity;
-      items[idx].priceSnapshot = item.priceSnapshot || items[idx].priceSnapshot;
-      items[idx].productSnapshot =
-        item.productSnapshot || items[idx].productSnapshot;
+      items[idx].priceSnapshot = priceSnapshot;
+      items[idx].productSnapshot = productSnapshot;
     } else {
-      items.push(item);
+      items.push({
+        productId: product._id,
+        variant: item.variant || {},
+        quantity: item.quantity ?? 1,
+        priceSnapshot,
+        productSnapshot,
+      });
     }
 
     const updated = await this.model
@@ -50,8 +78,8 @@ module.exports = new (class CartService extends BaseService {
     return updated;
   }
 
-  async updateQuantity({ userId, sessionId, itemId, quantity }) {
-    const cart = await this.getOrCreate({ userId, sessionId });
+  async updateQuantity({ userId, itemId, quantity }) {
+    const cart = await this.getOrCreate({ userId });
     const items = cart.items || [];
     const idx = items.findIndex((x) => String(x._id) === String(itemId));
     if (idx === -1) return cart;
@@ -67,8 +95,8 @@ module.exports = new (class CartService extends BaseService {
       .lean();
   }
 
-  async removeItem({ userId, sessionId, itemId }) {
-    const cart = await this.getOrCreate({ userId, sessionId });
+  async removeItem({ userId, itemId }) {
+    const cart = await this.getOrCreate({ userId });
     const items = (cart.items || []).filter(
       (x) => String(x._id) !== String(itemId),
     );
@@ -82,8 +110,8 @@ module.exports = new (class CartService extends BaseService {
       .lean();
   }
 
-  async clear({ userId, sessionId }) {
-    const cart = await this.getOrCreate({ userId, sessionId });
+  async clear({ userId }) {
+    const cart = await this.getOrCreate({ userId });
     return this.model
       .findOneAndUpdate(
         { _id: cart._id },

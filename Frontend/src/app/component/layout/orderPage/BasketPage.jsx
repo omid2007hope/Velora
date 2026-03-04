@@ -1,7 +1,8 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+"use client";
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "../../../redux/slice/BasketSlice";
 
@@ -162,7 +163,7 @@ export default function ShoppingCart({ setStep, setProduct }) {
             </dl>
 
             <div className="mt-8 space-y-3">
-              <Link to="/">
+              <Link href="/">
                 <button className="w-full rounded-lg bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 hover:bg-amber-900">
                   Back
                 </button>

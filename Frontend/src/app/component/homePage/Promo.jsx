@@ -1,10 +1,10 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import PromoCarousel from "./PromoBanner";
 
 export default function Promo() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div className="relative overflow-hidden bg-orange-100 pt-20 md:pt-30 sm:pt-24 lg:pt-32 pb-8 sm:pb-8 lg:pb-8">
@@ -25,7 +25,7 @@ export default function Promo() {
 
             {/* Button */}
             <button
-              onClick={() => navigate("/products")}
+              onClick={() => router.push("/products")}
               className="inline-block mt-8 lg:mt-12 rounded-md bg-amber-950 px-10 py-4 text-center font-medium text-white hover:bg-amber-900 self-start ml-0 sm:ml-8 lg:ml-0"
             >
               Shop Collection

@@ -1,16 +1,22 @@
+"use client";
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 import { ArrowLeft, Filter } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import SearchBar from "./Searchbar.jsx";
-import { products } from "../../../../utils/Products";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../../api/API_Products";
 
 export default function ProductList() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get("category");
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const [searchText, setSearchText] = useState("");
+  const category = searchParams.get("category") || "";
+  const searchQuery = searchParams.get("search") || "";
+
+  const [searchText, setSearchText] = useState(searchQuery);
+  const [products, setProducts] = useState([]);
 
   const categories = ["Men", "Women", "Accessories", "Watch"];
 
@@ -20,31 +26,36 @@ export default function ProductList() {
     { name: "Accessories", path: "/products?category=Accessories" },
   ];
 
-  const handleSearchSubmit = (text) => {
-    setSearchText(text);
+  useEffect(() => {
+    setSearchText(searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    fetchProducts({
+      category: category || undefined,
+      search: searchQuery || undefined,
+    })
+      .then((data) => setProducts(data || []))
+      .catch(() => setProducts([]));
+  }, [category, searchQuery]);
+
+  const updateQuery = (nextCategory, nextSearch) => {
+    const params = new URLSearchParams();
+    if (nextCategory) params.set("category", nextCategory);
+    if (nextSearch) params.set("search", nextSearch);
+    const queryString = params.toString();
+    router.push(queryString ? `/products?${queryString}` : "/products");
   };
 
-  const filteredProducts = useMemo(() => {
-    let filtered = [...products];
+  const handleSearchSubmit = (text) => {
+    updateQuery(category, text);
+  };
 
-    // Category filter
-    if (query) {
-      if (query === "New") {
-        filtered = filtered.filter((x) => String(x.NewArrivals) === "true");
-      } else {
-        filtered = filtered.filter((x) => x.category === query);
-      }
-    }
+  const handleCategoryClick = (cat) => {
+    updateQuery(cat, searchQuery);
+  };
 
-    // Search filter
-    if (searchText.trim()) {
-      filtered = filtered.filter((x) =>
-        x.name.toLowerCase().includes(searchText.toLowerCase()),
-      );
-    }
-
-    return filtered;
-  }, [query, searchText]);
+  const query = category;
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-orange-50 overflow-hidden pt-24">
@@ -72,7 +83,7 @@ export default function ProductList() {
                 className={`cursor-pointer hover:text-amber-950 transition ${
                   !query ? "text-amber-800 font-bold" : ""
                 }`}
-                onClick={() => setSearchParams({})}
+                onClick={() => handleCategoryClick("")}
               >
                 All
               </li>
@@ -82,7 +93,7 @@ export default function ProductList() {
                   className={`cursor-pointer hover:text-amber-950 transition ${
                     cat === query ? "text-amber-800 font-bold" : ""
                   }`}
-                  onClick={() => setSearchParams({ category: cat })}
+                  onClick={() => handleCategoryClick(cat)}
                 >
                   {cat}
                 </li>
@@ -97,10 +108,7 @@ export default function ProductList() {
             <ul className="space-y-2 text-amber-900">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="hover:text-amber-950 transition"
-                  >
+                  <Link href={link.path} className="hover:text-amber-950 transition">
                     {link.name}
                   </Link>
                 </li>
@@ -126,7 +134,7 @@ export default function ProductList() {
           {/* Back Button */}
           <div className="flex items-center justify-between mb-6">
             <Link
-              to="/"
+              href="/"
               className="text-amber-950 font-bold flex items-center gap-2 border rounded-lg p-2.5 hover:bg-amber-950 hover:text-white transition"
             >
               <ArrowLeft /> Back
@@ -142,56 +150,60 @@ export default function ProductList() {
 
           {/* PRODUCTS */}
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {filteredProducts.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 overflow-hidden"
-              >
-                <Link to={`/products/${item.id}`}>
-                  <div className="relative">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
-                      sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
-                      className="h-48 w-full object-cover sm:h-56 md:h-60"
-                    />
+            {products.map((item) => {
+              const productId = item._id || item.id;
+              const image = item.imageUrl || item.image;
+              const price = item.newPrice ?? item.price;
+              const oldPrice = item.oldPrice ?? item.price;
+              return (
+                <div
+                  key={productId}
+                  className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 overflow-hidden"
+                >
+                  <Link href={`/products/${productId}`}>
+                    <div className="relative">
+                      <img
+                        src={image}
+                        alt={item.name}
+                        loading="lazy"
+                        decoding="async"
+                        fetchPriority="low"
+                        sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
+                        className="h-48 w-full object-cover sm:h-56 md:h-60"
+                      />
 
-                    <span className="absolute top-3 left-3 bg-amber-950 text-white px-3 py-1 rounded-md text-xs sm:text-sm font-semibold shadow-md">
-                      {item.discount}
-                    </span>
-                  </div>
-                </Link>
-
-                <div className="p-4 sm:p-5 flex flex-col justify-between h-[180px]">
-                  <h3 className="text-base sm:text-lg font-semibold text-amber-950 truncate">
-                    {item.name}
-                  </h3>
-
-                  <div className="mt-2 flex items-center space-x-3">
-                    <span className="text-lg font-bold text-amber-950">
-                      ${item.newPrice}
-                    </span>
-                    <span className="text-sm text-amber-800 line-through">
-                      ${item.oldPrice}
-                    </span>
-                  </div>
-
-                  <Link to={`/products/${item.id}`}>
-                    <button className="mt-4 w-full rounded-lg bg-amber-950 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-800 transition">
-                      Shop Now
-                    </button>
+                      <span className="absolute top-3 left-3 bg-amber-950 text-white px-3 py-1 rounded-md text-xs sm:text-sm font-semibold shadow-md">
+                        {item.discount}
+                      </span>
+                    </div>
                   </Link>
+
+                  <div className="p-4 sm:p-5 flex flex-col justify-between h-[180px]">
+                    <h3 className="text-base sm:text-lg font-semibold text-amber-950 truncate">
+                      {item.name}
+                    </h3>
+
+                    <div className="mt-2 flex items-center space-x-3">
+                      <span className="text-lg font-bold text-amber-950">
+                        ${price}
+                      </span>
+                      <span className="text-sm text-amber-800 line-through">
+                        ${oldPrice}
+                      </span>
+                    </div>
+
+                    <Link href={`/products/${productId}`}>
+                      <button className="mt-4 w-full rounded-lg bg-amber-950 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-800 transition">
+                        Shop Now
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
     </div>
   );
 }
-
-

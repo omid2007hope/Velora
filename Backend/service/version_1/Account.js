@@ -4,24 +4,28 @@ const model = require("../../model/Account");
 const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerDetails extends BaseService {
-  async customerDetails({ phoneNumber, dateOfBirth, gender }) {
+  async customerDetails({ userId, phoneNumber, dateOfBirth, gender }) {
     console.log("Service: processing customer details");
 
     const customerDetailsNormalization = {
+      userId,
       phoneNumber: phoneNumber.trim(),
       dateOfBirth: dateOfBirth.trim(),
       gender: gender.trim(),
     };
 
     const existingCustomerDetails = await this.model
-      .findOne({ phoneNumber: customerDetailsNormalization.phoneNumber })
+      .findOne({
+        userId: customerDetailsNormalization.userId,
+      })
       .lean();
 
     if (existingCustomerDetails) {
       const updatedCustomerDetails = await this.model
         .findOneAndUpdate(
-          { phoneNumber: customerDetailsNormalization.phoneNumber },
+          { userId: customerDetailsNormalization.userId },
           {
+            phoneNumber: customerDetailsNormalization.phoneNumber,
             dateOfBirth: customerDetailsNormalization.dateOfBirth,
             gender: customerDetailsNormalization.gender,
           },
@@ -34,6 +38,7 @@ module.exports = new (class CustomerDetails extends BaseService {
         existed: true,
         data: {
           _id: updatedCustomerDetails._id,
+          userId: updatedCustomerDetails.userId,
           phoneNumber: updatedCustomerDetails.phoneNumber,
           dateOfBirth: updatedCustomerDetails.dateOfBirth,
           gender: updatedCustomerDetails.gender,
@@ -50,6 +55,7 @@ module.exports = new (class CustomerDetails extends BaseService {
       existed: false,
       data: {
         _id: saveCustomerData._id,
+        userId: saveCustomerData.userId,
         phoneNumber: saveCustomerData.phoneNumber,
         dateOfBirth: saveCustomerData.dateOfBirth,
         gender: saveCustomerData.gender,

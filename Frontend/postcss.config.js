@@ -2,7 +2,8 @@
 // Signature: OmidTeimory-2026
 module.exports = {
   plugins: {
-    "@tailwindcss/postcss": {},
+    tailwindcss: {},
+    autoprefixer: {},
   },
 };
 

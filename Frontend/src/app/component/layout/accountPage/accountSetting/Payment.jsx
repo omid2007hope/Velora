@@ -3,16 +3,14 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
 import FetchCustomerPaymentDetails from "../../../../api/API_Payment";
 
 function PaymentForm() {
   const [payment, setPayment] = useState({
-    name: "",
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
+    billingName: "",
+    paymentMethodId: "",
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -31,9 +29,8 @@ function PaymentForm() {
 
       setPayment((prev) => ({
         ...prev,
-        name: savedPayment.name || prev.name,
-        expiry: savedPayment.expiry || prev.expiry,
-        cvv: "",
+        billingName: savedPayment.billingName || prev.billingName,
+        paymentMethodId: savedPayment.paymentMethodId || prev.paymentMethodId,
       }));
       alert("Payment method saved");
     } catch (error) {
@@ -54,36 +51,19 @@ function PaymentForm() {
 
       <form onSubmit={handleSave} className="space-y-3">
         <input
-          name="name"
-          placeholder="Cardholder Name"
-          value={payment.name}
+          name="billingName"
+          placeholder="Billing Name"
+          value={payment.billingName}
           onChange={handleChange}
           className="w-full p-2 border rounded bg-amber-50 text-sm"
         />
         <input
-          name="cardNumber"
-          placeholder="Card Number"
-          value={payment.cardNumber}
+          name="paymentMethodId"
+          placeholder="Stripe payment method ID (pm_...)"
+          value={payment.paymentMethodId}
           onChange={handleChange}
           className="w-full p-2 border rounded bg-amber-50 text-sm"
         />
-
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            name="expiry"
-            placeholder="MM/YY"
-            value={payment.expiry}
-            onChange={handleChange}
-            className="w-full sm:w-1/2 p-2 border rounded bg-amber-50 text-sm"
-          />
-          <input
-            name="cvv"
-            placeholder="CVV"
-            value={payment.cvv}
-            onChange={handleChange}
-            className="w-full sm:w-1/2 p-2 border rounded bg-amber-50 text-sm"
-          />
-        </div>
 
         <div className="flex flex-wrap gap-3 mt-6">
           <button
@@ -94,7 +74,7 @@ function PaymentForm() {
             {isSaving ? "Saving..." : "Save"}
           </button>
 
-          <Link to="/">
+          <Link href="/">
             <button
               type="button"
               className="py-2 px-4 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"

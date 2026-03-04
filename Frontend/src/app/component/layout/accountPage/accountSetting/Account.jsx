@@ -4,7 +4,7 @@
 
 // src/pages/AccountSettings.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
 import FetchCustomerDetails from "../../../../api/API_Account";
 
@@ -175,7 +175,7 @@ function AccountSettings() {
             Save
           </button>
 
-          <Link to="/">
+          <Link href="/">
             <button
               type="button"
               className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"

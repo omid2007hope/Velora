@@ -2,6 +2,7 @@
 // Signature: OmidTeimory-2026
 import axios from "axios";
 import { API_BaseURL } from "./API_BaseURL";
+import { getAuthHeaders } from "./authHeaders";
 
 async function FetchCustomerDetails(customerDetails) {
   console.log("customerDetails API:", customerDetails);
@@ -11,6 +12,7 @@ async function FetchCustomerDetails(customerDetails) {
       const response = await axios.post(
         `${API_BaseURL}/server/customer/login/account`,
         customerDetails,
+        { headers: getAuthHeaders() },
       );
       return response.data;
     } catch (error) {
