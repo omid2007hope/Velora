@@ -1,5 +1,10 @@
+const mongoose = require("mongoose");
 const orderService = require("../../service/version_1/Order");
 const paymentIntentService = require("../../service/version_1/PaymentIntent");
+
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
 
 async function createOrder(req, res) {
   try {
@@ -27,6 +32,18 @@ async function createOrder(req, res) {
       return res.status(400).json({
         error: "Address snapshot is required",
         required: ["street", "country", "city", "postalCode"],
+      });
+    }
+    if (userId && !isValidObjectId(userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
+    const invalidItem = items.find(
+      (item) => !isValidObjectId(item.productId),
+    );
+    if (invalidItem) {
+      return res.status(400).json({
+        error: "Invalid productId in items",
+        value: invalidItem.productId,
       });
     }
 
@@ -58,6 +75,9 @@ async function createOrder(req, res) {
 async function listOrders(req, res) {
   try {
     const { userId, guestEmail } = req.query || {};
+    if (userId && !isValidObjectId(userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
     const orders = await orderService.listByUser({ userId, guestEmail });
     return res.status(200).json({ data: orders });
   } catch (error) {
@@ -75,6 +95,9 @@ async function updateOrderStatus(req, res) {
       return res.status(400).json({
         error: "At least one of paymentStatus or orderStatus must be provided",
       });
+    }
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ error: "Invalid order id" });
     }
 
     const updated = await orderService.updateStatus(id, {

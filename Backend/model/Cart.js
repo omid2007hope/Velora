@@ -71,13 +71,11 @@ const CartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
-      index: true,
     },
     sessionId: {
       type: String,
       trim: true,
       default: null,
-      index: true,
     },
     items: {
       type: [CartItemSchema],

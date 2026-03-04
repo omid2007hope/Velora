@@ -1,4 +1,9 @@
+const mongoose = require("mongoose");
 const cartService = require("../../service/version_1/Cart");
+
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
 
 function resolveActor(req) {
   const { userId, sessionId } = req.body || req.query || {};
@@ -11,6 +16,9 @@ function resolveActor(req) {
 async function getCart(req, res) {
   try {
     const actor = resolveActor(req);
+    if (actor.userId && !isValidObjectId(actor.userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
     if (!actor.userId && !actor.sessionId) {
       return res
         .status(400)
@@ -28,6 +36,9 @@ async function addItem(req, res) {
   try {
     const actor = resolveActor(req);
     const item = req.body?.item;
+    if (actor.userId && !isValidObjectId(actor.userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
     if (!actor.userId && !actor.sessionId) {
       return res
         .status(400)
@@ -38,6 +49,11 @@ async function addItem(req, res) {
         error: "Missing required item fields",
         required: ["item.productId", "item.priceSnapshot.newPrice"],
       });
+    }
+    if (!isValidObjectId(item.productId)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid productId", value: item.productId });
     }
 
     const updated = await cartService.upsertItem({ ...actor, item });
@@ -52,6 +68,9 @@ async function updateQuantity(req, res) {
   try {
     const actor = resolveActor(req);
     const { itemId, quantity } = req.body || {};
+    if (actor.userId && !isValidObjectId(actor.userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
     if (!actor.userId && !actor.sessionId) {
       return res
         .status(400)
@@ -80,6 +99,9 @@ async function removeItem(req, res) {
   try {
     const actor = resolveActor(req);
     const { itemId } = req.body || {};
+    if (actor.userId && !isValidObjectId(actor.userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
     if (!actor.userId && !actor.sessionId) {
       return res
         .status(400)
