@@ -3,7 +3,7 @@ const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerDetails extends BaseService {
   async customerDetails({ phoneNumber, dateOfBirth, gender }) {
-    console.log("Service: processing customer registration");
+    console.log("Service: processing customer details");
 
     const customerDetailsNormalization = {
       phoneNumber: phoneNumber.trim(),
@@ -11,18 +11,29 @@ module.exports = new (class CustomerDetails extends BaseService {
       gender: gender.trim(),
     };
 
-    const searchTheDataBase = await this.model
+    const existingCustomerDetails = await this.model
       .findOne({ phoneNumber: customerDetailsNormalization.phoneNumber })
       .lean();
 
-    if (searchTheDataBase) {
+    if (existingCustomerDetails) {
+      const updatedCustomerDetails = await this.model
+        .findOneAndUpdate(
+          { phoneNumber: customerDetailsNormalization.phoneNumber },
+          {
+            dateOfBirth: customerDetailsNormalization.dateOfBirth,
+            gender: customerDetailsNormalization.gender,
+          },
+          { new: true, runValidators: true },
+        )
+        .lean();
+
       return {
-        source: "database",
+        source: "updated",
         existed: true,
         data: {
-          phoneNumber: searchTheDataBase.phoneNumber,
-          dateOfBirth: searchTheDataBase.dateOfBirth,
-          gender: searchTheDataBase.gender,
+          phoneNumber: updatedCustomerDetails.phoneNumber,
+          dateOfBirth: updatedCustomerDetails.dateOfBirth,
+          gender: updatedCustomerDetails.gender,
         },
       };
     }

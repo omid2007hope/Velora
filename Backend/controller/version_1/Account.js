@@ -3,6 +3,9 @@ const customerDetailsService = require("../../service/version_1/Account");
 async function CustomerDetails(req, res) {
   try {
     const { phoneNumber, dateOfBirth, gender } = req.body || {};
+
+    console.log(phoneNumber, dateOfBirth, gender);
+
     const normalizedPhone =
       typeof phoneNumber === "string" ? phoneNumber.trim() : "";
     const normalizedDateOfBirth =
@@ -26,13 +29,10 @@ async function CustomerDetails(req, res) {
     );
 
     if (sendCustomerDetails?.existed) {
-      return res.status(409).json({
-        error: "Customer details already exist for this phone number",
-        data: sendCustomerDetails.data,
-      });
+      return res.status(200).json(sendCustomerDetails);
     }
 
-    console.log("Controller: customer registration request received");
+    console.log("Controller: customer details request received");
 
     return res.status(201).json(sendCustomerDetails);
   } catch (error) {
