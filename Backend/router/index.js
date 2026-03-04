@@ -9,6 +9,7 @@ const { PaymentDetails } = require("../controller/version_1/Payment");
 const {
   listProducts,
   getProduct,
+  createProduct,
 } = require("../controller/version_1/Products");
 const {
   listReviews,
@@ -42,6 +43,7 @@ router.post("/server/customer/login/account/address", CustomerAddress);
 router.post("/server/customer/login/account/payment", PaymentDetails);
 
 // Products
+router.post("/server/products", createProduct);
 router.get("/server/products", listProducts);
 router.get("/server/products/:id", getProduct);
 

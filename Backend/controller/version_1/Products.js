@@ -31,7 +31,27 @@ async function getProduct(req, res) {
   }
 }
 
+async function createProduct(req, res) {
+  try {
+    const payload = req.body || {};
+    const required = ["name", "description", "price", "category", "imageUrl"];
+    const missing = required.filter((field) => !payload[field]);
+    if (missing.length) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields", missing });
+    }
+
+    const created = await productService.create(payload);
+    return res.status(201).json({ data: created });
+  } catch (error) {
+    console.error("createProduct error:", error.message);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 module.exports = {
   listProducts,
   getProduct,
+  createProduct,
 };

@@ -23,4 +23,8 @@ module.exports = new (class Products extends BaseService {
   async getById(id) {
     return this.findById(id);
   }
+
+  async create(payload) {
+    return this.createObject(payload);
+  }
 })(model);
