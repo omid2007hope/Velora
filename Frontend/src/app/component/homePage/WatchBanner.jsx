@@ -1,6 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 // src/components/Home/PromoBanner.jsx
+"use client";
 import { Carousel } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import Watch from "../../assets/image/Watch.webp";

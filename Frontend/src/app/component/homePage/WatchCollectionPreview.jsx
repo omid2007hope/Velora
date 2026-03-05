@@ -1,8 +1,12 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 "use client";
-import PromoBanner from "./WatchBanner";
+import dynamic from "next/dynamic";
 import Link from "next/link";
+
+const PromoBanner = dynamic(() => import("./WatchBanner"), {
+  ssr: false,
+});
 
 export default function WatchCollection() {
   const watch = {
@@ -27,7 +31,7 @@ export default function WatchCollection() {
               </p>
 
               <Link
-                to={`/products?category=${watch.id}`}
+                href={`/products?category=${watch.id}`}
                 className="mt-4 inline-block px-6 py-3 bg-amber-950 border-2 border-amber-950 rounded-md font-semibold hover:bg-amber-800 text-orange-50 transition"
               >
                 View the collection

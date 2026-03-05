@@ -43,7 +43,7 @@ export default function Deals() {
               key={item.id}
               className="rounded-xl bg-orange-200 shadow-md overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-transform border-2 border-amber-950"
             >
-              <Link to={`/products/${item.id}`}>
+              <Link href={`/products/${item.id}`}>
                 <div className="relative">
                   <img
                     src={item.image}

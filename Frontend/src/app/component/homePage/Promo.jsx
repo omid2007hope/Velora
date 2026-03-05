@@ -1,7 +1,12 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+"use client";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import PromoCarousel from "./PromoBanner";
+
+const PromoCarousel = dynamic(() => import("./PromoBanner"), {
+  ssr: false,
+});
 
 export default function Promo() {
   const router = useRouter();

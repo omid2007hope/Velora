@@ -39,7 +39,7 @@ export default function Preview() {
             <div className="grid grid-cols-2 gap-6">
               {categories.slice(0, 2).map((cat) => (
                 <Link
-                  to={`/products?category=${cat.id}`}
+                  href={`/products?category=${cat.id}`}
                   key={cat.name}
                   className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
                 >
@@ -67,7 +67,7 @@ export default function Preview() {
 
             {/* Wide Card */}
             <Link
-              to={`/products?category=${categories[2].id}`}
+              href={`/products?category=${categories[2].id}`}
               key={categories[2].name}
               className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
             >
@@ -96,7 +96,7 @@ export default function Preview() {
 
           {/* Right Column + Tall Card */}
           <Link
-            to={`/products?category=${categories[3].id}`}
+            href={`/products?category=${categories[3].id}`}
             key={categories[3].name}
             className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-72 sm:h-[500px] lg:h-full"
           >

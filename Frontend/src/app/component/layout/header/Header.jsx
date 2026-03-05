@@ -154,7 +154,7 @@ export default function Header() {
 
               <div className="p-2 border border-amber-950 rounded-md bg-orange-50">
                 {user ? (
-                  <Link to="/account">
+                  <Link href="/account">
                     <CircleUserRound />
                   </Link>
                 ) : (
@@ -199,7 +199,7 @@ export default function Header() {
                           </div>
 
                           <Link
-                            to={item.href}
+                            href={item.href}
                             className="block mt-4 font-medium text-amber-950"
                             onClick={() => setOpen(false)}
                           >
@@ -218,8 +218,8 @@ export default function Header() {
                         <ul className="mt-6 space-y-4">
                           {section.items.map((item) => (
                             <li key={item.name}>
-                              <Link
-                                to={item.href}
+                            <Link
+                              href={item.href}
                                 className="text-amber-900"
                                 onClick={() => setOpen(false)}
                               >
@@ -256,7 +256,7 @@ export default function Header() {
 
             {/* Logo */}
             <div className="hidden sm:block ml-4 lg:ml-0">
-              <Link to="/">
+              <Link href="/">
                 <img
                   src={Logo.src}
                   width="1024"
@@ -288,7 +288,7 @@ export default function Header() {
                               {item.imageSrc}
                             </div>
                             <Link
-                              to={item.href}
+                              href={item.href}
                               className="ml-1 font-medium text-amber-950 hover:text-amber-800 block"
                             >
                               {item.name}
@@ -307,7 +307,7 @@ export default function Header() {
                                 {section.items.map((item) => (
                                   <li key={item.name}>
                                     <Link
-                                      to={item.href}
+                                      href={item.href}
                                       className="text-amber-950 hover:text-amber-800"
                                     >
                                       {item.name}
@@ -330,7 +330,7 @@ export default function Header() {
               {/* User (desktop) */}
               <div className="hidden lg:flex items-center space-x-6">
                 {user ? (
-                  <Link to="/account">
+                  <Link href="/account">
                     <CircleUserRound className="text-amber-950" />
                   </Link>
                 ) : (
@@ -346,7 +346,7 @@ export default function Header() {
               </div>
 
               {/* Cart */}
-              <Link to="/order" className="ml-4 flex items-center">
+              <Link href="/order" className="ml-4 flex items-center">
                 <ShoppingBagIcon className="size-6 text-amber-950" />
                 <span className="ml-2 text-sm text-gray-700">{cartCount}</span>
               </Link>
