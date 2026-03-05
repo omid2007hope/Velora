@@ -3,7 +3,7 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import GoogleSignIn from "./Google";
 import FetchCustomerData from "../../../../api/API_Register";
 import EmailVerificationPopup from "./EmailVerification";
@@ -15,6 +15,26 @@ export default function SignupPopup({ open, setOpen }) {
   const [confirmPass, setConfirmPass] = useState("");
   const [openEmailVerificationPopup, setOpenEmailVerificationPopup] =
     useState(false);
+
+  const criteriaList = useMemo(
+    () => [
+      { key: "length", label: "At least 8 characters" },
+      { key: "uppercase", label: "One uppercase letter" },
+      { key: "lowercase", label: "One lowercase letter" },
+      { key: "number", label: "A number" },
+      { key: "symbol", label: "A special symbol (!@#$%)" },
+    ],
+    [],
+  );
+
+  const passwordCriteria = useMemo(() => {
+    const length = password.length >= 8;
+    const uppercase = /[A-Z]/.test(password);
+    const lowercase = /[a-z]/.test(password);
+    const number = /[0-9]/.test(password);
+    const symbol = /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(password);
+    return { length, uppercase, lowercase, number, symbol };
+  }, [password]);
 
   async function Signup() {
     if (!fullName.trim()) {
@@ -35,6 +55,11 @@ export default function SignupPopup({ open, setOpen }) {
     }
     if (password.trim() !== confirmPass.trim()) {
       alert("Passwords do not match");
+      return;
+    }
+
+    if (!Object.values(passwordCriteria).every(Boolean)) {
+      alert("Your password must be at least 8 characters and include uppercase, lowercase, a number, and a symbol.");
       return;
     }
 
@@ -136,6 +161,25 @@ export default function SignupPopup({ open, setOpen }) {
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <div className="mt-2 space-y-1 text-sm text-amber-700">
+                {criteriaList.map((item) => {
+                  const met = passwordCriteria[item.key];
+                  return (
+                    <div key={item.key} className="flex items-center gap-2">
+                      <span
+                        className={`text-xs font-semibold ${
+                          met ? "text-emerald-500" : "text-amber-500"
+                        }`}
+                      >
+                        {met ? "✓" : "○"}
+                      </span>
+                      <span className={met ? "text-amber-950" : "text-amber-600"}>
+                        {item.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
 
               <label htmlFor="signup-confirm" className="sr-only">
                 Confirm password
