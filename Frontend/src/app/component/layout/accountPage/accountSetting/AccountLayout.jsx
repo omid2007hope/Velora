@@ -53,7 +53,7 @@ function SideBarLayOut(WrappedComponent) {
             setMobileMenuOpen(false);
             setOpenSignOut(true);
           }}
-          className="w-full mt-3 text-left text-red-500 font-semibold text-sm hover:text-red-500/70"
+          className="w-full text-left text-red-500 font-semibold text-sm hover:text-red-500/70"
         >
           Sign Out
         </button>
@@ -61,7 +61,7 @@ function SideBarLayOut(WrappedComponent) {
     );
 
     return (
-      <div className="min-h-screen bg-orange-50 flex flex-col pt-8">
+      <div className="min-h-screen bg-orange-50 flex flex-col pt-0">
         {/* MOBILE TOP BAR */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-amber-950 bg-orange-100 md:hidden">
           <div className="flex items-center gap-3">
@@ -134,5 +134,3 @@ function SideBarLayOut(WrappedComponent) {
 }
 
 export default SideBarLayOut;
-
-
