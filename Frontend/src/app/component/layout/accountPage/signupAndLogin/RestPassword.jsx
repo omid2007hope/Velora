@@ -3,19 +3,49 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function ResetPasswordPopup({ open, setOpen }) {
   const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("");
 
   function close() {
     setOpen(false);
   }
 
+  const criteriaList = useMemo(
+    () => [
+      { key: "length", label: "At least 8 characters" },
+      { key: "uppercase", label: "One uppercase letter" },
+      { key: "lowercase", label: "One lowercase letter" },
+      { key: "number", label: "A number" },
+      { key: "symbol", label: "A special symbol (!@#$%)" },
+    ],
+    [],
+  );
+
+  const passwordCriteria = useMemo(() => {
+    const length = newPassword.length >= 8;
+    const uppercase = /[A-Z]/.test(newPassword);
+    const lowercase = /[a-z]/.test(newPassword);
+    const number = /[0-9]/.test(newPassword);
+    const symbol = /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(newPassword);
+    return { length, uppercase, lowercase, number, symbol };
+  }, [newPassword]);
+
   function sendResetLink() {
     if (!email.trim()) {
       alert("Please enter the email address tied to your account.");
+      return;
+    }
+    if (!Object.values(passwordCriteria).every(Boolean)) {
+      alert("Your new password must satisfy all strength requirements before requesting a reset.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("Please make sure both new password fields match.");
       return;
     }
 
@@ -51,6 +81,45 @@ export default function ResetPasswordPopup({ open, setOpen }) {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Email address"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+            />
+
+            <label htmlFor="reset-password" className="sr-only">
+              New password
+            </label>
+            <input
+              type="password"
+              id="reset-password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              placeholder="New password"
+              className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
+            />
+            <div className="space-y-1 text-sm text-amber-700">
+              {criteriaList.map((item) => {
+                const met = passwordCriteria[item.key];
+                return (
+                  <div key={item.key} className="flex items-center gap-2">
+                    <span className={`text-xs font-semibold ${met ? "text-emerald-500" : "text-amber-500"}`}>
+                      {met ? "✓" : "○"}
+                    </span>
+                    <span className={met ? "text-amber-950" : "text-amber-600"}>
+                      {item.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <label htmlFor="reset-confirm" className="sr-only">
+              Confirm new password
+            </label>
+            <input
+              type="password"
+              id="reset-confirm"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              placeholder="Confirm new password"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
             />
           </div>
