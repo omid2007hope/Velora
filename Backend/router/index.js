@@ -15,6 +15,9 @@ const {
   paymentMethodSchema,
   refreshSchema,
   removeItemSchema,
+  passwordResetRequestSchema,
+  tokenOnlySchema,
+  emailOnlySchema,
 } = require("../validation/schemas");
 
 const { CustomerData } = require("../controller/version_1/Register");
@@ -41,6 +44,14 @@ const {
   removeItem,
   clearCart,
 } = require("../controller/version_1/Cart");
+const {
+  requestPasswordReset,
+  confirmPasswordReset,
+} = require("../controller/version_1/Password");
+const {
+  requestVerification,
+  confirmVerification,
+} = require("../controller/version_1/EmailVerification");
 const {
   createOrder,
   listOrders,
@@ -74,6 +85,18 @@ router.post(
   requireAuth,
   validateBody(profileSchema),
   CustomerDetails,
+);
+
+router.post(
+  "/server/customer/email/verify",
+  validateBody(emailOnlySchema),
+  requestVerification,
+);
+
+router.post(
+  "/server/customer/email/verify/confirm",
+  validateBody(tokenOnlySchema),
+  confirmVerification,
 );
 
 router.post(
@@ -121,6 +144,18 @@ router.delete(
   removeItem,
 );
 router.delete("/server/cart", requireAuth, clearCart);
+
+// Password reset (two-step)
+router.post(
+  "/server/customer/password-reset",
+  validateBody(passwordResetRequestSchema),
+  requestPasswordReset,
+);
+router.post(
+  "/server/customer/password-reset/confirm",
+  validateBody(tokenOnlySchema),
+  confirmPasswordReset,
+);
 
 // Orders / Checkout
 router.post(

@@ -84,6 +84,26 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(10),
 });
 
+const passwordResetRequestSchema = z.object({
+  email: z.string().email(),
+  newPassword: z
+    .string()
+    .min(8)
+    .max(128)
+    .regex(/[A-Z]/, "Must include an uppercase letter")
+    .regex(/[a-z]/, "Must include a lowercase letter")
+    .regex(/[0-9]/, "Must include a number")
+    .regex(/[!@#$%^&*()[\]{};:'"\\|,.<>/?`~+\-=]/, "Must include a symbol"),
+});
+
+const tokenOnlySchema = z.object({
+  token: z.string().min(10),
+});
+
+const emailOnlySchema = z.object({
+  email: z.string().email(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -95,4 +115,7 @@ module.exports = {
   paymentMethodSchema,
   refreshSchema,
   removeItemSchema,
+  passwordResetRequestSchema,
+  tokenOnlySchema,
+  emailOnlySchema,
 };

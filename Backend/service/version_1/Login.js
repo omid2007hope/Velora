@@ -50,6 +50,7 @@ module.exports = new (class Login extends BaseService {
         _id: customer._id,
         email: customer.email,
         fullName: customer.fullName,
+        isEmailVerified: !!customer.isEmailVerified,
       },
       token: accessToken,
       refreshToken,

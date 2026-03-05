@@ -25,6 +25,38 @@ const CustomerSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationToken: {
+      type: String,
+      index: true,
+      select: false,
+    },
+
+    emailVerificationExpires: {
+      type: Date,
+      select: false,
+    },
+
+    passwordResetToken: {
+      type: String,
+      index: true,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      select: false,
+    },
+
+    pendingPasswordHash: {
+      type: String,
+      select: false,
+    },
   },
 
   { versionKey: false, timestamps: true },
