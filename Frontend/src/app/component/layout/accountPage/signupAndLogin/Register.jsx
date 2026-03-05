@@ -49,7 +49,13 @@ export default function SignupPopup({ open, setOpen }) {
     try {
       await FetchCustomerData(newUser);
     } catch (error) {
-      alert("Signup failed. Please try again.");
+      console.error("Signup request failed:", error.response?.data ?? error.message ?? error);
+      const details = error.response?.data?.details;
+      const fallback = error.response?.data?.error || error.response?.data || error.message;
+      const message = details
+        ? details.map((entry) => `${entry.path || "field"}: ${entry.message}`).join("\n")
+        : fallback;
+      alert(message || "Signup failed. Please try again.");
       return;
     }
 
