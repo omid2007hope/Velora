@@ -8,11 +8,13 @@ import SignupPopup from "./Register";
 import { useRouter } from "next/navigation";
 import GoogleSignIn from "./Google";
 import FetchLoginData from "../../../../api/API_LoginData";
+import ResetPasswordPopup from "./RestPassword";
 
 export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
+  const [openRestPassword, setOpenRestPassword] = useState(false);
 
   const router = useRouter();
 
@@ -60,6 +62,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     setTimeout(() => setOpenSignup(true), 250);
   }
 
+  function openRestPasswordFlow() {
+    setOpen(false);
+    setTimeout(() => setOpenRestPassword(true), 250);
+  }
+
   function handleGoogleLogin(googleToken) {
     const payload = JSON.parse(atob(googleToken.split(".")[1]));
 
@@ -93,6 +100,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
   return (
     <>
       <SignupPopup open={openSignup} setOpen={setOpenSignup} />
+
+      <ResetPasswordPopup
+        open={openRestPassword}
+        setOpen={setOpenRestPassword}
+      />
 
       <Dialog open={open} onClose={() => {}} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -128,6 +140,15 @@ export default function LoginPopup({ open, setOpen, setUser }) {
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <p className="ml-1.5 text-left text-sm text-amber-900">
+                Forgot your password ?
+                <span
+                  className="font-semibold text-amber-950 underline cursor-pointer ml-1"
+                  onClick={() => openRestPasswordFlow()}
+                >
+                  Rest password
+                </span>
+              </p>
             </div>
 
             <button
@@ -146,7 +167,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
             <GoogleSignIn onLogin={handleGoogleLogin} />
 
             <p className="mt-4 text-center text-sm text-amber-900">
-              Not a member?{" "}
+              Not a member ?{" "}
               <span
                 onClick={openSignupFlow}
                 className="font-semibold text-amber-950 underline cursor-pointer"
@@ -160,5 +181,3 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     </>
   );
 }
-
-

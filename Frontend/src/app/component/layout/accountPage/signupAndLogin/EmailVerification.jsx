@@ -11,7 +11,9 @@ export default function EmailVerificationPopup({ open, setOpen }) {
   }
 
   function handleResend() {
-    alert("A new verification link has been sent. Please check your inbox (and spam) for the message.");
+    alert(
+      "A new verification link has been sent. Please check your inbox (and spam) for the message.",
+    );
   }
 
   return (
@@ -24,8 +26,9 @@ export default function EmailVerificationPopup({ open, setOpen }) {
             Confirm your email
           </h2>
           <p className="text-center text-sm text-amber-700 mt-1">
-            We just emailed you a verification link. Open your inbox, tap the button inside,
-            then come back here to sign in. The link will expire soon, so do it while it is fresh.
+            We just emailed you a verification link. Open your inbox, tap the
+            button inside, then come back here to sign in. The link will expire
+            soon, so do it while it is fresh.
           </p>
 
           <div className="mt-6 space-y-3">
