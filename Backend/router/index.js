@@ -58,28 +58,33 @@ const {
   updateOrderStatus,
 } = require("../controller/version_1/Order");
 
+// Health check for the API
 router.get("/server", (req, res) => {
   return res.status(200).send("server is running");
 });
 
+// Register a new customer account
 router.post(
   "/server/customer",
   validateBody(registerSchema),
   CustomerData,
 );
 
+// Log in with email/password and issue access + refresh tokens
 router.post(
   "/server/customer/login",
   validateBody(loginSchema),
   loginIntoTheAccount,
 );
 
+// Exchange a refresh token for a new access token
 router.post(
   "/server/customer/token/refresh",
   validateBody(refreshSchema),
   refreshAccessToken,
 );
 
+// Update authenticated customer profile details
 router.post(
   "/server/customer/login/account",
   requireAuth,
@@ -87,18 +92,21 @@ router.post(
   CustomerDetails,
 );
 
+// Send verification email to the customer
 router.post(
   "/server/customer/email/verify",
   validateBody(emailOnlySchema),
   requestVerification,
 );
 
+// Confirm email verification using the token
 router.post(
   "/server/customer/email/verify/confirm",
   validateBody(tokenOnlySchema),
   confirmVerification,
 );
 
+// Save or update the customer's shipping address
 router.post(
   "/server/customer/login/account/address",
   requireAuth,
@@ -106,6 +114,7 @@ router.post(
   CustomerAddress,
 );
 
+// Save or update the customer's payment method
 router.post(
   "/server/customer/login/account/payment",
   requireAuth,
@@ -113,16 +122,16 @@ router.post(
   PaymentDetails,
 );
 
-// Products
+// Products: create, list, and fetch individual product details
 router.post("/server/products", createProduct);
 router.get("/server/products", listProducts);
 router.get("/server/products/:id", getProduct);
 
-// Reviews
+// Reviews: list and create reviews for a specific product
 router.get("/server/products/:productId/reviews", listReviews);
 router.post("/server/products/:productId/reviews", createReview);
 
-// Cart
+// Cart: view cart, add/update/remove items, or clear the cart
 router.post("/server/cart", requireAuth, getCart);
 router.get("/server/cart", requireAuth, getCart);
 router.post(
@@ -145,7 +154,7 @@ router.delete(
 );
 router.delete("/server/cart", requireAuth, clearCart);
 
-// Password reset (two-step)
+// Password reset (two-step): request token then confirm reset with token
 router.post(
   "/server/customer/password-reset",
   validateBody(passwordResetRequestSchema),
@@ -157,7 +166,7 @@ router.post(
   confirmPasswordReset,
 );
 
-// Orders / Checkout
+// Orders / Checkout: create orders, list user's orders, and update status
 router.post(
   "/server/checkout/order",
   requireAuth,
