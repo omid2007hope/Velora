@@ -130,7 +130,7 @@ function ProductPreview({ productId }) {
   };
 
   return (
-    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-35">
+    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-36">
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <button
@@ -168,9 +168,7 @@ function ProductPreview({ productId }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <p className="text-2xl font-semibold text-amber-950">${price}</p>
-              <p className="text-lg text-amber-800 line-through">
-                ${oldPrice}
-              </p>
+              <p className="text-lg text-amber-800 line-through">${oldPrice}</p>
               <span className="text-sm font-semibold text-green-700">
                 Save {product.discount}
               </span>
