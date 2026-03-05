@@ -1,0 +1,40 @@
+# Root ignores
+.env
+.env.*
+*.env
+*.env.*
+**/.env
+**/.env.*
+**/*.env
+**/*.env.*
+.envrc
+**/.envrc
+*.log
+.DS_Store
+node_modules
+.next
+dist
+build
+
+# Backend
+Backend/node_modules
+Backend/.env
+Backend/.env.*
+Backend/.env.local
+Backend/coverage
+!Backend/.env.example
+!Backend/.env.sample
+
+# Frontend
+Frontend/node_modules
+Frontend/node_modules.old
+Frontend/.next
+Frontend/.env
+Frontend/.env.*
+Frontend/.env.local
+Frontend/coverage
+
+# Editors/IDE
+.vscode
+.idea
+.npmrc
