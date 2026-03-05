@@ -56,9 +56,9 @@ export default function SignupPopup({ open, setOpen }) {
     // Close signup popup
     setOpen(false);
 
-    // Automatically open login popup
+    // Automatically open email verification popup
     setTimeout(() => {
-      document.dispatchEvent(new CustomEvent("open-login-popup"));
+      setOpenEmailVerificationPopup(true);
     }, 200);
   }
 
@@ -68,9 +68,9 @@ export default function SignupPopup({ open, setOpen }) {
 
     setOpen(false);
 
-    // After signup, automatically open login popup
+    // After signup, automatically open email verification popup
     setTimeout(() => {
-      document.dispatchEvent(new CustomEvent("open-login-popup"));
+      setOpenEmailVerificationPopup(true);
     }, 200);
   }
 
