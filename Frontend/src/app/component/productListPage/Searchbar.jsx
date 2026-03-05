@@ -23,7 +23,7 @@ export default function SearchBar({ value, onChange, onSubmit }) {
           id="product-search"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-orange-50 border-2 border-amber-950 rounded-l-lg pl-3 pr-0 lg:pr-10 py-1 lg:py-1.5 text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-700"
+          className="bg-orange-50 border-2 border-amber-950 rounded-l-lg ml-1.5 md:ml-0 lg:ml-0 pl-1.5 md:pl-3 lg:pl-3 pr-0 lg:pr-10 py-1 lg:py-1.5 text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-700"
         />
         <button
           type="submit"
@@ -36,5 +36,3 @@ export default function SearchBar({ value, onChange, onSubmit }) {
     </div>
   );
 }
-
-
