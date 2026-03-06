@@ -246,8 +246,8 @@ export default function Header() {
 
       {/* DESKTOP HEADER */}
       <header className="relative bg-orange-200 border-b border-amber-950">
-        <p className="flex h-10 items-center justify-center bg-amber-950 text-white text-sm">
-          Free delivery for orders over 50$
+        <p className="flex h-10 items-center justify-center bg-amber-950 px-4 text-center text-sm text-white">
+          Still in progress. I am constantly updating Velora.
         </p>
 
         <nav className="w-full px-4 sm:px-6 lg:px-8">
