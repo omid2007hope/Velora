@@ -24,6 +24,8 @@ export default function ProductList() {
 
   const [searchText, setSearchText] = useState(searchQuery);
   const [products, setProducts] = useState([]);
+  const resultsLabel =
+    products.length === 1 ? "1 product" : `${products.length} products`;
 
   const categories = ["Men", "Women", "Accessories", "Watch"];
 
@@ -70,6 +72,20 @@ export default function ProductList() {
   };
 
   const query = category;
+  const pageTitle = searchQuery
+    ? `Search results for "${searchQuery}"`
+    : isNew
+      ? "New Arrivals"
+      : category
+        ? `${category} Collection`
+        : "All Products";
+  const pageDescription = searchQuery
+    ? `Showing ${resultsLabel.toLowerCase()} that match "${searchQuery}".`
+    : isNew
+      ? `Fresh drops from the latest Velora release. ${resultsLabel} available right now.`
+      : category
+        ? `Browse ${resultsLabel.toLowerCase()} in the ${category.toLowerCase()} range.`
+        : "Explore the full Velora catalog of clothing, watches, and accessories.";
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-orange-50 overflow-hidden pt-24">
@@ -171,60 +187,81 @@ export default function ProductList() {
             </div>
           </div>
 
+          <header className="mb-8 max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-800">
+              Velora Catalog
+            </p>
+            <h1 className="mt-2 text-3xl font-bold text-amber-950 sm:text-4xl">
+              {pageTitle}
+            </h1>
+            <p className="mt-3 text-base text-amber-900 sm:text-lg">
+              {pageDescription}
+            </p>
+          </header>
+
           {/* PRODUCTS */}
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.map((item) => {
-              const productId = item._id || item.id;
-              const image = item.imageUrl || item.image;
-              const price = item.newPrice ?? item.price;
-              const oldPrice = item.oldPrice ?? item.price;
-              return (
-                <div
-                  key={productId}
-                  className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 overflow-hidden"
-                >
-                  <Link href={`/products/${productId}`}>
-                    <div className="relative">
-                      <img
-                        src={image}
-                        alt={item.name}
-                        loading="lazy"
-                        decoding="async"
-                        fetchPriority="low"
-                        sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
-                        className="h-48 w-full object-cover sm:h-56 md:h-60"
-                      />
-
-                      <span className="absolute top-3 left-3 bg-amber-950 text-white px-3 py-1 rounded-md text-xs sm:text-sm font-semibold shadow-md">
-                        {item.discount}
-                      </span>
-                    </div>
-                  </Link>
-
-                  <div className="p-4 sm:p-5 flex flex-col justify-between h-[180px]">
-                    <h3 className="text-base sm:text-lg font-semibold text-amber-950 truncate">
-                      {item.name}
-                    </h3>
-
-                    <div className="mt-2 flex items-center space-x-3">
-                      <span className="text-lg font-bold text-amber-950">
-                        ${price}
-                      </span>
-                      <span className="text-sm text-amber-800 line-through">
-                        ${oldPrice}
-                      </span>
-                    </div>
-
+          {products.length === 0 ? (
+            <div className="rounded-2xl border-2 border-dashed border-amber-900 bg-orange-100 px-6 py-12 text-center text-amber-950">
+              <p className="text-xl font-semibold">No products found</p>
+              <p className="mt-2 text-sm text-amber-900 sm:text-base">
+                Try a different search term or browse another category.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {products.map((item) => {
+                const productId = item._id || item.id;
+                const image = item.imageUrl || item.image;
+                const price = item.newPrice ?? item.price;
+                const oldPrice = item.oldPrice ?? item.price;
+                return (
+                  <div
+                    key={productId}
+                    className="rounded-xl bg-orange-200 border-2 border-amber-950 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 overflow-hidden"
+                  >
                     <Link href={`/products/${productId}`}>
-                      <button className="mt-4 w-full rounded-lg bg-amber-950 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-800 transition">
-                        Shop Now
-                      </button>
+                      <div className="relative">
+                        <img
+                          src={image}
+                          alt={item.name}
+                          loading="lazy"
+                          decoding="async"
+                          fetchPriority="low"
+                          sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
+                          className="h-48 w-full object-cover sm:h-56 md:h-60"
+                        />
+
+                        <span className="absolute top-3 left-3 bg-amber-950 text-white px-3 py-1 rounded-md text-xs sm:text-sm font-semibold shadow-md">
+                          {item.discount}
+                        </span>
+                      </div>
                     </Link>
+
+                    <div className="p-4 sm:p-5 flex flex-col justify-between h-[180px]">
+                      <h3 className="text-base sm:text-lg font-semibold text-amber-950 truncate">
+                        {item.name}
+                      </h3>
+
+                      <div className="mt-2 flex items-center space-x-3">
+                        <span className="text-lg font-bold text-amber-950">
+                          ${price}
+                        </span>
+                        <span className="text-sm text-amber-800 line-through">
+                          ${oldPrice}
+                        </span>
+                      </div>
+
+                      <Link href={`/products/${productId}`}>
+                        <button className="mt-4 w-full rounded-lg bg-amber-950 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-800 transition">
+                          Shop Now
+                        </button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
     </div>

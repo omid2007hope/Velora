@@ -1,7 +1,93 @@
-"use client";
+import { notFound } from "next/navigation";
 import ProductPage from "../../page/ProductPage.jsx";
+import JsonLd from "@/components/seo/JsonLd";
+import { getProductById, getReviewsByProductId } from "@/lib/server-api";
+import {
+  buildBreadcrumbSchema,
+  buildNoIndexMetadata,
+  buildPageMetadata,
+  buildProductSchema,
+  sanitizeDescription,
+} from "@/lib/seo";
 
-export default function ProductDetailPage({ params }) {
+function buildProductDescription(product) {
+  if (!product) {
+    return "The requested Velora product could not be found.";
+  }
+
+  const price = product.newPrice ?? product.price;
+  const parts = [product.description];
+
+  if (product.category) {
+    parts.push(`Category: ${product.category}.`);
+  }
+
+  if (Number.isFinite(price)) {
+    parts.push(`Available now for $${price}.`);
+  }
+
+  return sanitizeDescription(parts.join(" "));
+}
+
+export async function generateMetadata({ params }) {
   const productId = params?.id;
-  return <ProductPage productId={productId} />;
+  const result = await getProductById(productId).catch(() => ({
+    product: null,
+    notFound: false,
+  }));
+
+  if (!result.product) {
+    return buildNoIndexMetadata({
+      title: "Product not found",
+      description: "The requested Velora product could not be found.",
+      path: `/products/${productId}`,
+    });
+  }
+
+  const product = result.product;
+
+  return buildPageMetadata({
+    title: product.name,
+    description: buildProductDescription(product),
+    path: `/products/${productId}`,
+    image: `/products/${productId}/opengraph-image`,
+    keywords: [product.category, product.name],
+  });
+}
+
+export default async function ProductDetailPage({ params }) {
+  const productId = params?.id;
+  const result = await getProductById(productId).catch(() => ({
+    product: null,
+    notFound: false,
+  }));
+
+  if (result.notFound) {
+    notFound();
+  }
+
+  const product = result.product;
+  const reviews = product
+    ? await getReviewsByProductId(productId).catch(() => [])
+    : [];
+
+  return (
+    <>
+      <JsonLd
+        data={
+          product
+            ? [
+                buildBreadcrumbSchema([
+                  { name: "Home", path: "/" },
+                  { name: "Products", path: "/products" },
+                  { name: product.name, path: `/products/${productId}` },
+                ]),
+                buildProductSchema({ product, reviews }),
+              ]
+            : null
+        }
+      />
+      <ProductPage productId={productId} />
+    </>
+  );
 }
