@@ -33,7 +33,7 @@ export function normalizeUrl(value) {
 
 export function getSiteUrl() {
   const envValue = SITE_URL_KEYS.map((key) => process.env[key]).find(Boolean);
-  return normalizeUrl(envValue || "http://localhost:3000");
+  return normalizeUrl(envValue || "https://velorashop.app");
 }
 
 export function getApiBaseUrl() {
