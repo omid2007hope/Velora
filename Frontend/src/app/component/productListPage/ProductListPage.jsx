@@ -1,6 +1,8 @@
 "use client";
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+
+// Imports
 import { ArrowLeft, Filter } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,36 +10,51 @@ import SearchBar from "./Searchbar.jsx";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../api/API_Products";
 
+// main function
 export default function ProductList() {
+  // use searchParams to get produt's id from URL
   const searchParams = useSearchParams();
+  // import router to handle routes by using next.js
   const router = useRouter();
 
+  // use searchParams to handle the categorys instead of the old way
   const rawCategory = searchParams.get("category") || "";
+  // and also use search params to handle search
   const searchQuery = searchParams.get("search") || "";
+  //  Find that if a product is new or not by using searchParams from URL
   const isNewQuery =
     (searchParams.get("new") || "").trim().toLowerCase() === "true" ||
     (searchParams.get("new") || "").trim() === "1";
+  // Find the new category by checking the name of all categorys
   const legacyNewCategory = rawCategory.trim().toLowerCase() === "new";
 
+  // if the product was new
   const isNew = isNewQuery || legacyNewCategory;
+  // Prioritize the legacyNewCategory and even "" over rawCategory
   const category = legacyNewCategory ? "" : rawCategory;
 
+  // searhText useState is being handeld by seachQuery
   const [searchText, setSearchText] = useState(searchQuery);
+  // useState product is a list
   const [products, setProducts] = useState([]);
+
+  // Check the length of the products
   const resultsLabel =
     products.length === 1 ? "1 product" : `${products.length} products`;
-
+  // Define the name of all categorie options
   const categories = ["Men", "Women", "Accessories", "Watch"];
-
+  // Define the name and the path of all quickLinks
   const quickLinks = [
     { name: "All Products", path: "/products" },
     { name: "New Arrivals", path: "/products?new=true" },
     { name: "Accessories", path: "/products?category=Accessories" },
   ];
-
+  // Each time that we have a searchQuery, Fill the searchText useState with the searchQuery
   useEffect(() => {
     setSearchText(searchQuery);
   }, [searchQuery]);
+
+  //
 
   useEffect(() => {
     fetchProducts({
@@ -49,14 +66,34 @@ export default function ProductList() {
       .catch(() => setProducts([]));
   }, [category, searchQuery, isNew]);
 
-  const updateQuery = (nextCategory, nextSearch, nextIsNew = isNew) => {
-    const normalizedCategory = nextIsNew ? "" : nextCategory;
+  const updateQuery = (category, search, isNewFilter = isNew) => {
     const params = new URLSearchParams();
-    if (normalizedCategory) params.set("category", normalizedCategory);
-    if (nextIsNew) params.set("new", "true");
-    if (nextSearch) params.set("search", nextSearch);
+
+    // If "new arrivals" is selected, category should not be used
+    let finalCategory = category;
+    if (isNewFilter) {
+      finalCategory = "";
+    }
+
+    // Add category filter
+    if (finalCategory) {
+      params.set("category", finalCategory);
+    }
+
+    // Add "new" filter
+    if (isNewFilter) {
+      params.set("new", "true");
+    }
+
+    // Add search filter
+    if (search) {
+      params.set("search", search);
+    }
+
     const queryString = params.toString();
-    router.push(queryString ? `/products?${queryString}` : "/products");
+    const url = queryString ? `/products?${queryString}` : "/products";
+
+    router.push(url);
   };
 
   const handleSearchSubmit = (text) => {
@@ -146,7 +183,10 @@ export default function ProductList() {
                       {link.name}
                     </button>
                   ) : (
-                    <Link href={link.path} className="hover:text-amber-950 transition">
+                    <Link
+                      href={link.path}
+                      className="hover:text-amber-950 transition"
+                    >
                       {link.name}
                     </Link>
                   )}
