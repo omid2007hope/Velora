@@ -1,12 +1,9 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
-// src/pages/AccountSettings.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import SideBarLayOut from "./AccountLayout";
 import updateCustomerDetails from "../../../../api/API_Account";
+import AccountShell from "@/components/account/AccountShell";
 
 function AccountSettings() {
   const [user, setUser] = useState({
@@ -82,19 +79,19 @@ function AccountSettings() {
   }
 
   return (
-    <div className="w-full max-w-3xl bg-white border border-amber-950 rounded-xl shadow p-6 text-[#3C1D00]">
-      <h1 className="text-2xl font-bold text-amber-950 mb-2">
-        Personal Information
-      </h1>
+    <AccountShell>
+      <div className="w-full max-w-3xl rounded-xl border border-amber-950 bg-white p-6 text-[#3C1D00] shadow">
+        <h1 className="mb-2 text-2xl font-bold text-amber-950">
+          Personal Information
+        </h1>
 
-      <p className="text-sm text-amber-800 mb-6">
-        Update your account details below. This info is used for purchases and
-        shipping.
-      </p>
+        <p className="mb-6 text-sm text-amber-800">
+          Update your account details below. This info is used for purchases
+          and shipping.
+        </p>
 
-      <form className="space-y-4">
-        {/* Name */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-amber-900">
               First Name
@@ -121,8 +118,7 @@ function AccountSettings() {
           </div>
         </div>
 
-        {/* Email */}
-        <div>
+          <div>
           <label className="block text-sm font-medium text-amber-900">
             Email
           </label>
@@ -135,8 +131,7 @@ function AccountSettings() {
           />
         </div>
 
-        {/* Phone + DOB */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-amber-900">
               Phone
@@ -164,8 +159,7 @@ function AccountSettings() {
           </div>
         </div>
 
-        {/* Gender */}
-        <div>
+          <div>
           <label className="block text-sm font-medium text-amber-900">
             Gender
           </label>
@@ -196,8 +190,7 @@ function AccountSettings() {
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex gap-3 mt-6">
+          <div className="mt-6 flex gap-3">
           <button
             type="button"
             onClick={handleSave}
@@ -213,16 +206,13 @@ function AccountSettings() {
           >
             Continue to Shop
           </Link>
-        </div>
-      </form>
-    </div>
+          </div>
+        </form>
+      </div>
+    </AccountShell>
   );
 }
 
-// Wrap component with Sidebar Layout
-const WrappedAccountSettings = SideBarLayOut(AccountSettings);
-
-// Export wrapped component
-export default WrappedAccountSettings;
+export default AccountSettings;
 
 

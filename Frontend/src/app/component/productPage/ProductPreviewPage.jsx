@@ -1,17 +1,15 @@
 "use client";
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Star } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../redux/slice/BasketSlice";
-import withMenuLayout from "../layout/index";
 import { fetchProductById } from "../../api/API_Products";
 import {
   fetchReviews as fetchProductReviews,
   createReview as submitReview,
 } from "../../api/API_Reviews";
+import SiteShell from "@/components/layout/SiteShell";
 
 const COLORS = [
   { name: "White", value: "white", bg: "bg-gray-100" },
@@ -142,7 +140,8 @@ function ProductPreview({ productId }) {
   };
 
   return (
-    <div className="min-h-screen bg-orange-100 px-6 lg:px-20 py-10 pt-36">
+    <SiteShell>
+      <div className="min-h-screen bg-orange-100 px-6 py-10 pt-36 lg:px-20">
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <button
@@ -388,9 +387,9 @@ function ProductPreview({ productId }) {
           </button>
         </form>
       </section>
-    </div>
+      </div>
+    </SiteShell>
   );
 }
 
-const WrappedProductPreview = withMenuLayout(ProductPreview);
-export default WrappedProductPreview;
+export default ProductPreview;

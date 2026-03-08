@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 /* global google */
 "use client";
 
@@ -33,7 +31,12 @@ const loadGoogleScript = (callback) => {
 
 export default function GoogleSignIn({ onLogin }) {
   const btnRef = useRef(null);
+  const onLoginRef = useRef(onLogin);
   const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    onLoginRef.current = onLogin;
+  }, [onLogin]);
 
   function handleCallback(response) {
     if (!response?.credential) {
@@ -41,7 +44,7 @@ export default function GoogleSignIn({ onLogin }) {
       return;
     }
 
-    onLogin(response.credential);
+    onLoginRef.current(response.credential);
   }
 
   useEffect(() => {

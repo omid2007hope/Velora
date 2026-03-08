@@ -1,12 +1,8 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const model = require("../../model/Account");
 const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerDetails extends BaseService {
   async customerDetails({ userId, phoneNumber, dateOfBirth, gender }) {
-    console.log("Service: processing customer details");
-
     const customerDetailsNormalization = {
       userId,
       phoneNumber: phoneNumber.trim(),
@@ -29,7 +25,7 @@ module.exports = new (class CustomerDetails extends BaseService {
             dateOfBirth: customerDetailsNormalization.dateOfBirth,
             gender: customerDetailsNormalization.gender,
           },
-          { new: true, runValidators: true },
+          { returnDocument: "after", runValidators: true },
         )
         .lean();
 
@@ -62,8 +58,6 @@ module.exports = new (class CustomerDetails extends BaseService {
       },
     };
   }
-
-  // Backward-compatible alias for older controller calls.
   async customerRegister(payload) {
     return this.customerDetails(payload);
   }

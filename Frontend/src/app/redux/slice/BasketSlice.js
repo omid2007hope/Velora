@@ -1,24 +1,9 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 import { createSlice } from "@reduxjs/toolkit";
-
-const loadInitialBasket = () => {
-  if (typeof localStorage === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem("BasketItems")) || [];
-  } catch {
-    return [];
-  }
-};
-
-const persistBasket = (state) => {
-  if (typeof localStorage === "undefined") return;
-  localStorage.setItem("BasketItems", JSON.stringify(state));
-};
+import { getStoredBasket, saveStoredBasket } from "@/lib/browser-storage";
 
 const basketSlice = createSlice({
   name: "basket",
-  initialState: loadInitialBasket(),
+  initialState: getStoredBasket(),
   reducers: {
     addItem: (state, action) => {
       const item = action.payload;
@@ -36,7 +21,7 @@ const basketSlice = createSlice({
         state.push({ ...item, quantity: 1 });
       }
 
-      persistBasket(state);
+      saveStoredBasket(state);
     },
 
     updateQuantity: (state, action) => {
@@ -50,7 +35,7 @@ const basketSlice = createSlice({
 
       if (existing) {
         existing.quantity = Math.max(1, Number(quantity) || 1);
-        persistBasket(state);
+        saveStoredBasket(state);
       }
     },
 
@@ -64,12 +49,12 @@ const basketSlice = createSlice({
             item.selectedSize === selectedSize
           ),
       );
-      persistBasket(newState);
+      saveStoredBasket(newState);
       return newState;
     },
 
     clearBasket: () => {
-      persistBasket([]);
+      saveStoredBasket([]);
       return [];
     },
   },

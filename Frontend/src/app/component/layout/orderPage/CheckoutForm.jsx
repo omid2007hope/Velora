@@ -1,24 +1,21 @@
 "use client";
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearBasket } from "../../../redux/slice/BasketSlice";
 import { createOrder } from "../../../api/API_Order";
+import {
+  clearSavedPaymentDraft,
+  getSavedAddress,
+  getStoredUser,
+  saveSavedAddress,
+  saveStoredUser,
+} from "@/lib/browser-storage";
 
 const SHIPPING_FEE = 5;
 const TAX_AMOUNT = 8.32;
 
-const safeParse = (value) => {
-  try {
-    return JSON.parse(value) || {};
-  } catch {
-    return {};
-  }
-};
-
-export default function Checkout({ product, setStep }) {
+export default function Checkout({ product = [], setStep }) {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -32,24 +29,23 @@ export default function Checkout({ product, setStep }) {
   });
 
   useEffect(() => {
-    // Remove any legacy persisted card data; payment info must never be kept client-side.
-    localStorage.removeItem("savedPayment");
+    clearSavedPaymentDraft();
 
-    const loadUser = safeParse(localStorage.getItem("user"));
-    const loadAddress = safeParse(localStorage.getItem("savedAddress"));
+    const user = getStoredUser() || {};
+    const address = getSavedAddress();
 
     setForm((prev) => ({
       ...prev,
-      email: loadUser.email || prev.email,
-      fullName: loadUser.fullName || prev.fullName,
-      street: loadAddress.street || prev.street,
-      country: loadAddress.country || prev.country,
-      city: loadAddress.city || prev.city,
-      postal: loadAddress.postal || prev.postal,
+      email: user.email || prev.email,
+      fullName: user.fullName || prev.fullName,
+      street: address.street || prev.street,
+      country: address.country || prev.country,
+      city: address.city || prev.city,
+      postal: address.postal || prev.postal,
     }));
   }, []);
 
-  const cartItems = product ?? [];
+  const cartItems = product;
 
   const subtotal = useMemo(() => {
     return cartItems.reduce((sum, item) => {
@@ -91,25 +87,17 @@ export default function Checkout({ product, setStep }) {
   };
 
   const saveUserData = () => {
-    localStorage.setItem(
-      "savedAddress",
-      JSON.stringify({
-        street: form.street,
-        country: form.country,
-        city: form.city,
-        postal: form.postal,
-      }),
-    );
+    saveSavedAddress({
+      street: form.street,
+      country: form.country,
+      city: form.city,
+      postal: form.postal,
+    });
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        fullName: form.fullName,
-        email: form.email,
-      }),
-    );
-
-    window.dispatchEvent(new Event("user-updated"));
+    saveStoredUser({
+      fullName: form.fullName,
+      email: form.email,
+    });
   };
 
   const handlePay = async () => {

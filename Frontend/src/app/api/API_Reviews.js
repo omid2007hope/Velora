@@ -20,6 +20,8 @@ export async function createReview(productId, payload) {
   return res.data?.data;
 }
 
-export default { fetchReviews, createReview };
+const reviewApi = { fetchReviews, createReview };
+
+export default reviewApi;
 
 

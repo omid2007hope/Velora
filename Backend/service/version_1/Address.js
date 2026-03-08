@@ -1,12 +1,8 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const model = require("../../model/Address");
 const BaseService = require("../BaseService");
 
 module.exports = new (class CustomerAddress extends BaseService {
   async CustomerAddress({ userId, country, city, street, postalCode }) {
-    console.log("Service: processing address request");
-
     const customerAddressNormalization = {
       userId,
       country: String(country).toLowerCase().trim(),

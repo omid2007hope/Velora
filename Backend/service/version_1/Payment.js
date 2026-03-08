@@ -1,14 +1,9 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
-const crypto = require("crypto");
 const stripe = require("../../utils/stripeClient");
 const model = require("../../model/Payment");
 const BaseService = require("../BaseService");
 
 module.exports = new (class PaymentService extends BaseService {
   async savePaymentMethod({ userId, paymentMethodId, billingName }) {
-    console.log("Service: saving payment method");
-
     const stripeMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
 
     if (!stripeMethod || stripeMethod.type !== "card") {

@@ -30,6 +30,8 @@ export async function updateOrderStatus(id, payload) {
   return res.data?.data;
 }
 
-export default { createOrder, listOrders, updateOrderStatus };
+const orderApi = { createOrder, listOrders, updateOrderStatus };
+
+export default orderApi;
 
 

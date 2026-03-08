@@ -1,13 +1,12 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const mongoose = require("mongoose");
+const { getEnvConfig } = require("../config/env");
+const logger = require("../utils/logger");
 
 const connectDB = async () => {
-  const mongoUrl = process.env.MONGO_URL;
+  const { mongoUrl } = getEnvConfig();
 
   if (!mongoUrl) {
-    console.error("MongoDB connection failed: MONGO_URL is not set");
-    process.exit(1);
+    throw new Error("MongoDB connection failed: MONGO_URL is not set");
   }
 
   try {
@@ -15,10 +14,9 @@ const connectDB = async () => {
       autoIndex: true,
     });
 
-    console.log("MongoDB connected");
+    logger.info("MongoDB connected");
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
+    throw new Error(`MongoDB connection failed: ${error.message}`);
   }
 };
 

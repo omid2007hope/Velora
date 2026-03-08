@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import ProductListPage from "../page/ProductListPage.jsx";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProducts } from "@/lib/server-api";
@@ -101,10 +100,6 @@ export async function generateMetadata({ searchParams }) {
   });
 }
 
-function ProductsPageContent() {
-  return <ProductListPage />;
-}
-
 export default async function ProductsPage({ searchParams }) {
   const state = getProductsRouteState(searchParams);
   const seo = buildCatalogSeo(state);
@@ -130,9 +125,7 @@ export default async function ProductsPage({ searchParams }) {
           }),
         ]}
       />
-      <Suspense fallback={<div className="p-6">Loading products...</div>}>
-        <ProductsPageContent />
-      </Suspense>
+      <ProductListPage />
     </>
   );
 }

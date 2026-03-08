@@ -26,7 +26,8 @@ export default function Promo() {
               </h2>
               <p className="ml-0 mr-10 text-lg text-amber-800 sm:ml-8 sm:mr-10 lg:ml-0 lg:mr-10">
                 This year, our new summer collection will shelter you from the
-                harsh elements of a world that doesn't care if you live or die.
+                harsh elements of a world that doesn&apos;t care if you live or
+                die.
               </p>
             </div>
 

@@ -1,28 +1,14 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
-const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { handleStripeWebhook } = require("./controller/version_1/Webhook");
-
-require("dotenv").config({ path: path.join(__dirname, ".env") });
-require("dotenv").config({
-  path: path.join(__dirname, ".env.local"),
-  override: true,
-});
-
+const { getEnvConfig } = require("./config/env");
 const router = require("./router/index");
+const logger = require("./utils/logger");
 
 const app = express();
-
-const allowedOrigins = (process.env.CLIENT_URL ||
-  "http://localhost:3000,http://localhost:3001,http://localhost:5173"
-)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const { allowedOrigins } = getEnvConfig();
 
 const localhostPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
 
@@ -43,7 +29,6 @@ app.use(
   }),
 );
 
-// Stripe webhook needs raw body before JSON parsing
 app.post(
   "/server/webhook/stripe",
   express.raw({ type: "application/json" }),
@@ -68,10 +53,9 @@ app.get("/health", (req, res) => {
 
 app.use(router);
 
-// Fallback error handler to avoid leaking stack traces
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error("Unhandled error:", err);
+  logger.error("Unhandled error:", err);
   if (err?.status) {
     return res.status(err.status).json({ error: err.message });
   }

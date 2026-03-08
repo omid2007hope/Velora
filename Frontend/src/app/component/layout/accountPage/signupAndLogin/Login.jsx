@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
@@ -9,6 +7,7 @@ import { useRouter } from "next/navigation";
 import GoogleSignIn from "./Google";
 import FetchLoginData from "../../../../api/API_LoginData";
 import ResetPasswordPopup from "./RestPassword";
+import { saveAuthSession, saveStoredUser } from "@/lib/browser-storage";
 
 const parseJwt = (token) => {
   try {
@@ -16,16 +15,6 @@ const parseJwt = (token) => {
   } catch {
     return null;
   }
-};
-
-const storeAuth = (user, token, refreshToken) => {
-  localStorage.setItem("token", token);
-
-  if (refreshToken) {
-    localStorage.setItem("refreshToken", refreshToken);
-  }
-
-  localStorage.setItem("user", JSON.stringify(user));
 };
 
 export default function LoginPopup({ open, setOpen, setUser }) {
@@ -70,7 +59,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         return;
       }
 
-      storeAuth(user, response.token, response.refreshToken);
+      saveAuthSession({
+        user,
+        token: response.token,
+        refreshToken: response.refreshToken,
+      });
       setUser(user);
       setOpen(false);
       router.push("/account");
@@ -105,7 +98,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       google: true,
     };
 
-    localStorage.setItem("user", JSON.stringify(user));
+    saveStoredUser(user);
     setUser(user);
 
     setOpen(false);

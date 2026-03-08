@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const customerDetailsService = require("../../service/version_1/Account");
 
 async function CustomerDetails(req, res) {
@@ -42,8 +40,6 @@ async function CustomerDetails(req, res) {
     if (sendCustomerDetails?.existed) {
       return res.status(200).json(responseBody);
     }
-
-    console.log("Controller: customer details saved");
 
     return res.status(201).json(responseBody);
   } catch (error) {

@@ -1,6 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
-import React from "react";
 import Image from "next/image";
 import {
   TruckIcon,
@@ -14,19 +11,19 @@ const FEATURES = [
   {
     name: "Free shipping",
     description:
-      "It's not actually free we just price it into the products. Someone's paying for it, and it's not us.",
+      "It is not actually free; we just price it into the products. Someone else is paying for it.",
     icon: TruckIcon,
   },
   {
     name: "10-year warranty",
     description:
-      "If it breaks in the first 10 years we'll replace it. After that you're on your own though.",
+      "If it breaks in the first 10 years, we will replace it. After that, standard wear applies.",
     icon: ShieldCheckIcon,
   },
   {
     name: "Exchanges",
     description:
-      "If you don't like it, trade it to one of your friends for something of theirs. Don't send it here though.",
+      "If it is not the right fit, contact support and we will help with your exchange options.",
     icon: ArrowPathIcon,
   },
 ];
@@ -41,11 +38,8 @@ export default function Service() {
             We built our business on great customer service
           </h2>
           <p className="mt-4 text-base text-amber-900">
-            At the beginning at least, but then we realized we could make a lot
-            more money if we kinda stopped caring about that. Our new strategy
-            is to write a bunch of things that look really good in the
-            headlines, then clarify in the small print but hope people don't
-            actually read it.
+            Thoughtful support, transparent policies, and reliable fulfillment
+            are part of the experience we want every Velora customer to expect.
           </p>
         </div>
 

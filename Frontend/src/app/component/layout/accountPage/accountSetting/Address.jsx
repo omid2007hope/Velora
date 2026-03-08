@@ -1,11 +1,9 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import SideBarLayOut from "./AccountLayout";
 import updateCustomerAddress from "../../../../api/API_Address";
+import AccountShell from "@/components/account/AccountShell";
 
 const inputClass =
   "w-full rounded border border-amber-950 bg-amber-50 p-2 text-sm";
@@ -69,11 +67,12 @@ function AddressForm() {
   }
 
   return (
-    <div className="w-full max-w-lg border rounded-md shadow-sm border-[#BCA389] bg-white p-6 text-[#3C1D00]">
-      <h2 className="font-bold text-lg mb-2">Addresses</h2>
-      <p className="text-xs mb-4">Add or edit your shipping address below.</p>
+    <AccountShell>
+      <div className="w-full max-w-lg rounded-md border border-[#BCA389] bg-white p-6 text-[#3C1D00] shadow-sm">
+        <h2 className="mb-2 text-lg font-bold">Addresses</h2>
+        <p className="mb-4 text-xs">Add or edit your shipping address below.</p>
 
-      <form onSubmit={handleSave} className="space-y-3">
+        <form onSubmit={handleSave} className="space-y-3">
         <input
           name="country"
           placeholder="Country"
@@ -107,7 +106,7 @@ function AddressForm() {
           className={inputClass}
         />
 
-        <div className="flex flex-wrap gap-3 mt-6">
+          <div className="mt-6 flex flex-wrap gap-3">
           <button
             type="submit"
             disabled={isSaving}
@@ -122,14 +121,13 @@ function AddressForm() {
           >
             Continue to shop
           </Link>
-        </div>
-      </form>
-    </div>
+          </div>
+        </form>
+      </div>
+    </AccountShell>
   );
 }
 
-const WrappedAddressForm = SideBarLayOut(AddressForm);
-
-export default WrappedAddressForm;
+export default AddressForm;
 
 

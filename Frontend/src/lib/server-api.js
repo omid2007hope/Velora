@@ -4,18 +4,46 @@ function createApiUrl(path) {
   return new URL(path.replace(/^\//, ""), `${getApiBaseUrl()}/`);
 }
 
+function shouldSkipBuildTimeRequest() {
+  const apiBaseUrl = getApiBaseUrl();
+
+  return (
+    process.env.NODE_ENV === "production" &&
+    /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(apiBaseUrl)
+  );
+}
+
 async function fetchApiJson(
   path,
-  { headers, next = { revalidate: 300 }, ...init } = {},
+  { headers, next = { revalidate: 300 }, fallbackData = null, ...init } = {},
 ) {
-  const response = await fetch(createApiUrl(path), {
-    ...init,
-    headers: {
-      accept: "application/json",
-      ...headers,
-    },
-    next,
-  });
+  if (shouldSkipBuildTimeRequest()) {
+    return {
+      data: fallbackData,
+      notFound: false,
+      unavailable: true,
+    };
+  }
+
+  let response;
+
+  try {
+    response = await fetch(createApiUrl(path), {
+      ...init,
+      headers: {
+        accept: "application/json",
+        ...headers,
+      },
+      next,
+    });
+  } catch (error) {
+    console.warn(`Failed to fetch ${path}: ${error.message}`);
+    return {
+      data: fallbackData,
+      notFound: false,
+      unavailable: true,
+    };
+  }
 
   if (response.status === 404) {
     return { data: null, notFound: true };
@@ -29,6 +57,7 @@ async function fetchApiJson(
   return {
     data: payload?.data ?? null,
     notFound: false,
+    unavailable: false,
   };
 }
 
@@ -54,6 +83,7 @@ function buildProductsQuery({ category, isNew, search } = {}) {
 export async function getProducts(params = {}) {
   const result = await fetchApiJson(
     `/server/products${buildProductsQuery(params)}`,
+    { fallbackData: [] },
   );
 
   return Array.isArray(result.data) ? result.data : [];
@@ -64,7 +94,9 @@ export async function getProductById(id) {
     return { product: null, notFound: true };
   }
 
-  const result = await fetchApiJson(`/server/products/${id}`);
+  const result = await fetchApiJson(`/server/products/${id}`, {
+    fallbackData: null,
+  });
   return {
     product: result.data,
     notFound: result.notFound,
@@ -76,6 +108,8 @@ export async function getReviewsByProductId(productId) {
     return [];
   }
 
-  const result = await fetchApiJson(`/server/products/${productId}/reviews`);
+  const result = await fetchApiJson(`/server/products/${productId}/reviews`, {
+    fallbackData: [],
+  });
   return Array.isArray(result.data) ? result.data : [];
 }

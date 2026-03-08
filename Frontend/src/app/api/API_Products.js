@@ -25,6 +25,8 @@ export async function fetchProductById(id) {
   return res.data?.data;
 }
 
-export default { fetchProducts, fetchProductById };
+const productApi = { fetchProducts, fetchProductById };
+
+export default productApi;
 
 

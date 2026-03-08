@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const CustomerAddressService = require("../../service/version_1/Address");
 
 async function CustomerAddress(req, res) {
@@ -40,10 +38,6 @@ async function CustomerAddress(req, res) {
       ...sendCustomerAddress,
     };
 
-    console.log("Controller: address create request received");
-
-    // Tests expect a 200; return 200 even on first creation to keep the call
-    // idempotent across runs.
     return res.status(200).json(responseBody);
   } catch (error) {
     console.error("CustomerAddress error:", error.message);

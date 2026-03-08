@@ -1,55 +1,34 @@
-# Velora Project Review (2026-03-04)
+# Velora Project Review (2026-03-08)
 
-## Quick Profile
-- Solo-built e-commerce prototype (Next.js frontend + Express/MongoDB backend) aimed at showcasing hiring readiness.
-- Implements products, reviews, cart, checkout, addresses, payments, and account flows with MongoDB persistence.
-- Uses layered backend design (controller → service → model) with reusable `BaseService`.
+## Current Snapshot
+- Split full-stack app with `Frontend` on Next.js App Router and `Backend` on Express + MongoDB/Mongoose.
+- Core flows are wired end-to-end: products, reviews, cart, checkout, account profile, addresses, email verification, password reset, and Stripe-backed payment method metadata.
+- Backend tests pass, frontend production build passes, and frontend lint now reports a short list of real performance warnings instead of large amounts of false-positive JSX noise.
 
-## Strengths
-- Clear domain breakdown: products, reviews, cart, orders, payment intents, customer profile.
-- Input validation and normalization in controllers (e.g., idempotent create routes, basic format checks).
-- Services encapsulate business logic; schemas indexed for common queries.
-- Environment-driven configuration and CORS whitelist support.
+## What Improved In This Cleanup Pass
+- Frontend linting now uses a Next-aware flat ESLint setup, so JSX component usage is understood correctly and warning output is trustworthy.
+- Shared browser persistence is centralized in `Frontend/src/lib/browser-storage.js` instead of being scattered through header, auth, checkout, and Redux code.
+- Site and account layouts now use explicit shell components in `Frontend/src/components`, replacing HOC-based wrapping that made route ownership harder to follow.
+- Frontend API helpers were cleaned up to remove alert-based error handling and noisy debug logging.
+- Backend runtime logging is now routed through a small logger utility so tests stay quiet while startup and failure logs remain available in development.
+- Generic backend pagination now uses database-level `skip`/`limit` + `countDocuments` instead of loading everything into memory first.
+- Deprecated Mongoose `{ new: true }` updates were replaced with `returnDocument: "after"` in the touched services.
 
-## Critical Risks (fix before sharing)
-- Secrets committed: `Backend/.env` & `.env.local` expose real MongoDB URI and JWT secret. Remove from repo history and rotate credentials immediately.
-- PCI risk: raw card data (even hashed CVV/card) stored in `Payment` model/service; must be replaced with Stripe (tokenized) and no CVV/number storage.
-- Packages: `express@5` (still not LTS), typo dependency `cours`, invalid `dotenv@17.x`; pinned versions likely fail fresh installs.
-- Security gaps: no auth/authorization middleware; JWT tokens issued but never verified on protected routes; no rate limiting or input sanitization middleware.
-- Data validation limited; no schema-level validation for cart/order totals, currency, or product existence.
-- Tests absent; no CI. `node_modules` and `.next` are committed—bloats repo and signals inexperience.
+## Current Strengths
+- Clear route/controller/service/model separation on the backend.
+- SEO metadata, sitemap, robots, social image routes, and server-side catalog/product fetches are already in place on the frontend.
+- Validation, auth protection, rate limiting, env-based configuration, and Stripe webhook handling are present.
+- Payment persistence stores Stripe-safe metadata only (`paymentMethodId`, brand, last4, expiry, billing name).
 
-## Frontend Gaps
-- Next.js used purely as SPA with `react-router-dom`; SSR/SEO benefits are lost and routing is duplicated.
-- React 19 + Next 15 + Tailwind 4 RC combo is untested; may not build reliably.
-- LocalStorage-era flows remain (e.g., payment/address/cart fallbacks) instead of full API integration.
-- Accessibility and performance unknown (no Lighthouse/tests); global styles minimal.
+## Remaining Gaps
+- Several UI components still use raw `<img>` tags. Lint is correctly flagging these as optimization opportunities for `next/image`.
+- Frontend structure is improved, but there is still legacy `src/app/component/...` nesting that can be flattened further over time.
+- Browser-persisted auth/cart state is now centralized, but the app is still not fully server-first for account and checkout flows.
+- The repo still contains committed secret files in the working tree context. Those credentials should be rotated and removed from history separately.
 
-## One-Week Fix Plan (minimum viable to demo to employers)
-1) **Security/cleanup**: Delete committed secrets, rotate MongoDB user/JWT secret, add `.env.example`, remove `node_modules`/`.next`, add `.gitignore` entries.
-2) **Dependencies**: Downgrade to stable `express@4.19`, `dotenv@16`, remove `cours`, lock Node LTS in `.nvmrc`.
-3) **Payments**: Remove card storage; integrate Stripe Payment Intents (client secret creation + webhook stub) and keep only provider IDs/last4/brand.
-4) **Auth**: Add JWT verify middleware; protect cart/order/profile routes; hash passwords with bcrypt + salt rounds; add refresh token endpoint.
-5) **Validation**: Add Zod/Joi request schemas; enforce product existence and price snapshot validation on cart/order.
-6) **Testing/CI**: Add Jest + Supertest smoke tests for products, auth, cart, orders; GitHub Actions running lint + test.
-
-## Medium-Term Improvements
-- Product admin CRUD + inventory checks per variant.
-- Rate limiting (express-rate-limit) and Helmet for security headers.
-- Observability: structured logs (pino) and error middleware.
-- Frontend: replace React Router with Next App Router routes; fetch via `app/api` or server actions; add SEO metadata and loading/error states.
-- UX: address/payment forms with client-side validation and Stripe Elements; add order history page.
-
-## How to Pitch This Project (Austria-focused)
-- Emphasize end-to-end build: designed data models, secured Mongo connection, implemented layered services, and wired REST endpoints the frontend consumes.
-- Highlight security learnings: moving from naive card storage to PCI-safe tokenization and secret management.
-- Show testing/CI improvements to prove engineering maturity.
-- Mention adaptability: built both UI and backend, ready to work across stack in a small team.
-
-## Next Actions Checklist
-- [ ] Purge secrets from git history and rotate credentials.
-- [ ] Fix dependencies and lock versions; fresh `npm install` works.
-- [ ] Implement JWT auth middleware + protected routes.
-- [ ] Swap payment flow to Stripe intents; delete CVV/number fields.
-- [ ] Add request validation + basic tests; set up GitHub Actions.
-- [ ] Refactor frontend routing to native Next.js pages and connect to live APIs.
+## Recommended Next Steps
+1. Replace the remaining flagged `<img>` elements with `next/image` where layout constraints are known.
+2. Continue moving reusable UI from `src/app/component/*` into `src/components/*` to finish the structural normalization.
+3. Add CI for frontend lint, frontend build, and backend Jest/Supertest runs.
+4. Introduce targeted frontend tests for account, cart, and checkout flows once the UI structure stabilizes.
+5. Rotate secrets and replace committed env files with `.env.example` templates.

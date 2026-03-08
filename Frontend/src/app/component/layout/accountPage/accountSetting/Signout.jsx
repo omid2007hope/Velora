@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
 import {
@@ -10,15 +8,13 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import { clearAuthSession } from "@/lib/browser-storage";
 
 export default function SignOutForm(props) {
   const router = useRouter();
 
   function signout() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    window.dispatchEvent(new Event("user-updated"));
+    clearAuthSession();
     props.setOpen(false);
     router.push("/");
   }

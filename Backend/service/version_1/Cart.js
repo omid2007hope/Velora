@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const model = require("../../model/Cart");
 const Product = require("../../model/Products");
 const BaseService = require("../BaseService");
@@ -71,7 +69,7 @@ module.exports = new (class CartService extends BaseService {
       .findOneAndUpdate(
         { _id: cart._id },
         { items },
-        { new: true, runValidators: true },
+        { returnDocument: "after", runValidators: true },
       )
       .lean();
 
@@ -90,7 +88,7 @@ module.exports = new (class CartService extends BaseService {
       .findOneAndUpdate(
         { _id: cart._id },
         { items },
-        { new: true, runValidators: true },
+        { returnDocument: "after", runValidators: true },
       )
       .lean();
   }
@@ -105,7 +103,7 @@ module.exports = new (class CartService extends BaseService {
       .findOneAndUpdate(
         { _id: cart._id },
         { items },
-        { new: true, runValidators: true },
+        { returnDocument: "after", runValidators: true },
       )
       .lean();
   }
@@ -116,7 +114,7 @@ module.exports = new (class CartService extends BaseService {
       .findOneAndUpdate(
         { _id: cart._id },
         { items: [] },
-        { new: true, runValidators: true },
+        { returnDocument: "after", runValidators: true },
       )
       .lean();
   }

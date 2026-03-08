@@ -1,7 +1,5 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "../../../redux/slice/BasketSlice";
@@ -11,7 +9,7 @@ const TAX_AMOUNT = 8.32;
 
 export default function ShoppingCart({ setStep, setProduct }) {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.basket) ?? [];
+  const cartItems = useSelector((state) => state.basket);
 
   const subtotal = useMemo(() => {
     return cartItems.reduce((sum, item) => {

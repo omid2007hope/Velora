@@ -42,12 +42,14 @@ export async function clearCart() {
   return res.data?.data;
 }
 
-export default {
+const cartApi = {
   fetchCart,
   addCartItem,
   updateCartItemQuantity,
   removeCartItem,
   clearCart,
 };
+
+export default cartApi;
 
 

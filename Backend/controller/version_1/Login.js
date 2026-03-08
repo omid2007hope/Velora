@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const jwt = require("jsonwebtoken");
 const loginService = require("../../service/version_1/Login");
 
@@ -28,8 +26,6 @@ async function loginIntoTheAccount(req, res) {
         error: "Invalid email or password",
       });
     }
-
-    console.log("Controller: customer login request received");
 
     return res.status(200).json({
       message: "Login successful",

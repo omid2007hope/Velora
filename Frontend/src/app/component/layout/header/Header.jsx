@@ -1,5 +1,3 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -32,6 +30,10 @@ import { useSelector } from "react-redux";
 import LoginPopup from "../accountPage/signupAndLogin/Login";
 import WomanPhoto from "./category/WomanCategory";
 import MenPhoto from "./category/MenCategory";
+import {
+  getStoredUser,
+  subscribeToStoredUser,
+} from "@/lib/browser-storage";
 import Logo from "../../../assets/image/Logo.webp";
 
 const navigation = {
@@ -78,22 +80,13 @@ const navigation = {
   pages: [],
 };
 
-const safeParse = (value) => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-};
-
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
-  const loadUser = () => safeParse(localStorage.getItem("user"));
 
-  const cartItems = useSelector((state) => state.basket) ?? [];
+  const cartItems = useSelector((state) => state.basket);
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -101,10 +94,9 @@ export default function Header() {
 
   useEffect(() => {
     setHasMounted(true);
-    setUser(loadUser());
+    setUser(getStoredUser());
   }, []);
 
-  // Listen for "open-login-popup" (from Signup) and open Login
   useEffect(() => {
     const openLogin = () => setLogin(true);
     document.addEventListener("open-login-popup", openLogin);
@@ -114,17 +106,9 @@ export default function Header() {
     };
   }, []);
 
-  // Sync user state if localStorage user changes (login/logout in other parts)
   useEffect(() => {
-    const updateUser = () => setUser(loadUser());
-
-    window.addEventListener("storage", updateUser);
-    window.addEventListener("user-updated", updateUser);
-
-    return () => {
-      window.removeEventListener("storage", updateUser);
-      window.removeEventListener("user-updated", updateUser);
-    };
+    const updateUser = () => setUser(getStoredUser());
+    return subscribeToStoredUser(updateUser);
   }, []);
 
   return (

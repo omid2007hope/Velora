@@ -1,18 +1,18 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const app = require("./app");
+const { getEnvConfig } = require("./config/env");
 const connectDB = require("./database/MongoDB");
+const logger = require("./utils/logger");
+
+const { port } = getEnvConfig();
 
 connectDB()
   .then(() => {
-    const port = process.env.PORT || 3000;
     app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
+      logger.info(`Server running on http://localhost:${port}`);
     });
   })
   .catch((err) => {
-    console.error("Failed to connect to database:", err);
+    logger.error("Failed to connect to database:", err);
     process.exit(1);
   });
-
 

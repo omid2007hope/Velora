@@ -1,11 +1,9 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import SideBarLayOut from "./AccountLayout";
 import updateCustomerPayment from "../../../../api/API_Payment";
+import AccountShell from "@/components/account/AccountShell";
 
 const inputClass =
   "w-full rounded border border-amber-950 bg-amber-50 p-2 text-sm";
@@ -65,13 +63,15 @@ function PaymentForm() {
   }
 
   return (
-    <div className="w-full max-w-lg border rounded-md shadow-sm border-[#BCA389] bg-white p-6 text-[#3C1D00]">
-      <h2 className="font-bold text-lg mb-2">Payment Methods</h2>
-      <p className="text-xs mb-4">
-        Add or update your payment details. Your information is stored securely.
-      </p>
+    <AccountShell>
+      <div className="w-full max-w-lg rounded-md border border-[#BCA389] bg-white p-6 text-[#3C1D00] shadow-sm">
+        <h2 className="mb-2 text-lg font-bold">Payment Methods</h2>
+        <p className="mb-4 text-xs">
+          Add or update your payment details. Your information is stored
+          securely.
+        </p>
 
-      <form onSubmit={handleSave} className="space-y-3">
+        <form onSubmit={handleSave} className="space-y-3">
         <input
           name="billingName"
           placeholder="Billing Name"
@@ -88,7 +88,7 @@ function PaymentForm() {
           className={inputClass}
         />
 
-        <div className="flex flex-wrap gap-3 mt-6">
+          <div className="mt-6 flex flex-wrap gap-3">
           <button
             type="submit"
             disabled={isSaving}
@@ -103,14 +103,13 @@ function PaymentForm() {
           >
             Continue to shop
           </Link>
-        </div>
-      </form>
-    </div>
+          </div>
+        </form>
+      </div>
+    </AccountShell>
   );
 }
 
-const WrappedPaymentForm = SideBarLayOut(PaymentForm);
-
-export default WrappedPaymentForm;
+export default PaymentForm;
 
 

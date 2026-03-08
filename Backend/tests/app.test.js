@@ -21,6 +21,16 @@ async function registerAndLogin() {
 }
 
 describe("Auth and protected routes", () => {
+  test("registration stays idempotent for an existing email", async () => {
+    const first = await request(app).post("/server/customer").send(user).expect(201);
+    const second = await request(app).post("/server/customer").send(user).expect(201);
+
+    expect(first.body._id).toBeTruthy();
+    expect(second.body._id).toBe(first.body._id);
+    expect(second.body.existed).toBe(true);
+    expect(second.body.source).toBe("database");
+  });
+
   test("rejects unauthenticated cart access", async () => {
     await request(app).get("/server/cart").expect(401);
   });

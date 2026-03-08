@@ -1,10 +1,10 @@
-// © 2026 Omid Teimory. All rights reserved.
-// Signature: OmidTeimory-2026
 const model = require("../../model/Register");
 const BaseService = require("../BaseService");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const { sendEmail } = require("../../utils/mailer");
+const { getEnvConfig } = require("../../config/env");
+const logger = require("../../utils/logger");
 const SALT_ROUNDS = 12;
 
 module.exports = new (class Customer extends BaseService {
@@ -25,10 +25,8 @@ module.exports = new (class Customer extends BaseService {
       },
     );
 
-    const clientUrl =
-      process.env.CLIENT_URL?.split(",")?.[0]?.trim() ||
-      "http://localhost:3000";
-    const verificationLink = `${clientUrl.replace(/\/$/, "")}/verify-email?token=${token}`;
+    const { primaryClientUrl } = getEnvConfig();
+    const verificationLink = `${primaryClientUrl.replace(/\/$/, "")}/verify-email?token=${token}`;
 
     await sendEmail({
       to: email,
@@ -41,8 +39,6 @@ module.exports = new (class Customer extends BaseService {
   }
 
   async customerRegister({ email, fullName, password }) {
-    console.log("Service: processing customer registration");
-
     const customerDataNormalization = {
       email: email.trim().toLowerCase(),
       fullName: fullName.trim(),
@@ -75,7 +71,7 @@ module.exports = new (class Customer extends BaseService {
         saveCustomerData.email,
       );
     } catch (err) {
-      console.error("Failed to send verification email:", err.message);
+      logger.warn("Failed to send verification email:", err.message);
     }
 
     return {
@@ -87,8 +83,6 @@ module.exports = new (class Customer extends BaseService {
         fullName: saveCustomerData.fullName,
         isEmailVerified: !!saveCustomerData.isEmailVerified,
       },
-      // Expose the token in non-production environments to make automated
-      // tests and local QA easier. Do not rely on this in production.
       emailVerificationToken:
         process.env.NODE_ENV === "production" ? undefined : token,
     };
