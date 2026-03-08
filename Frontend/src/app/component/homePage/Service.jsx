@@ -1,6 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 import React from "react";
+import Image from "next/image";
 import {
   TruckIcon,
   ShieldCheckIcon,
@@ -9,30 +10,30 @@ import {
 
 import S from "../../assets/image/S.webp";
 
-export default function Service() {
-  const features = [
-    {
-      name: "Free shipping",
-      description:
-        "It's not actually free we just price it into the products. Someone's paying for it, and it's not us.",
-      icon: TruckIcon,
-    },
-    {
-      name: "10-year warranty",
-      description:
-        "If it breaks in the first 10 years we'll replace it. After that you're on your own though.",
-      icon: ShieldCheckIcon,
-    },
-    {
-      name: "Exchanges",
-      description:
-        "If you don't like it, trade it to one of your friends for something of theirs. Don't send it here though.",
-      icon: ArrowPathIcon,
-    },
-  ];
+const FEATURES = [
+  {
+    name: "Free shipping",
+    description:
+      "It's not actually free we just price it into the products. Someone's paying for it, and it's not us.",
+    icon: TruckIcon,
+  },
+  {
+    name: "10-year warranty",
+    description:
+      "If it breaks in the first 10 years we'll replace it. After that you're on your own though.",
+    icon: ShieldCheckIcon,
+  },
+  {
+    name: "Exchanges",
+    description:
+      "If you don't like it, trade it to one of your friends for something of theirs. Don't send it here though.",
+    icon: ArrowPathIcon,
+  },
+];
 
+export default function Service() {
   return (
-    <section className="bg-orange-100 py-8 sm:py-8 lg:py-16 px-16 sm:px-16 lg:px-16 border-b-2  border-amber-950">
+    <section className="border-b-2 border-amber-950 bg-orange-100 px-4 py-8 sm:px-6 lg:px-16 lg:py-16">
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         {/* Left Content */}
         <div>
@@ -50,15 +51,11 @@ export default function Service() {
 
         {/* Right Image */}
         <div className="relative w-full h-64 sm:h-80 lg:h-96">
-          <img
-            className="w-full h-full object-cover rounded-lg shadow-md border-2 border-amber-950"
-            src={S.src}
+          <Image
+            className="rounded-lg border-2 border-amber-950 object-cover shadow-md"
+            src={S}
             alt="Customer service desk"
-            width="1536"
-            height="1024"
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
+            fill
             sizes="(min-width: 1024px) 50vw, 100vw"
           />
         </div>
@@ -66,25 +63,28 @@ export default function Service() {
 
       {/* Features */}
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => (
-          <div
-            key={feature.name}
-            className="flex items-start space-x-4 p-5 rounded-xl bg-orange-50 shadow-sm border-2 border-amber-950 transition hover:shadow-md"
-          >
-            <feature.icon className="h-8 w-8 text-amber-950 flex-shrink-0" />
-            <div>
-              <h3 className="text-md font-semibold text-amber-900">
-                {feature.name}
-              </h3>
-              <p className="mt-1 text-sm text-amber-900">
-                {feature.description}
-              </p>
+        {FEATURES.map((feature) => {
+          const Icon = feature.icon;
+
+          return (
+            <div
+              key={feature.name}
+              role="article"
+              className="flex items-start space-x-4 rounded-xl border-2 border-amber-950 bg-orange-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              <Icon className="h-8 w-8 flex-shrink-0 text-amber-950" />
+              <div>
+                <h3 className="text-md font-semibold text-amber-900">
+                  {feature.name}
+                </h3>
+                <p className="mt-1 text-sm text-amber-900">
+                  {feature.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
 }
-
-

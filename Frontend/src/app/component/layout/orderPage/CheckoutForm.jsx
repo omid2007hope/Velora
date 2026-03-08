@@ -7,6 +7,17 @@ import { useRouter } from "next/navigation";
 import { clearBasket } from "../../../redux/slice/BasketSlice";
 import { createOrder } from "../../../api/API_Order";
 
+const SHIPPING_FEE = 5;
+const TAX_AMOUNT = 8.32;
+
+const safeParse = (value) => {
+  try {
+    return JSON.parse(value) || {};
+  } catch {
+    return {};
+  }
+};
+
 export default function Checkout({ product, setStep }) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -21,41 +32,35 @@ export default function Checkout({ product, setStep }) {
   });
 
   useEffect(() => {
-    try {
-      // Remove any legacy persisted card data; payment info must never be kept client-side.
-      localStorage.removeItem("savedPayment");
+    // Remove any legacy persisted card data; payment info must never be kept client-side.
+    localStorage.removeItem("savedPayment");
 
-      const loadUser = JSON.parse(localStorage.getItem("user")) || {};
-      const loadAddress =
-        JSON.parse(localStorage.getItem("savedAddress")) || {};
+    const loadUser = safeParse(localStorage.getItem("user"));
+    const loadAddress = safeParse(localStorage.getItem("savedAddress"));
 
-      setForm((prev) => ({
-        ...prev,
-        email: loadUser.email || prev.email,
-        fullName: loadUser.fullName || prev.fullName,
-        street: loadAddress.street || prev.street,
-        country: loadAddress.country || prev.country,
-        city: loadAddress.city || prev.city,
-        postal: loadAddress.postal || prev.postal,
-      }));
-    } catch {
-      // ignore parse errors
-    }
+    setForm((prev) => ({
+      ...prev,
+      email: loadUser.email || prev.email,
+      fullName: loadUser.fullName || prev.fullName,
+      street: loadAddress.street || prev.street,
+      country: loadAddress.country || prev.country,
+      city: loadAddress.city || prev.city,
+      postal: loadAddress.postal || prev.postal,
+    }));
   }, []);
 
-  const cartItems = product || [];
+  const cartItems = product ?? [];
 
-  const subtotal = useMemo(
-    () =>
-      cartItems.reduce(
-        (sum, item) => sum + (item.newPrice || 0) * (item.quantity || 1),
-        0,
-      ),
-    [cartItems],
-  );
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((sum, item) => {
+      const price = item.newPrice ?? 0;
+      const qty = item.quantity ?? 1;
+      return sum + price * qty;
+    }, 0);
+  }, [cartItems]);
 
-  const shipping = cartItems.length > 0 ? 5 : 0;
-  const tax = cartItems.length > 0 ? 8.32 : 0;
+  const shipping = cartItems.length ? SHIPPING_FEE : 0;
+  const tax = cartItems.length ? TAX_AMOUNT : 0;
   const total = subtotal + shipping + tax;
 
   const goBack = () => setStep(1);
@@ -66,16 +71,45 @@ export default function Checkout({ product, setStep }) {
   };
 
   const validate = () => {
-    const required = ["email", "fullName", "street", "country", "city", "postal"];
+    const requiredFields = [
+      "email",
+      "fullName",
+      "street",
+      "country",
+      "city",
+      "postal",
+    ];
 
-    for (const key of required) {
-      if (!form[key]?.trim()) {
-        alert("Please complete all required fields before paying.");
-        return false;
-      }
+    const missing = requiredFields.some((key) => !form[key]?.trim());
+
+    if (missing) {
+      alert("Please complete all required fields before paying.");
+      return false;
     }
 
     return true;
+  };
+
+  const saveUserData = () => {
+    localStorage.setItem(
+      "savedAddress",
+      JSON.stringify({
+        street: form.street,
+        country: form.country,
+        city: form.city,
+        postal: form.postal,
+      }),
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        fullName: form.fullName,
+        email: form.email,
+      }),
+    );
+
+    window.dispatchEvent(new Event("user-updated"));
   };
 
   const handlePay = async () => {
@@ -86,31 +120,14 @@ export default function Checkout({ product, setStep }) {
     }
 
     try {
-      localStorage.setItem(
-        "savedAddress",
-        JSON.stringify({
-          street: form.street,
-          country: form.country,
-          city: form.city,
-          postal: form.postal,
-        }),
-      );
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          fullName: form.fullName,
-          email: form.email,
-        }),
-      );
-      window.dispatchEvent(new Event("user-updated"));
+      saveUserData();
 
       const payload = {
         items: cartItems.map((item) => ({
           productId: item.id,
-          quantity: item.quantity || 1,
-          selectedColor: item.selectedColor,
-          selectedSize: item.selectedSize,
+          quantity: item.quantity ?? 1,
+          selectedColor: item.selectedColor ?? null,
+          selectedSize: item.selectedSize ?? null,
         })),
         shipping,
         tax,
@@ -147,21 +164,6 @@ export default function Checkout({ product, setStep }) {
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10">
         {/* LEFT: FORM */}
         <div className="lg:col-span-7 bg-orange-200 p-6 rounded-xl border border-amber-950 shadow-lg flex flex-col">
-          <button
-            type="button"
-            onClick={handlePay}
-            disabled={cartItems.length === 0}
-            className="w-full bg-amber-950 text-white py-3 rounded-md font-semibold disabled:opacity-50"
-          >
-            Pay securely
-          </button>
-
-          <div className="flex items-center my-6">
-            <div className="flex-grow border-t border-amber-900"></div>
-            <span className="px-3 text-amber-800 text-sm">or</span>
-            <div className="flex-grow border-t border-amber-900"></div>
-          </div>
-
           <form className="space-y-4 flex-1">
             <label htmlFor="checkout-email" className="sr-only">
               Email
@@ -261,36 +263,40 @@ export default function Checkout({ product, setStep }) {
             <h2 className="text-xl font-bold text-amber-950 mb-4">Your Cart</h2>
 
             <ul className="divide-y divide-amber-900">
-              {cartItems.map((item) => (
-                <li
-                  key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
-                  className="flex py-4"
-                >
-                  <img
-                    src={item.image}
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    className="h-16 w-16 rounded-md border border-amber-950 object-cover"
-                    alt={item.name}
-                  />
+              {cartItems.map((item) => {
+                const imageSrc = item.image || "/placeholder-product.jpg";
 
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm font-semibold text-amber-950">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-amber-900">
-                      {item.selectedColor || "Selected color"} |{" "}
-                      {item.selectedSize || "Selected size"}
+                return (
+                  <li
+                    key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
+                    className="flex py-4"
+                  >
+                    <img
+                      src={imageSrc}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                      className="h-16 w-16 rounded-md border border-amber-950 object-cover"
+                      alt={item.name}
+                    />
+
+                    <div className="ml-4 flex-1">
+                      <h3 className="text-sm font-semibold text-amber-950">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-amber-900">
+                        {item.selectedColor || "Selected color"} |{" "}
+                        {item.selectedSize || "Selected size"}
+                      </p>
+                      <p className="text-xs text-green-700 mt-1">In stock</p>
+                    </div>
+
+                    <p className="text-sm font-bold text-amber-950">
+                      ${Number(item.newPrice).toFixed(2)} x {item.quantity || 1}
                     </p>
-                    <p className="text-xs text-green-700 mt-1">In stock</p>
-                  </div>
-
-                  <p className="text-sm font-bold text-amber-950">
-                    ${Number(item.newPrice).toFixed(2)} x {item.quantity || 1}
-                  </p>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
 
             <dl className="mt-6 space-y-2">

@@ -8,6 +8,12 @@ import { usePathname } from "next/navigation";
 import { UserIcon, Menu, X } from "lucide-react";
 import SignOutForm from "./Signout";
 
+const ACCOUNT_LINKS = [
+  { name: "Personal Information", to: "/account" },
+  { name: "Addresses", to: "/account/address" },
+  { name: "Payment Methods", to: "/account/payment" },
+];
+
 function SideBarLayOut(WrappedComponent) {
   const HOC = (props) => {
     const [openSignOut, setOpenSignOut] = useState(false);
@@ -16,37 +22,49 @@ function SideBarLayOut(WrappedComponent) {
     const pathname = usePathname();
 
     useEffect(() => {
-      try {
-        const stored = localStorage.getItem("user");
-        if (stored) setUser(JSON.parse(stored));
-      } catch {
-        setUser(null);
-      }
+      const updateUser = () => {
+        try {
+          const stored = localStorage.getItem("user");
+          if (!stored) {
+            setUser(null);
+            return;
+          }
+
+          const parsed = JSON.parse(stored);
+          setUser(parsed);
+        } catch {
+          setUser(null);
+        }
+      };
+
+      updateUser();
+      window.addEventListener("user-updated", updateUser);
+
+      return () => {
+        window.removeEventListener("user-updated", updateUser);
+      };
     }, []);
 
-    const links = [
-      { name: "Personal Information", to: "/account" },
-      { name: "Addresses", to: "/account/address" },
-      { name: "Payment Methods", to: "/account/payment" },
-    ];
-
-    const navLinks = (onClickExtra) => (
+    const renderNavLinks = (onClickExtra) => (
       <>
-        {links.map((link) => (
-          <Link
-            key={link.name}
-            href={link.to}
-            onClick={onClickExtra}
-            className={[
-              "block w-full text-left px-3 py-2 rounded-md border-b border-l border-amber-950 shadow-md shadow-amber-950 text-sm transition",
-              pathname === link.to
-                ? "bg-amber-950 text-white font-semibold"
-                : "text-amber-950 hover:text-white hover:bg-amber-950",
-            ].join(" ")}
-          >
-            {link.name}
-          </Link>
-        ))}
+        {ACCOUNT_LINKS.map((link) => {
+          const active = pathname === link.to;
+
+          return (
+            <Link
+              key={link.name}
+              href={link.to}
+              onClick={onClickExtra}
+              className={`block w-full rounded-md border-b border-l border-amber-950 px-3 py-2 text-left text-sm shadow-md shadow-amber-950 transition ${
+                active
+                  ? "bg-amber-950 font-semibold text-white"
+                  : "text-amber-950 hover:bg-amber-950 hover:text-white"
+              }`}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
 
         <button
           onClick={() => {
@@ -78,6 +96,8 @@ function SideBarLayOut(WrappedComponent) {
 
           <button
             onClick={() => setMobileMenuOpen((p) => !p)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="account-mobile-menu"
             className="p-2 rounded-md border border-amber-950 bg-orange-50 text-amber-950"
           >
             {mobileMenuOpen ? (
@@ -90,12 +110,15 @@ function SideBarLayOut(WrappedComponent) {
 
         {/* MOBILE DROPDOWN SIDEBAR */}
         <div
-          className={`md:hidden overflow-hidden border-b border-amber-950 bg-orange-100 transition-all duration-300 ${
-            mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          id="account-mobile-menu"
+          className={`md:hidden overflow-hidden border-b border-amber-950 bg-orange-100 transition-all duration-300 will-change-[max-height,opacity] ${
+            mobileMenuOpen
+              ? "max-h-screen opacity-100"
+              : "max-h-0 opacity-0"
           }`}
         >
           <div className="px-4 py-3 space-y-2">
-            {navLinks(() => setMobileMenuOpen(false))}
+            {renderNavLinks(() => setMobileMenuOpen(false))}
           </div>
         </div>
 
@@ -112,7 +135,7 @@ function SideBarLayOut(WrappedComponent) {
               </h2>
             </div>
 
-            <nav className="flex-1 px-4 py-4 space-y-2">{navLinks()}</nav>
+            <nav className="flex-1 px-4 py-4 space-y-2">{renderNavLinks()}</nav>
           </aside>
 
           {/* MAIN CONTENT */}
@@ -127,7 +150,7 @@ function SideBarLayOut(WrappedComponent) {
   };
 
   HOC.displayName = `WithMenuLayout(${
-    WrappedComponent.displayName || WrappedComponent.name || "Component"
+    WrappedComponent.displayName ?? WrappedComponent.name ?? "Component"
   })`;
 
   return HOC;

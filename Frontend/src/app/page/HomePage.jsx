@@ -1,5 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+"use client";
+
 import Preview from "../component/homePage/CategoryPreview";
 import Promo from "../component/homePage/Promo";
 import WithMenuLayout from "../component/layout/index";

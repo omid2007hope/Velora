@@ -1,26 +1,33 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "../../../redux/slice/BasketSlice";
 
+const SHIPPING_FEE = 5;
+const TAX_AMOUNT = 8.32;
+
 export default function ShoppingCart({ setStep, setProduct }) {
   const dispatch = useDispatch();
-  const loadItems = useSelector((state) => state.basket) || [];
+  const cartItems = useSelector((state) => state.basket) ?? [];
 
-  const subtotal = loadItems.reduce(
-    (sum, item) => sum + item.newPrice * (item.quantity || 1),
-    0,
-  );
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((sum, item) => {
+      const price = item.newPrice ?? 0;
+      const qty = item.quantity ?? 1;
+      return sum + price * qty;
+    }, 0);
+  }, [cartItems]);
 
-  const shipping = loadItems.length > 0 ? 5 : 0;
-  const tax = loadItems.length > 0 ? 8.32 : 0;
+  const shipping = cartItems.length ? SHIPPING_FEE : 0;
+  const tax = cartItems.length ? TAX_AMOUNT : 0;
   const total = subtotal + shipping + tax;
 
   const handleSubmit = () => {
-    setProduct(loadItems);
+    if (!cartItems.length) return;
+    setProduct(cartItems);
     setStep(2);
   };
 
@@ -35,6 +42,16 @@ export default function ShoppingCart({ setStep, setProduct }) {
     );
   };
 
+  const handleRemove = (item) => {
+    dispatch(
+      removeItem({
+        id: item.id,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+      }),
+    );
+  };
+
   return (
     <div className="bg-orange-100 min-h-screen px-4 sm:px-6 lg:px-8 py-8 pt-28">
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-10 w-full">
@@ -43,83 +60,81 @@ export default function ShoppingCart({ setStep, setProduct }) {
             Shopping Cart
           </h1>
 
-          {loadItems.length === 0 ? (
+          {cartItems.length === 0 ? (
             <p className="text-amber-800 text-lg">Your cart is empty.</p>
           ) : (
             <ul className="space-y-5">
-              {loadItems.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center bg-orange-200 border border-amber-950 rounded-xl shadow-md p-5"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    className="h-24 w-24 rounded-lg object-cover border border-amber-900"
-                  />
+              {cartItems.map((item) => {
+                const imageSrc = item.image || "/placeholder-product.jpg";
 
-                  <div className="ml-5 flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-lg font-semibold text-amber-950">
-                          {item.name}
-                        </h3>
-                        <p className="text-sm text-amber-900">
-                          {item.selectedColor && item.selectedSize
-                            ? `${item.selectedColor} | ${item.selectedSize}`
-                            : "Selected options"}
+                return (
+                  <li
+                    key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
+                    className="flex items-center bg-orange-200 border border-amber-950 rounded-xl shadow-md p-5"
+                  >
+                    <img
+                      src={imageSrc}
+                      alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                      className="h-24 w-24 rounded-lg object-cover border border-amber-900"
+                    />
+
+                    <div className="ml-5 flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-amber-950">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-amber-900">
+                            {item.selectedColor && item.selectedSize
+                              ? `${item.selectedColor} | ${item.selectedSize}`
+                              : "Selected options"}
+                          </p>
+                          <p className="text-xs mt-2 text-green-700">
+                            In stock
+                          </p>
+                        </div>
+
+                        <p className="text-sm font-bold text-amber-950">
+                          ${Number(item.newPrice).toFixed(2)}
                         </p>
-                        <p className="text-xs mt-2 text-green-700">In stock</p>
                       </div>
 
-                      <p className="text-sm font-bold text-amber-950">
-                        ${Number(item.newPrice).toFixed(2)}
-                      </p>
-                    </div>
+                      <div className="mt-3 flex items-center space-x-4">
+                        <label
+                          htmlFor={`quantity-${item.id}`}
+                          className="sr-only"
+                        >
+                          Quantity for {item.name}
+                        </label>
+                        <select
+                          id={`quantity-${item.id}`}
+                          value={item.quantity || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(item, Number(e.target.value))
+                          }
+                          className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm"
+                        >
+                          {[1, 2, 3, 4, 5].map((qty) => (
+                            <option key={qty} value={qty}>
+                              {qty}
+                            </option>
+                          ))}
+                        </select>
 
-                    <div className="mt-3 flex items-center space-x-4">
-                      <label
-                        htmlFor={`quantity-${item.id}`}
-                        className="sr-only"
-                      >
-                        Quantity for {item.name}
-                      </label>
-                      <select
-                        id={`quantity-${item.id}`}
-                        value={item.quantity || 1}
-                        onChange={(e) =>
-                          handleQuantityChange(item, e.target.value)
-                        }
-                        className="w-20 rounded-md border border-amber-950 text-amber-950 bg-orange-50 shadow-sm"
-                      >
-                        {[1, 2, 3, 4, 5].map((qty) => (
-                          <option key={qty} value={qty}>
-                            {qty}
-                          </option>
-                        ))}
-                      </select>
-
-                      <button
-                        onClick={() =>
-                          dispatch(
-                            removeItem({
-                              id: item.id,
-                              selectedColor: item.selectedColor,
-                              selectedSize: item.selectedSize,
-                            }),
-                          )
-                        }
-                        className="text-sm text-red-700 hover:text-red-900 font-medium"
-                      >
-                        Remove
-                      </button>
+                        <button
+                          onClick={() => handleRemove(item)}
+                          className="text-sm text-red-700 hover:text-red-900 font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -163,15 +178,16 @@ export default function ShoppingCart({ setStep, setProduct }) {
             </dl>
 
             <div className="mt-8 space-y-3">
-              <Link href="/">
-                <button className="w-full rounded-lg bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 hover:bg-amber-900">
-                  Back
-                </button>
+              <Link
+                href="/"
+                className="block w-full rounded-lg bg-amber-950 px-4 py-3 text-center text-base font-medium text-orange-50 hover:bg-amber-900"
+              >
+                Back
               </Link>
 
               <button
                 onClick={handleSubmit}
-                disabled={loadItems.length === 0}
+                disabled={cartItems.length === 0}
                 className="w-full mt-2 rounded-lg bg-amber-950 px-4 py-3 text-base font-medium text-orange-50 hover:bg-amber-900 disabled:opacity-50"
               >
                 Checkout

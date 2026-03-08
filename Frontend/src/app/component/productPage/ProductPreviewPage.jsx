@@ -13,24 +13,25 @@ import {
   createReview as submitReview,
 } from "../../api/API_Reviews";
 
+const COLORS = [
+  { name: "White", value: "white", bg: "bg-gray-100" },
+  { name: "Gray", value: "gray", bg: "bg-gray-400" },
+  { name: "Black", value: "black", bg: "bg-black" },
+];
+
+const SIZES = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
+
+const STARS = [0, 1, 2, 3, 4];
+
 function ProductPreview({ productId }) {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const dispatch = useDispatch();
-
-  const colors = [
-    { name: "White", value: "white", bg: "bg-gray-100" },
-    { name: "Gray", value: "gray", bg: "bg-gray-400" },
-    { name: "Black", value: "black", bg: "bg-black" },
-  ];
-
-  const sizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
-
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({
     name: "",
@@ -40,18 +41,28 @@ function ProductPreview({ productId }) {
 
   useEffect(() => {
     if (!productId) return;
-    setLoading(true);
-    fetchProductById(productId)
-      .then((data) => {
-        setProduct(data);
-        setError(null);
-      })
-      .catch(() => setError("Product not found"))
-      .finally(() => setLoading(false));
+    const loadData = async () => {
+      try {
+        setLoading(true);
 
-    fetchProductReviews(productId)
-      .then((data) => setReviews(data || []))
-      .catch(() => setReviews([]));
+        const [productData, reviewsData] = await Promise.all([
+          fetchProductById(productId),
+          fetchProductReviews(productId),
+        ]);
+
+        setProduct(productData);
+        setReviews(reviewsData || []);
+        setError(null);
+      } catch {
+        setProduct(null);
+        setReviews([]);
+        setError("Product not found");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, [productId]);
 
   const ratingCounts = useMemo(() => {
@@ -61,15 +72,20 @@ function ProductPreview({ productId }) {
     }, {});
   }, [reviews]);
 
-  const totalRatings = reviews.length || 1;
-  const average =
-    reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / totalRatings;
+  const totalRatings = reviews.length;
+  const average = useMemo(() => {
+    if (!totalRatings) return 0;
+    const sum = reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+    return sum / totalRatings;
+  }, [reviews, totalRatings]);
 
   const price = product?.newPrice ?? product?.price ?? 0;
   const oldPrice = product?.oldPrice ?? product?.price ?? price;
+  const imageSrc = product?.imageUrl || product?.image || "/placeholder.jpg";
 
   const addToBasket = (item) => {
     if (!item) return;
+
     dispatch(
       addItem({
         id: item._id,
@@ -82,6 +98,11 @@ function ProductPreview({ productId }) {
         selectedSize,
       }),
     );
+  };
+
+  const buyNow = (item) => {
+    addToBasket(item);
+    router.push("/order");
   };
 
   if (loading)
@@ -98,11 +119,6 @@ function ProductPreview({ productId }) {
       </div>
     );
 
-  const buyNow = (item) => {
-    addToBasket(item);
-    router.push("/order");
-  };
-
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!newReview.name.trim() || !newReview.comment.trim()) {
@@ -110,23 +126,19 @@ function ProductPreview({ productId }) {
       return;
     }
 
+    const review = {
+      ...newReview,
+      rating: Number(newReview.rating) || 5,
+    };
+
     try {
-      await submitReview(productId, newReview);
-      setReviews((prev) => [
-        ...prev,
-        {
-          ...newReview,
-          rating: Number(newReview.rating) || 5,
-        },
-      ]);
-      setNewReview({ name: "", rating: 5, comment: "" });
+      await submitReview(productId, review);
     } catch {
-      // fallback to local append
-      setReviews((prev) => [
-        ...prev,
-        { ...newReview, rating: Number(newReview.rating) || 5 },
-      ]);
+      // Keep the review visible locally even if the API call fails.
     }
+
+    setReviews((prev) => [...prev, review]);
+    setNewReview({ name: "", rating: 5, comment: "" });
   };
 
   return (
@@ -149,7 +161,7 @@ function ProductPreview({ productId }) {
         {/* Left image */}
         <div className="flex justify-center items-center border-2 border-amber-950 rounded-lg shadow shadow-amber-950 bg-orange-50">
           <img
-            src={product.imageUrl || product.image}
+            src={imageSrc}
             alt={product.name}
             className="w-full rounded-lg object-cover"
           />
@@ -182,7 +194,7 @@ function ProductPreview({ productId }) {
           <div>
             <h3 className="font-semibold text-amber-950 mb-2">Color</h3>
             <div className="flex space-x-3">
-              {colors.map((color) => (
+              {COLORS.map((color) => (
                 <button
                   key={color.value}
                   onClick={() => setSelectedColor(color.value)}
@@ -201,7 +213,7 @@ function ProductPreview({ productId }) {
           <div>
             <h3 className="font-semibold text-amber-950 mb-2">Size</h3>
             <div className="grid grid-cols-4 gap-3">
-              {sizes.map((size) => (
+              {SIZES.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -304,12 +316,12 @@ function ProductPreview({ productId }) {
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold text-amber-950">{r.name}</h4>
                 <div className="flex gap-1">
-                  {Array.from({ length: 5 }).map((_, j) => (
+                  {STARS.map((starIndex) => (
                     <Star
-                      key={j}
+                      key={starIndex}
                       size={16}
                       className={
-                        j < r.rating
+                        starIndex < r.rating
                           ? "fill-amber-500 text-amber-500"
                           : "text-amber-300"
                       }

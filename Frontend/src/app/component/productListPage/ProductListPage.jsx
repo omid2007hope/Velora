@@ -10,6 +10,14 @@ import SearchBar from "./Searchbar.jsx";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../api/API_Products";
 
+const categories = ["Men", "Women", "Accessories", "Watch"];
+
+const quickLinks = [
+  { name: "All Products", path: "/products" },
+  { name: "New Arrivals", path: "/products?new=true" },
+  { name: "Accessories", path: "/products?category=Accessories" },
+];
+
 // main function
 export default function ProductList() {
   // use searchParams to get produt's id from URL
@@ -18,82 +26,83 @@ export default function ProductList() {
   const router = useRouter();
 
   // use searchParams to handle the categorys instead of the old way
-  const rawCategory = searchParams.get("category") || "";
+  const categoryParam = searchParams.get("category") || "";
   // and also use search params to handle search
-  const searchQuery = searchParams.get("search") || "";
+  const searchParam = searchParams.get("search") || "";
   //  Find that if a product is new or not by using searchParams from URL
-  const isNewQuery =
-    (searchParams.get("new") || "").trim().toLowerCase() === "true" ||
-    (searchParams.get("new") || "").trim() === "1";
+  const newParam = (searchParams.get("new") || "").trim().toLowerCase();
+  const isNewQuery = newParam === "true" || newParam === "1";
   // Find the new category by checking the name of all categorys
-  const legacyNewCategory = rawCategory.trim().toLowerCase() === "new";
+  const legacyNew = categoryParam.trim().toLowerCase() === "new";
 
   // if the product was new
-  const isNew = isNewQuery || legacyNewCategory;
-  // Prioritize the legacyNewCategory and even "" over rawCategory
-  const category = legacyNewCategory ? "" : rawCategory;
+  const isNew = isNewQuery || legacyNew;
+  // Prioritize the legacyNew and even "" over categoryParam
+  const category = legacyNew ? "" : categoryParam;
 
   // searhText useState is being handeld by seachQuery
-  const [searchText, setSearchText] = useState(searchQuery);
+  const [searchText, setSearchText] = useState(searchParam);
   // useState product is a list
   const [products, setProducts] = useState([]);
 
   // Check the length of the products
-  const resultsLabel =
-    products.length === 1 ? "1 product" : `${products.length} products`;
-  // Define the name of all categorie options
-  const categories = ["Men", "Women", "Accessories", "Watch"];
-  // Define the name and the path of all quickLinks
-  const quickLinks = [
-    { name: "All Products", path: "/products" },
-    { name: "New Arrivals", path: "/products?new=true" },
-    { name: "Accessories", path: "/products?category=Accessories" },
-  ];
-  // Each time that we have a searchQuery, Fill the searchText useState with the searchQuery
-  useEffect(() => {
-    setSearchText(searchQuery);
-  }, [searchQuery]);
+  const resultsLabel = `${products.length} product${
+    products.length === 1 ? "" : "s"
+  }`;
 
-  //
+  let pageTitle = "All Products";
+  if (searchParam) {
+    pageTitle = `Search results for "${searchParam}"`;
+  } else if (isNew) {
+    pageTitle = "New Arrivals";
+  } else if (category) {
+    pageTitle = `${category} Collection`;
+  }
+
+  let pageDescription =
+    "Explore the full Velora catalog of clothing, watches, and accessories.";
+  if (searchParam) {
+    pageDescription = `Showing ${resultsLabel.toLowerCase()} that match "${searchParam}".`;
+  } else if (isNew) {
+    pageDescription = `Fresh drops from the latest Velora release. ${resultsLabel} available right now.`;
+  } else if (category) {
+    pageDescription = `Browse ${resultsLabel.toLowerCase()} in the ${category.toLowerCase()} range.`;
+  }
+
+  // Keep the input in sync with the current search param from the URL.
+  useEffect(() => {
+    setSearchText(searchParam);
+  }, [searchParam]);
 
   useEffect(() => {
-    fetchProducts({
+    const filters = {
       category: category || undefined,
       isNew,
-      search: searchQuery || undefined,
-    })
+      search: searchParam || undefined,
+    };
+
+    fetchProducts(filters)
       .then((data) => setProducts(data || []))
       .catch(() => setProducts([]));
-  }, [category, searchQuery, isNew]);
+  }, [category, searchParam, isNew]);
 
-  const updateQuery = (category, search, isNewFilter = isNew) => {
+  const updateQuery = (nextCategory, nextSearch, nextIsNew = isNew) => {
     const params = new URLSearchParams();
 
     // If "new arrivals" is selected, category should not be used
-    let finalCategory = category;
-    if (isNewFilter) {
-      finalCategory = "";
-    }
+    const finalCategory = nextIsNew ? "" : nextCategory;
 
     // Add category filter
-    if (finalCategory) {
-      params.set("category", finalCategory);
-    }
+    if (finalCategory) params.set("category", finalCategory);
 
     // Add "new" filter
-    if (isNewFilter) {
-      params.set("new", "true");
-    }
+    if (nextIsNew) params.set("new", "true");
 
     // Add search filter
-    if (search) {
-      params.set("search", search);
-    }
+    if (nextSearch) params.set("search", nextSearch);
 
-    const queryString = params.toString();
-    const url = queryString ? `/products?${queryString}` : "/products";
-
-    router.push(url);
+    const query = params.toString();
+    router.push(query ? `/products?${query}` : "/products");
   };
 
   const handleSearchSubmit = (text) => {
@@ -101,28 +110,12 @@ export default function ProductList() {
   };
 
   const handleCategoryClick = (cat) => {
-    updateQuery(cat, searchQuery, false);
+    updateQuery(cat, searchParam, false);
   };
 
   const handleNewArrivalsClick = () => {
-    updateQuery("", searchQuery, true);
+    updateQuery("", searchParam, true);
   };
-
-  const query = category;
-  const pageTitle = searchQuery
-    ? `Search results for "${searchQuery}"`
-    : isNew
-      ? "New Arrivals"
-      : category
-        ? `${category} Collection`
-        : "All Products";
-  const pageDescription = searchQuery
-    ? `Showing ${resultsLabel.toLowerCase()} that match "${searchQuery}".`
-    : isNew
-      ? `Fresh drops from the latest Velora release. ${resultsLabel} available right now.`
-      : category
-        ? `Browse ${resultsLabel.toLowerCase()} in the ${category.toLowerCase()} range.`
-        : "Explore the full Velora catalog of clothing, watches, and accessories.";
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-orange-50 overflow-hidden pt-24">
@@ -148,7 +141,7 @@ export default function ProductList() {
             <ul className="space-y-2 text-amber-900">
               <li
                 className={`cursor-pointer hover:text-amber-950 transition ${
-                  !query ? "text-amber-800 font-bold" : ""
+                  !category ? "text-amber-800 font-bold" : ""
                 }`}
                 onClick={() => handleCategoryClick("")}
               >
@@ -158,7 +151,7 @@ export default function ProductList() {
                 <li
                   key={cat}
                   className={`cursor-pointer hover:text-amber-950 transition ${
-                    cat === query ? "text-amber-800 font-bold" : ""
+                    cat === category ? "text-amber-800 font-bold" : ""
                   }`}
                   onClick={() => handleCategoryClick(cat)}
                 >

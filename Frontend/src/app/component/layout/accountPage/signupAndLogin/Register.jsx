@@ -8,6 +8,30 @@ import GoogleSignIn from "./Google";
 import FetchCustomerData from "../../../../api/API_Register";
 import EmailVerificationPopup from "./EmailVerification";
 
+const PASSWORD_CRITERIA = [
+  { key: "length", label: "At least 8 characters" },
+  { key: "uppercase", label: "One uppercase letter" },
+  { key: "lowercase", label: "One lowercase letter" },
+  { key: "number", label: "A number" },
+  { key: "symbol", label: "A special symbol (!@#$%)" },
+];
+
+const PASSWORD_RULES = {
+  length: (value) => value.length >= 8,
+  uppercase: (value) => /[A-Z]/.test(value),
+  lowercase: (value) => /[a-z]/.test(value),
+  number: (value) => /[0-9]/.test(value),
+  symbol: (value) => /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(value),
+};
+
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch {
+    return null;
+  }
+};
+
 export default function SignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,50 +40,40 @@ export default function SignupPopup({ open, setOpen }) {
   const [openEmailVerificationPopup, setOpenEmailVerificationPopup] =
     useState(false);
 
-  const criteriaList = useMemo(
-    () => [
-      { key: "length", label: "At least 8 characters" },
-      { key: "uppercase", label: "One uppercase letter" },
-      { key: "lowercase", label: "One lowercase letter" },
-      { key: "number", label: "A number" },
-      { key: "symbol", label: "A special symbol (!@#$%)" },
-    ],
-    [],
-  );
-
   const passwordCriteria = useMemo(() => {
-    const length = password.length >= 8;
-    const uppercase = /[A-Z]/.test(password);
-    const lowercase = /[a-z]/.test(password);
-    const number = /[0-9]/.test(password);
-    const symbol = /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(password);
-    return { length, uppercase, lowercase, number, symbol };
+    const result = {};
+
+    Object.entries(PASSWORD_RULES).forEach(([key, rule]) => {
+      result[key] = rule(password);
+    });
+
+    return result;
   }, [password]);
 
-  async function Signup() {
-    if (!fullName.trim()) {
-      alert("Please enter your full name");
-      return;
-    }
-    if (fullName.trim() && !email.trim()) {
-      alert("Please enter your email");
-      return;
-    }
-    if (email.trim() && !password.trim()) {
-      alert("Please enter your password");
-      return;
-    }
-    if (password.trim() && !confirmPass.trim()) {
-      alert("Please confirm you password");
-      return;
-    }
-    if (password.trim() !== confirmPass.trim()) {
-      alert("Passwords do not match");
-      return;
-    }
+  const handleChange = (setter) => (event) => setter(event.target.value);
+
+  const openVerification = () => {
+    setTimeout(() => setOpenEmailVerificationPopup(true), 200);
+  };
+
+  const validateForm = () => {
+    if (!fullName.trim()) return "Please enter your full name";
+    if (!email.trim()) return "Please enter your email";
+    if (!password.trim()) return "Please enter your password";
+    if (!confirmPass.trim()) return "Please confirm your password";
+    if (password !== confirmPass) return "Passwords do not match";
 
     if (!Object.values(passwordCriteria).every(Boolean)) {
-      alert("Your password must be at least 8 characters and include uppercase, lowercase, a number, and a symbol.");
+      return "Password must contain uppercase, lowercase, number, symbol and be at least 8 characters.";
+    }
+
+    return null;
+  };
+
+  async function handleSignup() {
+    const errorMessage = validateForm();
+    if (errorMessage) {
+      alert(errorMessage);
       return;
     }
 
@@ -84,25 +98,16 @@ export default function SignupPopup({ open, setOpen }) {
       return;
     }
 
-    // Close signup popup
     setOpen(false);
-
-    // Automatically open email verification popup
-    setTimeout(() => {
-      setOpenEmailVerificationPopup(true);
-    }, 200);
+    openVerification();
   }
 
   function handleGoogleSignup(token) {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    console.log("Google signup requested for:", payload.email);
+    const payload = parseJwt(token);
+    console.log("Google signup requested for:", payload?.email);
 
     setOpen(false);
-
-    // After signup, automatically open email verification popup
-    setTimeout(() => {
-      setOpenEmailVerificationPopup(true);
-    }, 200);
+    openVerification();
   }
 
   function goBack() {
@@ -120,7 +125,7 @@ export default function SignupPopup({ open, setOpen }) {
         email={email}
       />
 
-      <Dialog open={open} onClose={() => {}} className="relative z-50">
+      <Dialog open={open} onClose={setOpen} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -137,8 +142,9 @@ export default function SignupPopup({ open, setOpen }) {
                 type="text"
                 placeholder="Full Name"
                 id="signup-fullname"
+                autoComplete="name"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={handleChange(setFullName)}
               />
 
               <label htmlFor="signup-email" className="sr-only">
@@ -148,8 +154,9 @@ export default function SignupPopup({ open, setOpen }) {
                 type="email"
                 placeholder="Email address"
                 id="signup-email"
+                autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleChange(setEmail)}
               />
 
               <label htmlFor="signup-password" className="sr-only">
@@ -159,11 +166,12 @@ export default function SignupPopup({ open, setOpen }) {
                 type="password"
                 placeholder="Password"
                 id="signup-password"
+                autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange(setPassword)}
               />
               <div className="mt-2 space-y-1 text-sm text-amber-700">
-                {criteriaList.map((item) => {
+                {PASSWORD_CRITERIA.map((item) => {
                   const met = passwordCriteria[item.key];
                   return (
                     <div key={item.key} className="flex items-center gap-2">
@@ -189,13 +197,14 @@ export default function SignupPopup({ open, setOpen }) {
                 type="password"
                 placeholder="Confirm password"
                 id="signup-confirm"
+                autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setConfirmPass(e.target.value)}
+                onChange={handleChange(setConfirmPass)}
               />
             </div>
 
             <button
-              onClick={Signup}
+              onClick={handleSignup}
               className="w-full mt-6 rounded-full bg-amber-950 text-white py-3 text-lg font-semibold hover:bg-amber-900"
             >
               Sign up

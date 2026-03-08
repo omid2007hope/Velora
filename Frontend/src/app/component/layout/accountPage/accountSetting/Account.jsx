@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
-import FetchCustomerDetails from "../../../../api/API_Account";
+import updateCustomerDetails from "../../../../api/API_Account";
 
 function AccountSettings() {
   const [user, setUser] = useState({
@@ -17,41 +17,67 @@ function AccountSettings() {
     dateOfBirth: "",
     gender: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  function onChange(name, value) {
-    setUser((prev) => ({ ...prev, [name]: value }));
-  }
+  const handleChange = (field) => (event) =>
+    setUser((prev) => ({ ...prev, [field]: event.target.value }));
 
   async function handleSave() {
+    if (loading) return;
+
+    const normalizedEmail = user.email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      alert("Email is required.");
+      return;
+    }
+
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+    if (!emailValid) {
+      alert("Please enter a valid email.");
+      return;
+    }
+
+    const fullName = [user.firstName, user.lastName]
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .join(" ");
+
     const formatted = {
-      fullName: `${user.firstName} ${user.lastName}`.trim(),
-      email: user.email,
-      phoneNumber: user.phoneNumber,
+      fullName,
+      email: normalizedEmail,
+      phoneNumber: user.phoneNumber?.trim(),
       dateOfBirth: user.dateOfBirth,
       gender: user.gender,
     };
 
-    console.log("Data in Account.js Frontend", formatted);
+    try {
+      setLoading(true);
 
-    if (formatted) {
-      try {
-        const response = await FetchCustomerDetails(formatted);
-        const savedData = response?.data || formatted;
+      const response = await updateCustomerDetails(formatted);
+      const savedData = response?.data ?? formatted;
+      const fullNameParts = savedData.fullName?.trim().split(/\s+/) ?? [];
+      const nextFirstName =
+        fullNameParts.length > 1
+          ? fullNameParts.slice(0, -1).join(" ")
+          : fullNameParts[0] || "";
+      const nextLastName =
+        fullNameParts.length > 1 ? fullNameParts.at(-1) || "" : "";
 
-        setUser((prev) => ({
-          ...prev,
-          phoneNumber: savedData.phoneNumber || prev.phoneNumber,
-          dateOfBirth: savedData.dateOfBirth || prev.dateOfBirth,
-          gender: savedData.gender || prev.gender,
-        }));
-      } catch (error) {
-        alert("Signup failed. Please try again.");
-        return;
-      }
+      setUser((prev) => ({
+        ...prev,
+        firstName: nextFirstName || prev.firstName,
+        lastName: nextLastName,
+        email: savedData.email || formatted.email,
+        phoneNumber: savedData.phoneNumber || prev.phoneNumber,
+        dateOfBirth: savedData.dateOfBirth || prev.dateOfBirth,
+        gender: savedData.gender || prev.gender,
+      }));
+
       alert("Account updated");
-    } else {
-      alert("Data dose not exist");
-      return;
+    } catch (error) {
+      alert("Could not update account. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -75,8 +101,9 @@ function AccountSettings() {
             </label>
             <input
               value={user.firstName}
-              onChange={(e) => onChange("firstName", e.target.value)}
+              onChange={handleChange("firstName")}
               type="text"
+              autoComplete="given-name"
               className="mt-1 w-full rounded-md bg-amber-50 border border-amber-950 text-sm p-2"
             />
           </div>
@@ -86,8 +113,9 @@ function AccountSettings() {
             </label>
             <input
               value={user.lastName}
-              onChange={(e) => onChange("lastName", e.target.value)}
+              onChange={handleChange("lastName")}
               type="text"
+              autoComplete="family-name"
               className="mt-1 w-full rounded-md bg-amber-50 border border-amber-950 text-sm p-2"
             />
           </div>
@@ -100,8 +128,9 @@ function AccountSettings() {
           </label>
           <input
             value={user.email}
-            onChange={(e) => onChange("email", e.target.value)}
+            onChange={handleChange("email")}
             type="email"
+            autoComplete="email"
             className="mt-1 w-full rounded-md bg-amber-50 border border-amber-950 text-sm p-2"
           />
         </div>
@@ -114,8 +143,9 @@ function AccountSettings() {
             </label>
             <input
               value={user.phoneNumber}
-              onChange={(e) => onChange("phoneNumber", e.target.value)}
+              onChange={handleChange("phoneNumber")}
               type="tel"
+              autoComplete="tel"
               className="mt-1 w-full rounded-md bg-amber-50 border border-amber-950 text-sm p-2"
             />
           </div>
@@ -126,8 +156,9 @@ function AccountSettings() {
             </label>
             <input
               value={user.dateOfBirth}
-              onChange={(e) => onChange("dateOfBirth", e.target.value)}
+              onChange={handleChange("dateOfBirth")}
               type="date"
+              autoComplete="bday"
               className="mt-1 w-full rounded-md bg-amber-50 border border-amber-950 text-sm p-2"
             />
           </div>
@@ -142,7 +173,7 @@ function AccountSettings() {
             <label className="flex items-center space-x-2">
               <input
                 checked={user.gender === "male"}
-                onChange={(e) => onChange("gender", e.target.value)}
+                onChange={handleChange("gender")}
                 value="male"
                 type="radio"
                 name="gender"
@@ -154,7 +185,7 @@ function AccountSettings() {
             <label className="flex items-center space-x-2">
               <input
                 checked={user.gender === "female"}
-                onChange={(e) => onChange("gender", e.target.value)}
+                onChange={handleChange("gender")}
                 value="female"
                 type="radio"
                 name="gender"
@@ -169,19 +200,18 @@ function AccountSettings() {
         <div className="flex gap-3 mt-6">
           <button
             type="button"
-            onClick={() => handleSave()}
-            className="px-4 py-2 bg-amber-950 text-orange-50 rounded-md shadow text-sm hover:bg-amber-900 transition"
+            onClick={handleSave}
+            disabled={loading}
+            className="px-4 py-2 bg-amber-950 text-orange-50 rounded-md shadow text-sm hover:bg-amber-900 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
 
-          <Link href="/">
-            <button
-              type="button"
-              className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"
-            >
-              Continue to Shop
-            </button>
+          <Link
+            href="/"
+            className="px-4 py-2 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"
+          >
+            Continue to Shop
           </Link>
         </div>
       </form>

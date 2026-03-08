@@ -5,7 +5,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
-import FetchCustomerPaymentDetails from "../../../../api/API_Payment";
+import updateCustomerPayment from "../../../../api/API_Payment";
+
+const inputClass =
+  "w-full rounded border border-amber-950 bg-amber-50 p-2 text-sm";
 
 function PaymentForm() {
   const [payment, setPayment] = useState({
@@ -14,18 +17,35 @@ function PaymentForm() {
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+  function handleChange({ target }) {
+    const { name, value } = target;
     setPayment((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSave(e) {
     e.preventDefault();
+    if (isSaving) return;
 
-    setIsSaving(true);
+    const payload = {
+      billingName: payment.billingName.trim(),
+      paymentMethodId: payment.paymentMethodId.trim(),
+    };
+
+    if (!payload.billingName || !payload.paymentMethodId) {
+      alert("Please complete all payment fields.");
+      return;
+    }
+
+    if (!payload.paymentMethodId.startsWith("pm_")) {
+      alert("Invalid Stripe payment method ID.");
+      return;
+    }
+
     try {
-      const response = await FetchCustomerPaymentDetails(payment);
-      const savedPayment = response?.data || {};
+      setIsSaving(true);
+
+      const response = await updateCustomerPayment(payload);
+      const savedPayment = response?.data ?? payload;
 
       setPayment((prev) => ({
         ...prev,
@@ -35,7 +55,9 @@ function PaymentForm() {
       alert("Payment method saved");
     } catch (error) {
       const message =
-        error.response?.data?.error || error.response?.data || error.message;
+        error?.response?.data?.error ??
+        error?.response?.data ??
+        error?.message;
       alert(message || "Failed to save payment method");
     } finally {
       setIsSaving(false);
@@ -54,15 +76,16 @@ function PaymentForm() {
           name="billingName"
           placeholder="Billing Name"
           value={payment.billingName}
+          autoComplete="cc-name"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
         <input
           name="paymentMethodId"
           placeholder="Stripe payment method ID (pm_...)"
           value={payment.paymentMethodId}
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
 
         <div className="flex flex-wrap gap-3 mt-6">
@@ -74,13 +97,11 @@ function PaymentForm() {
             {isSaving ? "Saving..." : "Save"}
           </button>
 
-          <Link href="/">
-            <button
-              type="button"
-              className="py-2 px-4 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"
-            >
-              Continue to shop
-            </button>
+          <Link
+            href="/"
+            className="rounded-md bg-orange-100 px-4 py-2 text-sm text-amber-900 shadow transition hover:bg-amber-950 hover:text-orange-50"
+          >
+            Continue to shop
           </Link>
         </div>
       </form>

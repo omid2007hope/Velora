@@ -6,39 +6,55 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { requestEmailVerification } from "../../../../api/API_Recover";
 
+const DEFAULT_MESSAGE =
+  "We just emailed you a verification link. Open your inbox, tap the button inside, then come back here to sign in.";
+
 export default function EmailVerificationPopup({ open, setOpen, email = "" }) {
   const [emailInput, setEmailInput] = useState(email);
-  const [message, setMessage] = useState(
-    "We just emailed you a verification link. Open your inbox, tap the button inside, then come back here to sign in.",
-  );
+  const [message, setMessage] = useState(DEFAULT_MESSAGE);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setEmailInput(email || "");
+    setMessage(DEFAULT_MESSAGE);
   }, [email, open]);
 
-  function closeAndOpenLogin() {
-    setOpen(false);
+  function openLoginPopup() {
     document.dispatchEvent(new CustomEvent("open-login-popup"));
   }
 
+  function closeAndOpenLogin() {
+    setOpen(false);
+    openLoginPopup();
+  }
+
   async function handleResend() {
-    if (!emailInput.trim()) {
+    if (loading) return;
+
+    const normalizedEmail = emailInput.trim().toLowerCase();
+    if (!normalizedEmail) {
       setMessage("Enter the email you used to sign up so we can resend the link.");
+      return;
+    }
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+    if (!isValidEmail) {
+      setMessage("Please enter a valid email address.");
       return;
     }
 
     try {
       setLoading(true);
       setMessage("");
-      await requestEmailVerification(emailInput);
+      await requestEmailVerification(normalizedEmail);
       setMessage(
         "If an account exists for this email, a fresh verification link is on the way. Check your inbox and spam folder.",
       );
     } catch (error) {
       const reason =
-        error?.response?.data?.error ||
-        error?.message ||
+        error?.response?.data?.error ??
+        error?.response?.data ??
+        error?.message ??
         "Could not resend verification email. Please try again.";
       setMessage(reason);
     } finally {
@@ -55,7 +71,7 @@ export default function EmailVerificationPopup({ open, setOpen, email = "" }) {
           <h2 className="text-2xl font-bold text-amber-950 text-center">
             Confirm your email
           </h2>
-          <p className="text-center text-sm text-amber-700 mt-1">
+          <p className="mt-1 text-center text-sm text-amber-700" aria-live="polite">
             {message}
           </p>
 
@@ -67,6 +83,7 @@ export default function EmailVerificationPopup({ open, setOpen, email = "" }) {
               id="verify-email"
               type="email"
               value={emailInput}
+              autoComplete="email"
               onChange={(event) => setEmailInput(event.target.value)}
               placeholder="Email you used to sign up"
               className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"

@@ -5,7 +5,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import SideBarLayOut from "./AccountLayout";
-import FetchCustomerAddress from "../../../../api/API_Address";
+import updateCustomerAddress from "../../../../api/API_Address";
+
+const inputClass =
+  "w-full rounded border border-amber-950 bg-amber-50 p-2 text-sm";
 
 function AddressForm() {
   const [address, setAddress] = useState({
@@ -16,24 +19,36 @@ function AddressForm() {
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+  function handleChange({ target }) {
+    const { name, value } = target;
     setAddress((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSave(e) {
     e.preventDefault();
+    if (isSaving) return;
 
-    setIsSaving(true);
+    if (
+      !address.country.trim() ||
+      !address.city.trim() ||
+      !address.street.trim() ||
+      !address.postal.trim()
+    ) {
+      alert("Please complete all address fields.");
+      return;
+    }
+
     try {
+      setIsSaving(true);
+
       const payload = {
-        country: address.country,
-        city: address.city,
-        street: address.street,
-        postalCode: address.postal,
+        country: address.country.trim(),
+        city: address.city.trim(),
+        street: address.street.trim(),
+        postalCode: address.postal.trim(),
       };
-      const response = await FetchCustomerAddress(payload);
-      const savedAddress = response?.data || payload;
+      const response = await updateCustomerAddress(payload);
+      const savedAddress = response?.data ?? payload;
 
       setAddress({
         country: savedAddress.country || "",
@@ -44,7 +59,9 @@ function AddressForm() {
       alert("Address saved");
     } catch (error) {
       const message =
-        error.response?.data?.error || error.response?.data || error.message;
+        error?.response?.data?.error ??
+        error?.response?.data ??
+        error?.message;
       alert(message || "Failed to save address");
     } finally {
       setIsSaving(false);
@@ -61,29 +78,33 @@ function AddressForm() {
           name="country"
           placeholder="Country"
           value={address.country}
+          autoComplete="country"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
         <input
           name="city"
           placeholder="City"
           value={address.city}
+          autoComplete="address-level2"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
         <input
           name="postal"
           placeholder="Postal Code"
           value={address.postal}
+          autoComplete="postal-code"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
         <input
           name="street"
           placeholder="Street Address"
           value={address.street}
+          autoComplete="street-address"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-amber-50 text-sm"
+          className={inputClass}
         />
 
         <div className="flex flex-wrap gap-3 mt-6">
@@ -95,13 +116,11 @@ function AddressForm() {
             {isSaving ? "Saving..." : "Save"}
           </button>
 
-          <Link href="/">
-            <button
-              type="button"
-              className="py-2 px-4 bg-orange-100 text-amber-900 rounded-md shadow text-sm hover:bg-amber-950 hover:text-orange-50 transition"
-            >
-              Continue to shop
-            </button>
+          <Link
+            href="/"
+            className="rounded-md bg-orange-100 px-4 py-2 text-sm text-amber-900 shadow transition hover:bg-amber-950 hover:text-orange-50"
+          >
+            Continue to shop
           </Link>
         </div>
       </form>

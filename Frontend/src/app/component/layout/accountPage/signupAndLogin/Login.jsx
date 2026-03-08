@@ -10,6 +10,24 @@ import GoogleSignIn from "./Google";
 import FetchLoginData from "../../../../api/API_LoginData";
 import ResetPasswordPopup from "./RestPassword";
 
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch {
+    return null;
+  }
+};
+
+const storeAuth = (user, token, refreshToken) => {
+  localStorage.setItem("token", token);
+
+  if (refreshToken) {
+    localStorage.setItem("refreshToken", refreshToken);
+  }
+
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
 export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,13 +36,23 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
   const router = useRouter();
 
+  const handleChange = (setter) => (event) => setter(event.target.value);
+
+  const validateLogin = () => {
+    if (!email.trim()) return "Please enter your email";
+    if (!password.trim()) return "Please enter your password";
+    return null;
+  };
+
+  const switchPopup = (setNext) => {
+    setOpen(false);
+    setTimeout(() => setNext(true), 250);
+  };
+
   async function handleLogin() {
-    if (!email.trim()) {
-      alert("Please enter your email");
-      return;
-    }
-    if (!password.trim() && email.trim()) {
-      alert("Please enter your password");
+    const errorMessage = validateLogin();
+    if (errorMessage) {
+      alert(errorMessage);
       return;
     }
 
@@ -42,33 +70,29 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         return;
       }
 
-      localStorage.setItem("token", response.token);
-      if (response.refreshToken) {
-        localStorage.setItem("refreshToken", response.refreshToken);
-      }
-      localStorage.setItem("user", JSON.stringify(user));
+      storeAuth(user, response.token, response.refreshToken);
       setUser(user);
       setOpen(false);
       router.push("/account");
     } catch (error) {
       const message =
-        error?.response?.data?.error || "Incorrect email or password";
+        error?.response?.data?.error ??
+        error?.response?.data ??
+        "Incorrect email or password";
       alert(message);
     }
   }
 
-  function openSignupFlow() {
-    setOpen(false);
-    setTimeout(() => setOpenSignup(true), 250);
-  }
+  const openSignupPopup = () => switchPopup(setOpenSignup);
 
-  function openRestPasswordFlow() {
-    setOpen(false);
-    setTimeout(() => setOpenRestPassword(true), 250);
-  }
+  const openResetPasswordPopup = () => switchPopup(setOpenRestPassword);
 
   function handleGoogleLogin(googleToken) {
-    const payload = JSON.parse(atob(googleToken.split(".")[1]));
+    const payload = parseJwt(googleToken);
+    if (!payload) {
+      alert("Google login failed. Please try again.");
+      return;
+    }
 
     const email = payload.email;
     const fullName = payload.name;
@@ -89,9 +113,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
   }
 
   useEffect(() => {
-    function openLogin() {
-      setOpen(true);
-    }
+    const openLogin = () => setOpen(true);
 
     document.addEventListener("open-login-popup", openLogin);
     return () => document.removeEventListener("open-login-popup", openLogin);
@@ -106,7 +128,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         setOpen={setOpenRestPassword}
       />
 
-      <Dialog open={open} onClose={() => {}} className="relative z-50">
+      <Dialog open={open} onClose={setOpen} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -126,8 +148,9 @@ export default function LoginPopup({ open, setOpen, setUser }) {
                 type="email"
                 placeholder="Email"
                 id="login-email"
+                autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleChange(setEmail)}
               />
 
               <label htmlFor="login-password" className="sr-only">
@@ -137,14 +160,15 @@ export default function LoginPopup({ open, setOpen, setUser }) {
                 type="password"
                 placeholder="Password"
                 id="login-password"
+                autoComplete="current-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange(setPassword)}
               />
               <p className="ml-1.5 text-left text-sm text-amber-900">
                 Forgot your password ?
                 <span
                   className="font-semibold text-amber-950 underline cursor-pointer ml-1"
-                  onClick={() => openRestPasswordFlow()}
+                  onClick={openResetPasswordPopup}
                 >
                   Rest password
                 </span>
@@ -169,7 +193,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
             <p className="mt-4 text-center text-sm text-amber-900">
               Not a member ?{" "}
               <span
-                onClick={openSignupFlow}
+                onClick={openSignupPopup}
                 className="font-semibold text-amber-950 underline cursor-pointer"
               >
                 Create account

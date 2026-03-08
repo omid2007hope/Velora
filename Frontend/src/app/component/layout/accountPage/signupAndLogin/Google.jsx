@@ -5,18 +5,61 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+const loadGoogleScript = (callback) => {
+  const existingScript = document.getElementById("google-gsi-script");
+
+  if (window.google) {
+    callback();
+    return null;
+  }
+
+  if (existingScript) {
+    existingScript.addEventListener("load", callback, { once: true });
+    return existingScript;
+  }
+
+  const script = document.createElement("script");
+  script.id = "google-gsi-script";
+  script.src = "https://accounts.google.com/gsi/client";
+  script.async = true;
+  script.defer = true;
+  script.addEventListener("load", callback, { once: true });
+  document.head.appendChild(script);
+
+  return script;
+};
+
 export default function GoogleSignIn({ onLogin }) {
   const btnRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
 
+  function handleCallback(response) {
+    if (!response?.credential) {
+      console.error("Google login failed");
+      return;
+    }
+
+    onLogin(response.credential);
+  }
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    function initializeGoogle() {
+    const initializeGoogle = () => {
       if (!window.google || !btnRef.current) return;
+      if (!CLIENT_ID) {
+        console.error("Google Client ID missing");
+        return;
+      }
+      if (btnRef.current.childElementCount > 0) {
+        setIsReady(true);
+        return;
+      }
 
       google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        client_id: CLIENT_ID,
         callback: handleCallback,
       });
 
@@ -27,41 +70,21 @@ export default function GoogleSignIn({ onLogin }) {
         width: "100%",
       });
       setIsReady(true);
-    }
+    };
 
-    const existingScript = document.getElementById("google-gsi-script");
-
-    if (window.google) {
-      initializeGoogle();
-    } else if (existingScript) {
-      existingScript.addEventListener("load", initializeGoogle, {
-        once: true,
-      });
-    } else {
-      const script = document.createElement("script");
-      script.id = "google-gsi-script";
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.addEventListener("load", initializeGoogle, { once: true });
-      document.head.appendChild(script);
-    }
+    const script = loadGoogleScript(initializeGoogle);
 
     return () => {
-      const script = document.getElementById("google-gsi-script");
       if (script) script.removeEventListener("load", initializeGoogle);
     };
   }, []);
-
-  function handleCallback(response) {
-    onLogin(response.credential);
-  }
 
   return (
     <div className="w-full mt-4">
       <div
         ref={btnRef}
         id="google-signin-btn"
+        aria-busy={!isReady}
         className={isReady ? "" : "hidden"}
       ></div>
 
@@ -71,7 +94,7 @@ export default function GoogleSignIn({ onLogin }) {
           disabled
           className="w-full rounded-full bg-gray-300 text-gray-600 py-3 text-lg font-semibold cursor-not-allowed"
         >
-          Google Sign-In unavailable
+          Loading Google Sign-In...
         </button>
       )}
     </div>

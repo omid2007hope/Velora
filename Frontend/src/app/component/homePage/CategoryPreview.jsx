@@ -1,35 +1,39 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
+import Image from "next/image";
 import Men from "../../assets/image/Men.webp";
 import Women from "../../assets/image/Women.webp";
 import New from "../../assets/image/New.webp";
 import Accessories from "../../assets/image/Accessories.webp";
 import Link from "next/link";
 
-export default function Preview() {
-  const categories = [
-    {
-      name: "New Arrivals",
-      img: New.src,
-      id: "new",
-    },
-    {
-      name: "Accessories",
-      img: Accessories.src,
-      id: "Accessories",
-    },
-    {
-      name: "Men's Collection",
-      img: Men.src,
-      id: "Men",
-    },
-    {
-      name: "Women's Collection",
-      img: Women.src,
-      id: "Women",
-    },
-  ];
+const CATEGORIES = [
+  {
+    name: "New Arrivals",
+    img: New,
+    id: "new",
+  },
+  {
+    name: "Accessories",
+    img: Accessories,
+    id: "Accessories",
+  },
+  {
+    name: "Men's Collection",
+    img: Men,
+    id: "Men",
+  },
+  {
+    name: "Women's Collection",
+    img: Women,
+    id: "Women",
+  },
+];
 
+const categoryLink = (id) =>
+  id === "new" ? "/products?new=true" : `/products?category=${id}`;
+
+export default function Preview() {
   return (
     <div className="bg-orange-200 border-t-2 border-b-2 border-amber-950">
       <section className="px-4 sm:px-6 lg:px-16 py-8 sm:py-8 lg:py-16">
@@ -37,23 +41,22 @@ export default function Preview() {
           {/* Left Column */}
           <div className="grid grid-rows-2 gap-6 h-full">
             <div className="grid grid-cols-2 gap-6">
-              {categories.slice(0, 2).map((cat) => (
+              {CATEGORIES.slice(0, 2).map((cat) => (
                 <Link
-                  href={cat.id === "new" ? "/products?new=true" : `/products?category=${cat.id}`}
+                  href={categoryLink(cat.id)}
                   key={cat.name}
+                  aria-label={`Shop ${cat.name}`}
                   className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
                 >
-                  <img
-                    src={cat.img}
-                    alt={cat.name}
-                    width="1536"
-                    height="1024"
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
-                  />
+                  <div className="absolute inset-0">
+                    <Image
+                      src={cat.img}
+                      alt={cat.name}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="border-2 border-amber-950 object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
                   <div className="absolute bottom-3 left-3">
                     <h3 className="text-lg font-semibold text-white">
@@ -67,58 +70,54 @@ export default function Preview() {
 
             {/* Wide Card */}
             <Link
-              href={`/products?category=${categories[2].id}`}
-              key={categories[2].name}
+              href={categoryLink(CATEGORIES[2].id)}
+              aria-label={`Shop ${CATEGORIES[2].name}`}
               className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-48 sm:h-64 lg:h-full"
             >
-              <img
-                src={categories[2].img}
-                alt={categories[2].name}
-                width="1536"
-                height="1024"
-                loading="lazy"
-                decoding="async"
-                fetchPriority="low"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
-              />
+              <div className="absolute inset-0">
+                <Image
+                  src={CATEGORIES[2].img}
+                  alt={CATEGORIES[2].name}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="border-2 border-amber-950 object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4">
                 <h3 className="text-xl font-bold text-white">
-                  {categories[2].name}
+                  {CATEGORIES[2].name}
                 </h3>
-                <button className="mt-2 rounded-full bg-amber-950 px-4 py-1.5 text-sm font-semibold text-white hover:bg-amber-900">
+                <span className="mt-2 inline-flex rounded-full bg-amber-950 px-4 py-1.5 text-sm font-semibold text-white">
                   Shop now
-                </button>
+                </span>
               </div>
             </Link>
           </div>
 
           {/* Right Column + Tall Card */}
           <Link
-            href={`/products?category=${categories[3].id}`}
-            key={categories[3].name}
+            href={categoryLink(CATEGORIES[3].id)}
+            aria-label={`Shop ${CATEGORIES[3].name}`}
             className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition h-72 sm:h-[500px] lg:h-full"
           >
-            <img
-              src={categories[3].img}
-              alt={categories[3].name}
-              width="1536"
-              height="1024"
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 border-2 border-amber-950"
-            />
+            <div className="absolute inset-0">
+              <Image
+                src={CATEGORIES[3].img}
+                alt={CATEGORIES[3].name}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="border-2 border-amber-950 object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-amber-950/40 via-transparent to-transparent" />
             <div className="absolute bottom-4 left-4">
               <h3 className="text-xl font-bold text-white">
-                {categories[3].name}
+                {CATEGORIES[3].name}
               </h3>
-              <button className="mt-2 rounded-full bg-amber-950 px-4 py-1.5 text-sm font-semibold text-white hover:bg-amber-900">
+              <span className="mt-2 inline-flex rounded-full bg-amber-950 px-4 py-1.5 text-sm font-semibold text-white">
                 Shop now
-              </button>
+              </span>
             </div>
           </Link>
         </div>

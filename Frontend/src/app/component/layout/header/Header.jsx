@@ -2,7 +2,7 @@
 // Signature: OmidTeimory-2026
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -24,6 +24,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CircleUserRound } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -77,54 +78,45 @@ const navigation = {
   pages: [],
 };
 
+const safeParse = (value) => {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+};
+
 export default function Header() {
   const [open, setOpen] = useState(false);
-  // const loadUser = JSON.parse(localStorage.getItem("user"));
-
-  // const openLoginForm = !loadUser ? true : false;
-
   const [login, setLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
+  const loadUser = () => safeParse(localStorage.getItem("user"));
 
-  const cartItems = useSelector((state) => state.basket) || [];
+  const cartItems = useSelector((state) => state.basket) ?? [];
 
-  const cartCount = cartItems.reduce(
-    (sum, item) => sum + (item.quantity || 1),
-    0,
-  );
-  const cartCountDisplay = hasMounted ? cartCount : 0;
+  const cartCount = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  }, [cartItems]);
+
+  useEffect(() => {
+    setHasMounted(true);
+    setUser(loadUser());
+  }, []);
 
   // Listen for "open-login-popup" (from Signup) and open Login
   useEffect(() => {
-    setHasMounted(true);
-
-    // Load user once on mount to avoid hydration mismatch
-    try {
-      const stored = JSON.parse(localStorage.getItem("user"));
-      setUser(stored);
-    } catch {
-      setUser(null);
-    }
-
-    const handleOpenLogin = () => setLogin(true);
-    document.addEventListener("open-login-popup", handleOpenLogin);
+    const openLogin = () => setLogin(true);
+    document.addEventListener("open-login-popup", openLogin);
 
     return () => {
-      document.removeEventListener("open-login-popup", handleOpenLogin);
+      document.removeEventListener("open-login-popup", openLogin);
     };
   }, []);
 
   // Sync user state if localStorage user changes (login/logout in other parts)
   useEffect(() => {
-    const updateUser = () => {
-      try {
-        const stored = JSON.parse(localStorage.getItem("user"));
-        setUser(stored);
-      } catch {
-        setUser(null);
-      }
-    };
+    const updateUser = () => setUser(loadUser());
 
     window.addEventListener("storage", updateUser);
     window.addEventListener("user-updated", updateUser);
@@ -153,6 +145,7 @@ export default function Header() {
             <div className="px-4 pt-5 pb-2 border-b border-amber-950 flex flex-row justify-between items-center">
               <button
                 onClick={() => setOpen(false)}
+                aria-label="Close menu"
                 className="p-2 text-amber-900 rounded-md border border-amber-950"
               >
                 <XMarkIcon className="size-6" />
@@ -224,8 +217,8 @@ export default function Header() {
                         <ul className="mt-6 space-y-4">
                           {section.items.map((item) => (
                             <li key={item.name}>
-                            <Link
-                              href={item.href}
+                              <Link
+                                href={item.href}
                                 className="text-amber-900"
                                 onClick={() => setOpen(false)}
                               >
@@ -255,6 +248,7 @@ export default function Header() {
             {/* Mobile button */}
             <button
               onClick={() => setOpen(true)}
+              aria-label="Open menu"
               className="lg:hidden p-2 bg-orange-50 rounded-md border border-amber-950 text-amber-950"
             >
               <Bars3Icon className="size-6" />
@@ -263,15 +257,13 @@ export default function Header() {
             {/* Logo */}
             <div className="hidden sm:block ml-4 lg:ml-0">
               <Link href="/">
-                <img
-                  src={Logo.src}
-                  width="1024"
-                  height="1024"
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
+                <Image
+                  src={Logo}
+                  width={120}
+                  height={40}
+                  priority
                   className="h-8 w-auto border border-amber-950 rounded-md"
-                  alt="Logo"
+                  alt="Velora Logo"
                 />
               </Link>
             </div>
@@ -354,9 +346,9 @@ export default function Header() {
               {/* Cart */}
               <Link href="/order" className="ml-4 flex items-center">
                 <ShoppingBagIcon className="size-6 text-amber-950" />
-                <span className="ml-2 text-sm text-gray-700">
-                  {cartCountDisplay}
-                </span>
+                {hasMounted && (
+                  <span className="ml-2 text-sm text-gray-700">{cartCount}</span>
+                )}
               </Link>
             </div>
           </div>
