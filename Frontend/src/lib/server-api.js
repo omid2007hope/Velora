@@ -91,7 +91,7 @@ export async function getProducts(params = {}) {
 
 export async function getProductById(id) {
   if (!id) {
-    return { product: null, notFound: true };
+    return { product: null, notFound: true, unavailable: false };
   }
 
   const result = await fetchApiJson(`/server/products/${id}`, {
@@ -100,6 +100,7 @@ export async function getProductById(id) {
   return {
     product: result.data,
     notFound: result.notFound,
+    unavailable: result.unavailable,
   };
 }
 

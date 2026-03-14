@@ -34,13 +34,24 @@ export async function generateMetadata({ params }) {
   const result = await getProductById(productId).catch(() => ({
     product: null,
     notFound: false,
+    unavailable: true,
   }));
 
-  if (!result.product) {
+  if (result.notFound) {
     return buildNoIndexMetadata({
       title: "Product not found",
       description: "The requested Velora product could not be found.",
       path: `/products/${productId}`,
+    });
+  }
+
+  if (!result.product) {
+    return buildPageMetadata({
+      title: "Product details",
+      description:
+        "Explore product details, pricing, and availability from Velora.",
+      path: `/products/${productId}`,
+      keywords: ["product details"],
     });
   }
 
