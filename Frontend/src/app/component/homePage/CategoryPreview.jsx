@@ -16,22 +16,22 @@ const CATEGORIES = [
   {
     name: "Accessories",
     img: Accessories,
-    id: "Accessories",
+    id: "subCategory=Accessories",
   },
   {
     name: "Men's Collection",
     img: Men,
-    id: "Men",
+    id: "category=Men",
   },
   {
     name: "Women's Collection",
     img: Women,
-    id: "Women",
+    id: "category=Women",
   },
 ];
 
 const categoryLink = (id) =>
-  id === "new" ? "/products?new=true" : `/products?category=${id}`;
+  id === "new" ? "/products?new=true" : `/products?${id}`;
 
 export default function Preview() {
   return (
@@ -125,5 +125,3 @@ export default function Preview() {
     </div>
   );
 }
-
-

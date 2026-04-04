@@ -15,7 +15,7 @@ const categories = ["Men", "Women", "Accessories", "Watch"];
 const quickLinks = [
   { name: "All Products", path: "/products" },
   { name: "New Arrivals", path: "/products?new=true" },
-  { name: "Accessories", path: "/products?category=Accessories" },
+  { name: "Accessories", path: "/products?subCategory=Accessories" },
 ];
 
 // main function
@@ -65,7 +65,7 @@ export default function ProductList() {
   } else if (category) {
     pageTitle = `${category} Collection`;
   } else if (subCategory) {
-    pageTitle = `${category}'s ${subCategory} Collection`;
+    pageTitle = `${subCategory} Collection`;
   }
 
   let pageDescription =

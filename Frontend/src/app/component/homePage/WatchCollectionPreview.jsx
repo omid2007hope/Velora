@@ -35,7 +35,7 @@ export default function WatchCollection() {
               </p>
 
               <Link
-                href={`/products?category=${CATEGORY_ID}`}
+                href={`/products?subCategory=${CATEGORY_ID}`}
                 aria-label="View watch collection"
                 className="mt-4 inline-block rounded-md border-2 border-amber-950 bg-amber-950 px-6 py-3 font-semibold text-orange-50 transition hover:scale-105 hover:bg-amber-800 active:scale-95"
               >
@@ -53,5 +53,3 @@ export default function WatchCollection() {
     </section>
   );
 }
-
-
