@@ -4,11 +4,15 @@ const model = require("../../model/Products");
 const BaseService = require("../BaseService");
 
 module.exports = new (class Products extends BaseService {
-  async list({ category, isNew, search }) {
+  async list({ category, subCategory, isNew, search }) {
     const filter = {};
 
     if (category) {
       filter.category = category;
+    }
+
+    if (subCategory) {
+      filter.subCategory = subCategory;
     }
 
     if (isNew === true) {
@@ -30,5 +34,3 @@ module.exports = new (class Products extends BaseService {
     return this.createObject(payload);
   }
 })(model);
-
-

@@ -27,18 +27,25 @@ export default function ProductList() {
 
   // use searchParams to handle the categorys instead of the old way
   const categoryParam = searchParams.get("category") || "";
+
+  const subCategoryParam = searchParams.get("subCategory") || "";
+
   // and also use search params to handle search
+
   const searchParam = searchParams.get("search") || "";
   //  Find that if a product is new or not by using searchParams from URL
   const newParam = (searchParams.get("new") || "").trim().toLowerCase();
   const isNewQuery = newParam === "true" || newParam === "1";
   // Find the new category by checking the name of all categorys
   const legacyNew = categoryParam.trim().toLowerCase() === "new";
+  const subCategoryLegacyNew = subCategoryParam.trim().toLowerCase() === "new";
 
   // if the product was new
   const isNew = isNewQuery || legacyNew;
   // Prioritize the legacyNew and even "" over categoryParam
   const category = legacyNew ? "" : categoryParam;
+
+  const subCategory = subCategoryLegacyNew ? "" : subCategoryParam;
 
   // searhText useState is being handeld by seachQuery
   const [searchText, setSearchText] = useState(searchParam);
@@ -57,6 +64,8 @@ export default function ProductList() {
     pageTitle = "New Arrivals";
   } else if (category) {
     pageTitle = `${category} Collection`;
+  } else if (subCategory) {
+    pageTitle = `${category}'s ${subCategory} Collection`;
   }
 
   let pageDescription =
@@ -67,6 +76,8 @@ export default function ProductList() {
     pageDescription = `Fresh drops from the latest Velora release. ${resultsLabel} available right now.`;
   } else if (category) {
     pageDescription = `Browse ${resultsLabel.toLowerCase()} in the ${category.toLowerCase()} range.`;
+  } else if (subCategory) {
+    pageDescription = `Browse ${resultsLabel.toLowerCase()} in the ${subCategory.toLowerCase()} range.`;
   }
 
   // Keep the input in sync with the current search param from the URL.
@@ -77,6 +88,7 @@ export default function ProductList() {
   useEffect(() => {
     const filters = {
       category: category || undefined,
+      subCategory: subCategory || undefined,
       isNew,
       search: searchParam || undefined,
     };
@@ -84,16 +96,25 @@ export default function ProductList() {
     fetchProducts(filters)
       .then((data) => setProducts(data || []))
       .catch(() => setProducts([]));
-  }, [category, searchParam, isNew]);
+  }, [category, subCategory, searchParam, isNew]);
 
-  const updateQuery = (nextCategory, nextSearch, nextIsNew = isNew) => {
+  const updateQuery = (
+    nextCategory,
+    nextSearch,
+    nextIsNew = isNew,
+    nextSubCategory = subCategory,
+  ) => {
     const params = new URLSearchParams();
 
     // If "new arrivals" is selected, category should not be used
     const finalCategory = nextIsNew ? "" : nextCategory;
+    const finalSubCategory = nextIsNew ? "" : nextSubCategory;
 
     // Add category filter
     if (finalCategory) params.set("category", finalCategory);
+
+    // Add sub-category filter
+    if (finalSubCategory) params.set("subCategory", finalSubCategory);
 
     // Add "new" filter
     if (nextIsNew) params.set("new", "true");
@@ -106,15 +127,15 @@ export default function ProductList() {
   };
 
   const handleSearchSubmit = (text) => {
-    updateQuery(category, text);
+    updateQuery(category, text, isNew, subCategory);
   };
 
   const handleCategoryClick = (cat) => {
-    updateQuery(cat, searchParam, false);
+    updateQuery(cat, searchParam, false, subCategory);
   };
 
   const handleNewArrivalsClick = () => {
-    updateQuery("", searchParam, true);
+    updateQuery("", searchParam, true, "");
   };
 
   return (

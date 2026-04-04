@@ -30,10 +30,7 @@ import { useSelector } from "react-redux";
 import LoginPopup from "../accountPage/signupAndLogin/Login";
 import WomanPhoto from "./category/WomanCategory";
 import MenPhoto from "./category/MenCategory";
-import {
-  getStoredUser,
-  subscribeToStoredUser,
-} from "@/lib/browser-storage";
+import { getStoredUser, subscribeToStoredUser } from "@/lib/browser-storage";
 import Logo from "../../../assets/image/Logo.webp";
 
 const navigation = {
@@ -55,6 +52,26 @@ const navigation = {
           name: "Clothing",
           items: [{ name: "Browse All", href: "/products?category=Women" }],
         },
+        {
+          id: "watch",
+          name: "Watch",
+          items: [
+            {
+              name: "Browse All Women's Watch",
+              href: "/products?category=Women&subCategory=Watch",
+            },
+          ],
+        },
+        {
+          id: "accessories",
+          name: "Accessories",
+          items: [
+            {
+              name: "Browse All Women's Accessories",
+              href: "/products?category=Women&subCategory=Accessories",
+            },
+          ],
+        },
       ],
     },
     {
@@ -73,6 +90,26 @@ const navigation = {
           id: "clothing",
           name: "Clothing",
           items: [{ name: "Browse All", href: "/products?category=Men" }],
+        },
+        {
+          id: "watch",
+          name: "Watch",
+          items: [
+            {
+              name: "Browse All Men's Watch",
+              href: "/products?category=Men&subCategory=Watch",
+            },
+          ],
+        },
+        {
+          id: "accessories",
+          name: "Accessories",
+          items: [
+            {
+              name: "Browse All Men's Accessories",
+              href: "/products?category=Men&subCategory=Accessories",
+            },
+          ],
         },
       ],
     },
@@ -255,6 +292,8 @@ export default function Header() {
             {/* Desktop dropdown */}
             <PopoverGroup className="hidden lg:block lg:ml-8">
               <div className="flex h-full space-x-8">
+                {/* here */}
+
                 {navigation.categories.map((category) => (
                   <Popover key={category.name} className="flex">
                     <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
@@ -331,7 +370,9 @@ export default function Header() {
               <Link href="/order" className="ml-4 flex items-center">
                 <ShoppingBagIcon className="size-6 text-amber-950" />
                 {hasMounted && (
-                  <span className="ml-2 text-sm text-gray-700">{cartCount}</span>
+                  <span className="ml-2 text-sm text-gray-700">
+                    {cartCount}
+                  </span>
                 )}
               </Link>
             </div>
@@ -341,5 +382,3 @@ export default function Header() {
     </div>
   );
 }
-
-

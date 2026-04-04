@@ -4,9 +4,10 @@ import axios from "axios";
 import { API_BaseURL } from "./API_BaseURL";
 
 export async function fetchProducts(params = {}) {
-  const { category, isNew, search } = params;
+  const { category, subCategory, isNew, search } = params;
   const query = new URLSearchParams();
   if (category) query.set("category", category);
+  if (subCategory) query.set("subCategory", subCategory);
   if (isNew === true) query.set("new", "true");
   if (search) query.set("search", search);
 
@@ -28,5 +29,3 @@ export async function fetchProductById(id) {
 const productApi = { fetchProducts, fetchProductById };
 
 export default productApi;
-
-

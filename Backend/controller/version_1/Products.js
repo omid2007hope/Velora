@@ -4,9 +4,10 @@ const productService = require("../../service/version_1/Products");
 
 async function listProducts(req, res) {
   try {
-    const { category, new: isNew, search } = req.query;
+    const { category, subCategory, new: isNew, search } = req.query;
     const products = await productService.list({
       category,
+      subCategory,
       isNew: String(isNew).toLowerCase() === "true" || isNew === "1",
       search,
     });
@@ -57,5 +58,3 @@ module.exports = {
   getProduct,
   createProduct,
 };
-
-

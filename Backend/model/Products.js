@@ -46,6 +46,13 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
+    subCategory: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+
     imageUrl: {
       type: String,
       required: true,
@@ -118,5 +125,3 @@ const ProductSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Product", ProductSchema);
-
-
