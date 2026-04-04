@@ -131,7 +131,14 @@ export default function ProductList() {
   };
 
   const handleCategoryClick = (cat) => {
-    updateQuery(cat, searchParam, false, subCategory);
+    const isSubCategory = cat === "Watch" || cat === "Accessories";
+
+    if (isSubCategory) {
+      updateQuery("", searchParam, false, cat);
+      return;
+    }
+
+    updateQuery(cat, searchParam, false, "");
   };
 
   const handleNewArrivalsClick = () => {
@@ -162,7 +169,7 @@ export default function ProductList() {
             <ul className="space-y-2 text-amber-900">
               <li
                 className={`cursor-pointer hover:text-amber-950 transition ${
-                  !category ? "text-amber-800 font-bold" : ""
+                  !category && !subCategory ? "text-amber-800 font-bold" : ""
                 }`}
                 onClick={() => handleCategoryClick("")}
               >
@@ -172,7 +179,9 @@ export default function ProductList() {
                 <li
                   key={cat}
                   className={`cursor-pointer hover:text-amber-950 transition ${
-                    cat === category ? "text-amber-800 font-bold" : ""
+                    (cat === category || cat === subCategory)
+                      ? "text-amber-800 font-bold"
+                      : ""
                   }`}
                   onClick={() => handleCategoryClick(cat)}
                 >
