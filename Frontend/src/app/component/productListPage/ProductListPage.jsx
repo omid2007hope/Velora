@@ -179,7 +179,7 @@ export default function ProductList() {
                 <li
                   key={cat}
                   className={`cursor-pointer hover:text-amber-950 transition ${
-                    (cat === category || cat === subCategory)
+                    cat === category || cat === subCategory
                       ? "text-amber-800 font-bold"
                       : ""
                   }`}
