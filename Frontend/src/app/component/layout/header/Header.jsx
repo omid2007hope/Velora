@@ -50,7 +50,42 @@ const navigation = {
         {
           id: "clothing",
           name: "Clothing",
-          items: [{ name: "Browse All", href: "/products?category=Women" }],
+          items: [
+            { name: "Browse All", href: "/products?category=Women" },
+
+            {
+              name: "Dresses",
+              href: "/products?category=Women&subCategory=Dresses",
+            },
+            {
+              name: "Blazers",
+              href: "/products?category=Women&subCategory=Blazers",
+            },
+            {
+              name: "Handbags",
+              href: "/products?category=Women&subCategory=Handbags",
+            },
+            {
+              name: "Tops",
+              href: "/products?category=Women&subCategory=Tops",
+            },
+            {
+              name: "Coats",
+              href: "/products?category=Women&subCategory=Coats",
+            },
+            {
+              name: "Sweaters",
+              href: "/products?category=Women&subCategory=Sweaters",
+            },
+            {
+              name: "Scarfs",
+              href: "/products?category=Women&subCategory=Scarfs",
+            },
+            {
+              name: "Jackets",
+              href: "/products?category=Women&subCategory=Jackets",
+            },
+          ],
         },
         {
           id: "watch",
@@ -89,7 +124,37 @@ const navigation = {
         {
           id: "clothing",
           name: "Clothing",
-          items: [{ name: "Browse All", href: "/products?category=Men" }],
+          items: [
+            { name: "Browse All", href: "/products?category=Men" },
+            {
+              name: "T-Shirts",
+              href: "/products?category=Men&subCategory=T-Shirts",
+            },
+            {
+              name: "Jackets",
+              href: "/products?category=Men&subCategory=Jackets",
+            },
+            {
+              name: "Suits",
+              href: "/products?category=Men&subCategory=Suits",
+            },
+            {
+              name: "Hoodies",
+              href: "/products?category=Men&subCategory=Hoodies",
+            },
+            {
+              name: "Pants",
+              href: "/products?category=Men&subCategory=Pants",
+            },
+            {
+              Shoesname: "Shoes",
+              href: "/products?category=Men&subCategory=Shoes",
+            },
+            {
+              name: "Belts",
+              href: "/products?category=Men&subCategory=Belts",
+            },
+          ],
         },
         {
           id: "watch",
