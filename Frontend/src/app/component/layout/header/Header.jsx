@@ -147,7 +147,7 @@ const navigation = {
               href: "/products?category=Men&subCategory=Pants",
             },
             {
-              Shoesname: "Shoes",
+              name: "Shoes",
               href: "/products?category=Men&subCategory=Shoes",
             },
             {
@@ -262,7 +262,7 @@ export default function Header() {
                 {navigation.categories.map((category) => (
                   <Tab
                     key={category.name}
-                    className="flex-1 px-1 py-4 text-base text-amber-950 border-b-2 border-transparent data-selected:border-amber-950"
+                    className="flex-1 px-1 py-4 text-base font-bold text-amber-950 border-b-2 border-transparent data-selected:border-amber-950"
                   >
                     {category.name}
                   </Tab>
@@ -297,7 +297,7 @@ export default function Header() {
                     {/* Sections */}
                     {category.sections.map((section) => (
                       <div key={section.name}>
-                        <p className="font-medium text-amber-950">
+                        <p className="text-base font-bold text-amber-950">
                           {section.name}
                         </p>
                         <ul className="mt-6 space-y-4">
@@ -308,7 +308,16 @@ export default function Header() {
                                 className="text-amber-900"
                                 onClick={() => setOpen(false)}
                               >
-                                {item.name}
+                                {item.name.startsWith("Browse All") ? (
+                                  <>
+                                    <span className="font-medium">Browse All</span>
+                                    <span className="font-normal">
+                                      {item.name.slice("Browse All".length)}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="font-normal">{item.name}</span>
+                                )}
                               </Link>
                             </li>
                           ))}
@@ -361,7 +370,9 @@ export default function Header() {
 
                 {navigation.categories.map((category) => (
                   <Popover key={category.name} className="flex">
-                    <PopoverButton className="text-sm text-amber-950 hover:text-amber-900">
+                    <PopoverButton
+                      className="text-sm font-bold text-amber-950 hover:text-amber-900"
+                    >
                       {category.name}
                     </PopoverButton>
 
@@ -386,7 +397,7 @@ export default function Header() {
                         <div className="col-span-3 grid grid-cols-3 gap-10">
                           {category.sections.map((section) => (
                             <div key={section.name}>
-                              <p className="font-medium text-amber-950">
+                              <p className="text-base font-bold text-amber-950">
                                 {section.name}
                               </p>
                               <ul className="mt-4 space-y-4">
@@ -396,7 +407,20 @@ export default function Header() {
                                       href={item.href}
                                       className="text-amber-950 hover:text-amber-800"
                                     >
-                                      {item.name}
+                                      {item.name.startsWith("Browse All") ? (
+                                        <>
+                                          <span className="font-medium">
+                                            Browse All
+                                          </span>
+                                          <span className="font-normal">
+                                            {item.name.slice("Browse All".length)}
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <span className="font-normal">
+                                          {item.name}
+                                        </span>
+                                      )}
                                     </Link>
                                   </li>
                                 ))}
