@@ -10,7 +10,108 @@ import SearchBar from "./Searchbar.jsx";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../api/API_Products";
 
-const categories = ["Men", "Women", "Accessories", "Watch"];
+const navigation = {
+  categories: [
+    {
+      id: "women",
+      name: "Women",
+      featured: [
+        {
+          name: "Woman",
+          imageSrc: null,
+          imageAlt: "Women collection",
+          href: "/products?category=Women",
+        },
+      ],
+      sections: [
+        {
+          id: "clothing",
+          name: "Clothing",
+          items: [
+            { name: "Browse All", href: "/products?category=Women" },
+            { name: "Dresses", href: "/products?category=Women&subCategory=Dresses" },
+            { name: "Blazers", href: "/products?category=Women&subCategory=Blazers" },
+            { name: "Handbags", href: "/products?category=Women&subCategory=Handbags" },
+            { name: "Tops", href: "/products?category=Women&subCategory=Tops" },
+            { name: "Coats", href: "/products?category=Women&subCategory=Coats" },
+            { name: "Sweaters", href: "/products?category=Women&subCategory=Sweaters" },
+            { name: "Scarfs", href: "/products?category=Women&subCategory=Scarfs" },
+            { name: "Jackets", href: "/products?category=Women&subCategory=Jackets" },
+          ],
+        },
+        {
+          id: "watch",
+          name: "Watch",
+          items: [
+            {
+              name: "Browse All Women's Watch",
+              href: "/products?category=Women&subCategory=Watch",
+            },
+          ],
+        },
+        {
+          id: "accessories",
+          name: "Accessories",
+          items: [
+            {
+              name: "Browse All Women's Accessories",
+              href: "/products?category=Women&subCategory=Accessories",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "men",
+      name: "Men",
+      featured: [
+        {
+          name: "Men",
+          imageSrc: null,
+          imageAlt: "Men collection",
+          href: "/products?category=Men",
+        },
+      ],
+      sections: [
+        {
+          id: "clothing",
+          name: "Clothing",
+          items: [
+            { name: "Browse All", href: "/products?category=Men" },
+            { name: "T-Shirts", href: "/products?category=Men&subCategory=T-Shirts" },
+            { name: "Jackets", href: "/products?category=Men&subCategory=Jackets" },
+            { name: "Suits", href: "/products?category=Men&subCategory=Suits" },
+            { name: "Hoodies", href: "/products?category=Men&subCategory=Hoodies" },
+            { name: "Pants", href: "/products?category=Men&subCategory=Pants" },
+            { name: "Shoes", href: "/products?category=Men&subCategory=Shoes" },
+            { name: "Belts", href: "/products?category=Men&subCategory=Belts" },
+          ],
+        },
+        {
+          id: "watch",
+          name: "Watch",
+          items: [
+            {
+              name: "Browse All Men's Watch",
+              href: "/products?category=Men&subCategory=Watch",
+            },
+          ],
+        },
+        {
+          id: "accessories",
+          name: "Accessories",
+          items: [
+            {
+              name: "Browse All Men's Accessories",
+              href: "/products?category=Men&subCategory=Accessories",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  pages: [],
+};
 
 const quickLinks = [
   { name: "All Products", path: "/products" },
@@ -145,6 +246,18 @@ export default function ProductList() {
     updateQuery("", searchParam, true, "");
   };
 
+  const isSidebarLinkActive = (navCategoryName, item) => {
+    if (category !== navCategoryName) return false;
+    if (item.name === "Browse All") {
+      return !subCategory;
+    }
+
+    return (
+      item.href.includes(`subCategory=${subCategory}`) ||
+      item.name === subCategory
+    );
+  };
+
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-orange-50 overflow-hidden pt-24">
       {/* SIDEBAR */}
@@ -166,29 +279,62 @@ export default function ProductList() {
               <Filter size={16} /> Categories
             </h3>
 
-            <ul className="space-y-2 text-amber-900">
-              <li
-                className={`cursor-pointer hover:text-amber-950 transition ${
-                  !category && !subCategory ? "text-amber-800 font-bold" : ""
+            <div className="space-y-4 text-amber-900">
+              <button
+                type="button"
+                className={`block cursor-pointer text-left transition hover:text-amber-950 ${
+                  !category && !subCategory
+                    ? "font-bold text-amber-800"
+                    : "font-medium text-amber-900"
                 }`}
                 onClick={() => handleCategoryClick("")}
               >
                 All
-              </li>
-              {categories.map((cat) => (
-                <li
-                  key={cat}
-                  className={`cursor-pointer hover:text-amber-950 transition ${
-                    cat === category || cat === subCategory
-                      ? "text-amber-800 font-bold"
-                      : ""
-                  }`}
-                  onClick={() => handleCategoryClick(cat)}
-                >
-                  {cat}
-                </li>
+              </button>
+
+              {navigation.categories.map((navCategory) => (
+                <div key={navCategory.id} className="space-y-2">
+                  <button
+                    type="button"
+                    className={`block text-left text-base transition hover:text-amber-950 ${
+                      category === navCategory.name
+                        ? "font-bold text-amber-800"
+                        : "font-bold text-amber-900"
+                    }`}
+                    onClick={() => handleCategoryClick(navCategory.name)}
+                  >
+                    {navCategory.name}
+                  </button>
+
+                  <div className="ml-3 space-y-2 border-l border-amber-900/40 pl-3">
+                    {navCategory.sections.map((section) => (
+                      <div key={section.id} className="space-y-1">
+                        <p className="text-sm font-semibold text-amber-950">
+                          {section.name}
+                        </p>
+
+                        <ul className="space-y-1">
+                          {section.items.map((item) => (
+                            <li key={item.name}>
+                              <Link
+                                href={item.href}
+                                className={`block text-sm transition hover:text-amber-950 ${
+                                  isSidebarLinkActive(navCategory.name, item)
+                                    ? "font-semibold text-amber-800"
+                                    : "font-normal text-amber-900"
+                                }`}
+                              >
+                                {item.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Quick Links */}
