@@ -1,14 +1,6 @@
 import { getProducts } from "@/lib/server-api";
 import { absoluteUrl } from "@/lib/site";
-
-const catalogUrls = [
-  "/products",
-  "/products?new=true",
-  "/products?category=Men",
-  "/products?category=Women",
-  "/products?category=Accessories",
-  "/products?category=Watch",
-];
+import { catalogRoutes } from "@/lib/catalog";
 
 export default async function sitemap() {
   const now = new Date();
@@ -21,11 +13,17 @@ export default async function sitemap() {
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...catalogUrls.map((path) => ({
-      url: absoluteUrl(path),
+    {
+      url: absoluteUrl("/products"),
       lastModified: now,
       changeFrequency: "daily",
-      priority: path === "/products" ? 0.9 : 0.7,
+      priority: 0.9,
+    },
+    ...catalogRoutes.map((route) => ({
+      url: absoluteUrl(route.path),
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.7,
     })),
     ...products.map((product) => ({
       url: absoluteUrl(`/products/${product._id || product.id}`),
