@@ -24,6 +24,7 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { CircleUserRound } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -187,6 +188,8 @@ export default function Header() {
   const [login, setLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const cartItems = useSelector((state) => state.basket);
 
@@ -212,6 +215,10 @@ export default function Header() {
     const updateUser = () => setUser(getStoredUser());
     return subscribeToStoredUser(updateUser);
   }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, searchParams]);
 
   return (
     <div className="fixed z-10 w-full bg-orange-100">
@@ -364,7 +371,10 @@ export default function Header() {
             </div>
 
             {/* Desktop dropdown */}
-            <PopoverGroup className="hidden lg:block lg:ml-8">
+            <PopoverGroup
+              key={`${pathname}?${searchParams.toString()}`}
+              className="hidden lg:block lg:ml-8"
+            >
               <div className="flex h-full space-x-8">
                 {/* here */}
 
