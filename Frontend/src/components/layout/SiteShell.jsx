@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Header from "@/app/component/layout/header/Header";
 
 export default function SiteShell({ children }) {
@@ -11,7 +12,9 @@ export default function SiteShell({ children }) {
       >
         Skip to main content
       </a>
-      <Header />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
       <main id="main-content" tabIndex="-1" className="block focus:outline-none">
         {children}
       </main>

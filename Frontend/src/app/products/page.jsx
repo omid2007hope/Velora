@@ -7,6 +7,8 @@ import {
   buildPageMetadata,
 } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 function normalizeParam(value) {
   return Array.isArray(value) ? value[0] || "" : value || "";
 }
