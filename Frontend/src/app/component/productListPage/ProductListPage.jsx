@@ -272,9 +272,9 @@ export default function ProductList() {
         </div>
 
         {/* FILTERS */}
-        <div className="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex flex-col flex-1 overflow-y-auto p-4">
           {/* Categories */}
-          <div>
+          <div className="space-y-4">
             <h3 className="flex items-center gap-2 text-amber-950 font-bold mb-3">
               <Filter size={16} /> Categories
             </h3>
@@ -337,37 +337,39 @@ export default function ProductList() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="pt-4 border-t border-amber-900">
-            <h3 className="text-amber-950 font-bold mb-3">Quick Links</h3>
+          <div className="mt-auto pt-6 space-y-6">
+            {/* Quick Links */}
+            <div className="pt-4 border-t border-amber-900">
+              <h3 className="text-amber-950 font-bold mb-3">Quick Links</h3>
 
-            <ul className="space-y-2 text-amber-900">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  {link.name === "New Arrivals" ? (
-                    <button
-                      onClick={handleNewArrivalsClick}
-                      className="hover:text-amber-950 transition text-left w-full"
-                    >
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.path}
-                      className="hover:text-amber-950 transition"
-                    >
-                      {link.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+              <ul className="space-y-2 text-amber-900">
+                {quickLinks.map((link) => (
+                  <li key={link.name}>
+                    {link.name === "New Arrivals" ? (
+                      <button
+                        onClick={handleNewArrivalsClick}
+                        className="hover:text-amber-950 transition text-left w-full"
+                      >
+                        {link.name}
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.path}
+                        className="hover:text-amber-950 transition"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Footer */}
-          <div className="mt-auto pt-4 border-t border-amber-900 text-center text-xs text-amber-900">
-            <p>Free Shipping over $50</p>
-            <p className="mt-1">© 2025 Omid Teimory Store</p>
+            {/* Footer */}
+            <div className="pt-4 border-t border-amber-900 text-center text-xs text-amber-900">
+              <p>Free Shipping over $50</p>
+              <p className="mt-1">© 2025 Omid Teimory Store</p>
+            </div>
           </div>
         </div>
       </aside>
