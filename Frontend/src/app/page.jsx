@@ -6,7 +6,7 @@ import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 
 const homeTitle = "Modern fashion, watches, and accessories";
 const homeDescription =
-  "Shop curated clothing, statement watches, and everyday accessories at Velora, with refined essentials, new arrivals, and fast checkout.";
+  "Shop curated clothing, statement watches, and everyday accessories at Velora, with refined essentials, new arrivals, and fast checkout for modern wardrobes.";
 
 export const metadata = buildPageMetadata({
   title: homeTitle,

@@ -21,9 +21,9 @@ export default function Promo() {
           <div className="flex h-full max-w-4xl flex-col justify-between">
             {/* Heading + Paragraph */}
             <div className="space-y-6 lg:space-y-4">
-              <h1 className="ml-0 text-4xl font-bold tracking-tight text-amber-950 sm:ml-8 sm:text-6xl lg:ml-0">
-                Modern fashion, watches, and accessories
-              </h1>
+              <h2 className="ml-0 text-4xl font-bold tracking-tight text-amber-950 sm:ml-8 sm:text-6xl lg:ml-0">
+                Curated style for everyday dressing
+              </h2>
               <p className="ml-0 mr-10 text-lg leading-8 text-amber-800 sm:ml-8 sm:mr-10 lg:ml-0 lg:mr-10">
                 Velora curates clean, wearable pieces for everyday outfits that
                 still feel intentional. From new arrivals and relaxed staples to

@@ -18,6 +18,29 @@ const VALUE_POINTS = [
   },
 ];
 
+const SHOPPING_GUIDES = [
+  {
+    title: "Start with the homepage",
+    description:
+      "Use the hero section and category previews to orient yourself, then jump into the product grid when you know the style lane you want to explore.",
+  },
+  {
+    title: "Compare by collection",
+    description:
+      "New arrivals, men, women, watches, and accessories each have their own path, which makes it easier to narrow your search without losing context.",
+  },
+  {
+    title: "Build outfits with intent",
+    description:
+      "Choose pieces that work across the same color palette or silhouette family so your cart feels coordinated instead of random.",
+  },
+  {
+    title: "Return for updates",
+    description:
+      "Fresh product drops and seasonal edits give repeat visitors a reason to check back often for new outfit combinations and statement pieces.",
+  },
+];
+
 const FAQS = [
   {
     question: "What makes Velora different?",
@@ -60,6 +83,12 @@ export default function SeoContent() {
               easier to compare options, spot new arrivals, and find pieces that
               can stay in rotation rather than sit in the back of the closet.
             </p>
+            <p className="text-base leading-7 text-amber-900">
+              The experience is intentionally direct. Product discovery starts
+              with visual category cards, continues through curated watch and
+              deal sections, and ends with support-focused details that help
+              customers feel confident before they click buy.
+            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
@@ -73,6 +102,30 @@ export default function SeoContent() {
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-amber-900">
                   {point.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border-2 border-amber-950 bg-orange-100 p-6 shadow-sm sm:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-800">
+            Shopping guide
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-amber-950 sm:text-3xl">
+            How shoppers can move through Velora
+          </h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {SHOPPING_GUIDES.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-2xl border border-amber-950/20 bg-orange-50 p-5"
+              >
+                <h3 className="text-lg font-semibold text-amber-950">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-amber-900">
+                  {item.description}
                 </p>
               </article>
             ))}
