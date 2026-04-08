@@ -23,7 +23,7 @@ export default function PromoCarousel() {
       >
         <img
           src={Banner.src}
-          alt="Banner"
+          alt="Velora summer collection banner"
           width="1234"
           height="690"
           loading="eager"
@@ -34,7 +34,7 @@ export default function PromoCarousel() {
         />
         <img
           src={Men.src}
-          alt="Men"
+          alt="Men's collection preview"
           width="1536"
           height="1024"
           loading="lazy"
@@ -45,7 +45,7 @@ export default function PromoCarousel() {
         />
         <img
           src={Accessories.src}
-          alt="Accessories"
+          alt="Accessories collection preview"
           width="1536"
           height="1024"
           loading="lazy"
@@ -56,7 +56,7 @@ export default function PromoCarousel() {
         />
         <img
           src={Watch.src}
-          alt="Watch"
+          alt="Watch collection preview"
           width="1536"
           height="1024"
           loading="lazy"

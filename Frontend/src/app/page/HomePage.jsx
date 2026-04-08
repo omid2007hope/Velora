@@ -5,6 +5,7 @@ import Promo from "../component/homePage/Promo";
 import Service from "../component/homePage/Service";
 import Deals from "../component/homePage/DealsPreview";
 import WatchCollection from "../component/homePage/WatchCollectionPreview";
+import SeoContent from "../component/homePage/SeoContent";
 import SiteShell from "@/components/layout/SiteShell";
 
 function HomePage() {
@@ -14,6 +15,7 @@ function HomePage() {
       <Preview />
       <Deals />
       <WatchCollection />
+      <SeoContent />
       <Service />
     </SiteShell>
   );

@@ -3,7 +3,7 @@ import { absoluteUrl, getSiteUrl, resolveImageUrl } from "./site";
 export const siteConfig = {
   name: "Velora",
   description:
-    "Velora is a modern fashion store for elevated essentials, statement watches, and everyday accessories.",
+    "Shop curated clothing, statement watches, and everyday accessories at Velora, with refined essentials, new arrivals, and fast checkout.",
   category: "fashion",
   creator: "Omid Teimory",
   locale: "en_US",

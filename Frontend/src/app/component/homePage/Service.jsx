@@ -11,19 +11,19 @@ const FEATURES = [
   {
     name: "Free shipping",
     description:
-      "It is not actually free; we just price it into the products. Someone else is paying for it.",
+      "Orders move quickly and transparently, with shipping built to feel simple from checkout to delivery.",
     icon: TruckIcon,
   },
   {
     name: "10-year warranty",
     description:
-      "If it breaks in the first 10 years, we will replace it. After that, standard wear applies.",
+      "Every piece is backed by a long warranty window, so you can shop with more confidence and less second-guessing.",
     icon: ShieldCheckIcon,
   },
   {
     name: "Exchanges",
     description:
-      "If it is not the right fit, contact support and we will help with your exchange options.",
+      "If sizing or style is not quite right, support can help you sort out exchange options without extra hassle.",
     icon: ArrowPathIcon,
   },
 ];
@@ -40,6 +40,8 @@ export default function Service() {
           <p className="mt-4 text-base text-amber-900">
             Thoughtful support, transparent policies, and reliable fulfillment
             are part of the experience we want every Velora customer to expect.
+            The goal is a shopping journey that feels calm, clear, and easy to
+            trust from the first visit to the final delivery.
           </p>
         </div>
 

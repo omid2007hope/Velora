@@ -37,6 +37,19 @@ export default function Preview() {
   return (
     <div className="bg-orange-200 border-t-2 border-b-2 border-amber-950">
       <section className="px-4 sm:px-6 lg:px-16 py-8 sm:py-8 lg:py-16">
+        <div className="mb-6 max-w-3xl space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-800">
+            Shop by category
+          </p>
+          <h2 className="text-3xl font-bold text-amber-950 sm:text-4xl">
+            Explore the collections built around everyday style
+          </h2>
+          <p className="text-base leading-7 text-amber-900">
+            Start with the categories that matter most. Velora makes it easy to
+            move from new arrivals to accessories, men&apos;s pieces, and
+            women&apos;s favorites without digging through a cluttered catalog.
+          </p>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[600px]">
           {/* Left Column */}
           <div className="grid grid-rows-2 gap-6 h-full">

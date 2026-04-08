@@ -30,8 +30,16 @@ export default function WatchCollection() {
               </h2>
 
               <p className="text-amber-800 text-sm sm:text-base">
-                Upgrade your style with timeless watches that keep you sharp and
-                confident every day.
+                Upgrade your style with timepieces that feel polished, modern,
+                and easy to wear every day. Our watch edit leans into clean
+                silhouettes, wearable tones, and statement pieces that work with
+                both casual and dressed-up looks.
+              </p>
+
+              <p className="text-amber-900 text-sm sm:text-base">
+                Whether you prefer a minimal face or a bolder profile, the
+                collection is meant to add personality without overpowering the
+                rest of your outfit.
               </p>
 
               <Link
