@@ -25,12 +25,12 @@ const WATCH_IMAGES = [
 
 export default function WatchBanner() {
   return (
-    <div className="h-full w-full object-cover">
+    <div className="flex items-center justify-center h-full w-full object-cover">
       <Carousel
         autoplay
         shape="bar"
-        className="overflow-hidden rounded-lg shadow-md"
-        style={{ height: 400, background: "#f7f3ef" }}
+        className="w-full h-full overflow-hidden shadow-md"
+        style={{ height: 440, background: "#f7f3ef" }}
       >
         {WATCH_IMAGES.map((image) => (
           <div key={image.alt} className="relative h-full w-full">
@@ -40,7 +40,7 @@ export default function WatchBanner() {
               fill
               sizes="(min-width: 1024px) 640px, 100vw"
               priority={image.priority ?? false}
-              className="object-cover"
+              className="object-cover h-full w-full"
             />
           </div>
         ))}
