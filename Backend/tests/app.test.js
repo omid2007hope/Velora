@@ -40,6 +40,24 @@ describe("Auth and protected routes", () => {
     await request(app).get("/server/cart").expect(401);
   });
 
+  test("rejects invalid product payloads before controller logic", async () => {
+    const res = await request(app).post("/server/products").send({
+      name: "Broken Product",
+      description: "Missing required price/category/imageUrl",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Validation failed");
+  });
+
+  test("returns 404 for a missing product id", async () => {
+    const missingId = "507f191e810c19729de860ea";
+    const res = await request(app).get(`/server/products/${missingId}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Product not found");
+  });
+
   test("refresh token issues new access token", async () => {
     const { refreshToken } = await registerAndLogin();
     const res = await request(app)

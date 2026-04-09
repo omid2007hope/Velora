@@ -1,16 +1,17 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth");
-const { validateBody } = require("../../../middleware/validate");
-const { removeItemSchema } = require("../../../validation/schemas");
-const { removeItem, clearCart } = require("../../../controller/version_1/Cart");
+const { deleteCartItem, clearCart } = require("../../../controller/CartController");
+const {
+  validateDeleteCartItem,
+} = require("../../../middleware/validation/CartValidation");
 
 const router = express.Router();
 
 router.delete(
   "/server/cart/item",
   requireAuth,
-  validateBody(removeItemSchema),
-  removeItem,
+  validateDeleteCartItem,
+  deleteCartItem,
 );
 router.delete("/server/cart", requireAuth, clearCart);
 

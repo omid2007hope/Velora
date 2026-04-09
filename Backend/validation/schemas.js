@@ -104,7 +104,45 @@ const emailOnlySchema = z.object({
   email: z.string().email(),
 });
 
+const productCreateSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  price: z.number().nonnegative(),
+  newPrice: z.number().nonnegative().optional(),
+  oldPrice: z.number().nonnegative().optional(),
+  discount: z.string().optional(),
+  category: z.string().min(1),
+  subCategory: z.string().optional(),
+  imageUrl: z.string().min(1),
+});
+
+const objectIdParamsSchema = z.object({
+  id: objectId,
+});
+
+const productIdParamsSchema = z.object({
+  productId: objectId,
+});
+
+const reviewCreateSchema = z.object({
+  userId: objectId.optional(),
+  name: z.string().min(1),
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(1),
+});
+
+const orderStatusSchema = z
+  .object({
+    paymentStatus: z.string().min(1).optional(),
+    orderStatus: z.string().min(1).optional(),
+  })
+  .refine((value) => value.paymentStatus || value.orderStatus, {
+    message: "At least one of paymentStatus or orderStatus must be provided",
+    path: ["paymentStatus"],
+  });
+
 module.exports = {
+  objectIdParamsSchema,
   registerSchema,
   loginSchema,
   addressSchema,
@@ -118,4 +156,8 @@ module.exports = {
   passwordResetRequestSchema,
   tokenOnlySchema,
   emailOnlySchema,
+  productCreateSchema,
+  productIdParamsSchema,
+  reviewCreateSchema,
+  orderStatusSchema,
 };

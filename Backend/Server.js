@@ -5,6 +5,8 @@ const rateLimit = require("express-rate-limit");
 const { getEnvConfig, loadEnv } = require("./config/env");
 const connectDB = require("./database/MongoDB");
 const routes = require("./routes");
+const { errorHandler } = require("./middleware/error/errorHandler");
+const { notFoundHandler } = require("./middleware/error/notFound");
 const logger = require("./utils/logger");
 
 loadEnv();
@@ -60,20 +62,8 @@ app.get("/health", (req, res) => {
 app.use(routes);
 app.use("/api", routes);
 
-app.use((req, res) => {
-  res.status(404).json({ error: "Route not found" });
-});
-
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  logger.error("Unhandled error:", err);
-
-  if (err?.status) {
-    return res.status(err.status).json({ error: err.message });
-  }
-
-  return res.status(500).json({ error: "Internal server error" });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 if (require.main === module) {
   connectDB()

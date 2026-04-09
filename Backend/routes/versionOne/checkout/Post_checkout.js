@@ -1,15 +1,16 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth");
-const { validateBody } = require("../../../middleware/validate");
-const { orderSchema } = require("../../../validation/schemas");
-const { createOrder } = require("../../../controller/version_1/Order");
+const { createOrder } = require("../../../controller/OrderController");
+const {
+  validateCreateOrder,
+} = require("../../../middleware/validation/OrderValidation");
 
 const router = express.Router();
 
 router.post(
   "/server/checkout/order",
   requireAuth,
-  validateBody(orderSchema),
+  validateCreateOrder,
   createOrder,
 );
 

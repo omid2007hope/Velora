@@ -1,17 +1,21 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth");
-const { validateBody } = require("../../../middleware/validate");
-const { cartItemSchema } = require("../../../validation/schemas");
-const { getCart, addItem } = require("../../../controller/version_1/Cart");
+const {
+  createCart,
+  addCartItem,
+} = require("../../../controller/CartController");
+const {
+  validateAddCartItem,
+} = require("../../../middleware/validation/CartValidation");
 
 const router = express.Router();
 
-router.post("/server/cart", requireAuth, getCart);
+router.post("/server/cart", requireAuth, createCart);
 router.post(
   "/server/cart/item",
   requireAuth,
-  validateBody(cartItemSchema),
-  addItem,
+  validateAddCartItem,
+  addCartItem,
 );
 
 module.exports = router;

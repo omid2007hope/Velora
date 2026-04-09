@@ -1,62 +1,58 @@
 const express = require("express");
 const { authLimiter } = require("../../../middleware/rateLimit");
-const { validateBody } = require("../../../middleware/validate");
 const {
-  registerSchema,
-  loginSchema,
-  refreshSchema,
-  passwordResetRequestSchema,
-  tokenOnlySchema,
-  emailOnlySchema,
-} = require("../../../validation/schemas");
-const { CustomerData } = require("../../../controller/version_1/Register");
+  createCustomer,
+  loginCustomer,
+  refreshCustomerToken,
+  requestCustomerEmailVerification,
+  confirmCustomerEmailVerification,
+  requestCustomerPasswordReset,
+  confirmCustomerPasswordReset,
+} = require("../../../controller/CustomerController");
 const {
-  loginIntoTheAccount,
-  refreshAccessToken,
-} = require("../../../controller/version_1/Login");
-const {
-  requestPasswordReset,
-  confirmPasswordReset,
-} = require("../../../controller/version_1/Password");
-const {
-  requestVerification,
-  confirmVerification,
-} = require("../../../controller/version_1/EmailVerification");
+  validateCreateCustomer,
+  validateCustomerLogin,
+  validateRefreshCustomerToken,
+  validateRequestCustomerEmailVerification,
+  validateConfirmCustomerEmailVerification,
+  validateRequestCustomerPasswordReset,
+  validateConfirmCustomerPasswordReset,
+} = require("../../../middleware/validation/CustomerValidation");
 
 const router = express.Router();
 
-router.post("/server/customer", validateBody(registerSchema), CustomerData);
+router.post("/server/customer", validateCreateCustomer, createCustomer);
 router.post(
   "/server/customer/login",
   authLimiter,
-  validateBody(loginSchema),
-  loginIntoTheAccount,
+  validateCustomerLogin,
+  loginCustomer,
 );
 router.post(
   "/server/customer/token/refresh",
   authLimiter,
-  validateBody(refreshSchema),
-  refreshAccessToken,
+  validateRefreshCustomerToken,
+  refreshCustomerToken,
 );
 router.post(
   "/server/customer/email/verify",
-  validateBody(emailOnlySchema),
-  requestVerification,
+  validateRequestCustomerEmailVerification,
+  requestCustomerEmailVerification,
 );
 router.post(
   "/server/customer/email/verify/confirm",
-  validateBody(tokenOnlySchema),
-  confirmVerification,
+  validateConfirmCustomerEmailVerification,
+  confirmCustomerEmailVerification,
 );
 router.post(
   "/server/customer/password-reset",
-  validateBody(passwordResetRequestSchema),
-  requestPasswordReset,
+  validateRequestCustomerPasswordReset,
+  requestCustomerPasswordReset,
 );
 router.post(
   "/server/customer/password-reset/confirm",
-  validateBody(tokenOnlySchema),
-  confirmPasswordReset,
+  validateConfirmCustomerPasswordReset,
+  confirmCustomerPasswordReset,
 );
 
 module.exports = router;

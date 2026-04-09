@@ -1,9 +1,19 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth");
-const { updateOrderStatus } = require("../../../controller/version_1/Order");
+const { updateOrderStatus } = require("../../../controller/OrderController");
+const {
+  validateUpdateOrderStatus,
+  validateOrderId,
+} = require("../../../middleware/validation/OrderValidation");
 
 const router = express.Router();
 
-router.patch("/server/checkout/order/:id", requireAuth, updateOrderStatus);
+router.patch(
+  "/server/checkout/order/:id",
+  requireAuth,
+  validateOrderId,
+  validateUpdateOrderStatus,
+  updateOrderStatus,
+);
 
 module.exports = router;

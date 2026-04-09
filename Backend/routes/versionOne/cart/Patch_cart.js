@@ -1,16 +1,19 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth");
-const { validateBody } = require("../../../middleware/validate");
-const { updateQuantitySchema } = require("../../../validation/schemas");
-const { updateQuantity } = require("../../../controller/version_1/Cart");
+const {
+  updateCartItemQuantity,
+} = require("../../../controller/CartController");
+const {
+  validateUpdateCartItemQuantity,
+} = require("../../../middleware/validation/CartValidation");
 
 const router = express.Router();
 
 router.patch(
   "/server/cart/item",
   requireAuth,
-  validateBody(updateQuantitySchema),
-  updateQuantity,
+  validateUpdateCartItemQuantity,
+  updateCartItemQuantity,
 );
 
 module.exports = router;
