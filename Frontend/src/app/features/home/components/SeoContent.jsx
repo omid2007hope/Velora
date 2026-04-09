@@ -61,8 +61,8 @@ const FAQS = [
 
 export default function SeoContent() {
   return (
-    <section className="bg-orange-50 px-4 py-12 sm:px-6 lg:px-16 lg:py-20">
-      <div className="mx-auto max-w-6xl space-y-12">
+    <section className="border-b-2 border-amber-950 bg-orange-50 px-4 py-12 sm:px-6 lg:px-16 lg:py-8">
+      <div className="w-100 space-y-12">
         <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-800">

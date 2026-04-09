@@ -16,7 +16,7 @@ export default function PromoBanner() {
         autoplay
         shape="bar"
         className="overflow-hidden rounded-lg shadow-md"
-        style={{ height: 400, background: "#f7f3ef" }}
+        style={{ height: 440, background: "#f7f3ef" }}
       >
         <img
           src={Banner.src}
