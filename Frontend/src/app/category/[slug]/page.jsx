@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import CatalogPage from "@/features/catalog/CatalogPage";
-import JsonLd from "@/components/seo/JsonLd";
-import { getProducts } from "@/lib/server-api";
-import { getCatalogFilters, getCatalogRoute } from "@/lib/catalog";
+import CatalogPage from "@/app/features/catalog/CatalogPage";
+import JsonLd from "@/app/components/seo/JsonLd";
+import { getProducts } from "@/app/lib/server-api";
+import { getCatalogFilters, getCatalogRoute } from "@/app/lib/catalog";
 import {
   buildBreadcrumbSchema,
   buildCollectionPageSchema,
   buildNoIndexMetadata,
   buildPageMetadata,
-} from "@/lib/seo";
+} from "@/app/lib/seo";
 
 function normalizeParam(value) {
   return Array.isArray(value) ? value[0] || "" : value || "";

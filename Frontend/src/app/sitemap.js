@@ -1,6 +1,6 @@
-import { getProducts } from "@/lib/server-api";
-import { absoluteUrl } from "@/lib/site";
-import { catalogRoutes } from "@/lib/catalog";
+import { getProducts } from "@/app/lib/server-api";
+import { absoluteUrl } from "@/app/lib/site";
+import { catalogRoutes } from "@/app/lib/catalog";
 
 export default async function sitemap() {
   const now = new Date();

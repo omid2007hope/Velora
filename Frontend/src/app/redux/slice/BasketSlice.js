@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getStoredBasket, saveStoredBasket } from "@/lib/browser-storage";
+import { getStoredBasket, saveStoredBasket } from "@/app/lib/browser-storage";
 
 const basketSlice = createSlice({
   name: "basket",
@@ -63,5 +63,3 @@ const basketSlice = createSlice({
 export const { addItem, updateQuantity, removeItem, clearBasket } =
   basketSlice.actions;
 export default basketSlice.reducer;
-
-

@@ -1,4 +1,4 @@
-import { siteConfig } from "@/lib/seo";
+import { siteConfig } from "@/app/lib/seo";
 
 export default function manifest() {
   return {

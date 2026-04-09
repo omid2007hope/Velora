@@ -13,6 +13,11 @@ function generateToken(hoursValid = 24) {
   return { token, expires };
 }
 
+function buildClientLink(pathname, token) {
+  const { primaryClientUrl } = getEnvConfig();
+  return `${primaryClientUrl.replace(/\/$/, "")}${pathname}?token=${token}`;
+}
+
 async function registerCustomer({ email, fullName, password }) {
   const normalizedCustomer = {
     email: email.trim().toLowerCase(),
@@ -52,8 +57,7 @@ async function registerCustomer({ email, fullName, password }) {
       { returnDocument: "after" },
     );
 
-    const { primaryClientUrl } = getEnvConfig();
-    const verificationLink = `${primaryClientUrl.replace(/\/$/, "")}/verify-email?token=${token}`;
+    const verificationLink = buildClientLink("/verify-email", token);
 
     await sendEmail({
       to: savedCustomer.email,
@@ -164,9 +168,7 @@ async function requestEmailVerification(email) {
     { returnDocument: "after" },
   );
 
-  const clientUrl =
-    process.env.CLIENT_URL?.split(",")?.[0]?.trim() || "http://localhost:3000";
-  const verificationLink = `${clientUrl.replace(/\/$/, "")}/verify-email?token=${token}`;
+  const verificationLink = buildClientLink("/verify-email", token);
 
   await sendEmail({
     to: customer.email,
@@ -232,9 +234,7 @@ async function requestPasswordReset(email, newPassword) {
     { returnDocument: "after" },
   );
 
-  const clientUrl =
-    process.env.CLIENT_URL?.split(",")?.[0]?.trim() || "http://localhost:3000";
-  const resetLink = `${clientUrl.replace(/\/$/, "")}/reset-password?token=${token}`;
+  const resetLink = buildClientLink("/reset-password", token);
 
   await sendEmail({
     to: customer.email,

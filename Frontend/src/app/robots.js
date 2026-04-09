@@ -1,4 +1,4 @@
-import { absoluteUrl, getSiteUrl } from "@/lib/site";
+import { absoluteUrl, getSiteUrl } from "@/app/lib/site";
 
 export default function robots() {
   return {

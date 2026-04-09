@@ -1,8 +1,8 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-import HomePage from "@/features/home/HomePage";
-import JsonLd from "@/components/seo/JsonLd";
-import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import HomePage from "@/app/features/home/HomePage";
+import JsonLd from "@/app/components/seo/JsonLd";
+import { buildPageMetadata, buildWebPageSchema } from "@/app/lib/seo";
 
 const homeTitle = "Modern fashion, watches, and accessories";
 const homeDescription =
@@ -28,5 +28,3 @@ export default function Home() {
     </>
   );
 }
-
-

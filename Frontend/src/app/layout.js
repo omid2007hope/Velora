@@ -4,13 +4,13 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Providers from "./providers";
-import JsonLd from "@/components/seo/JsonLd";
+import JsonLd from "@/app/components/seo/JsonLd";
 import {
   buildOrganizationSchema,
   buildWebsiteSchema,
   siteConfig,
-} from "@/lib/seo";
-import { absoluteUrl, getSiteUrl } from "@/lib/site";
+} from "@/app/lib/seo";
+import { absoluteUrl, getSiteUrl } from "@/app/lib/site";
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
@@ -83,5 +83,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
-

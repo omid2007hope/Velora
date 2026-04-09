@@ -1,15 +1,15 @@
-import CatalogPage from "@/features/catalog/CatalogPage";
-import JsonLd from "@/components/seo/JsonLd";
-import { getProducts } from "@/lib/server-api";
+import CatalogPage from "@/app/features/catalog/CatalogPage";
+import JsonLd from "@/app/components/seo/JsonLd";
+import { getProducts } from "@/app/lib/server-api";
 import {
   buildCatalogSeo,
   getProductsRouteState,
-} from "@/features/catalog/utils/catalog-state";
+} from "@/app/features/catalog/utils/catalog-state";
 import {
   buildBreadcrumbSchema,
   buildCollectionPageSchema,
   buildPageMetadata,
-} from "@/lib/seo";
+} from "@/app/lib/seo";
 
 export const dynamic = "force-dynamic";
 

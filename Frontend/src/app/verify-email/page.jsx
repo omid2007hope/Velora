@@ -4,7 +4,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { confirmEmailVerification } from "@/features/auth/services/auth-service";
+import { confirmEmailVerification } from "@/app/features/auth/services/auth-service";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();

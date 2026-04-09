@@ -4,7 +4,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { confirmPasswordReset } from "@/features/auth/services/auth-service";
+import { confirmPasswordReset } from "@/app/features/auth/services/auth-service";
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();

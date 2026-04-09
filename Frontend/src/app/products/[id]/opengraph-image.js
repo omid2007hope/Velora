@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getProductById } from "@/lib/server-api";
+import { getProductById } from "@/app/lib/server-api";
 
 export const runtime = "edge";
 export const alt = "Velora product preview";
@@ -26,88 +26,86 @@ export default async function ProductOpenGraphImage({ params }) {
   const product = result.product;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "56px",
+        background:
+          "linear-gradient(145deg, #1c1917 0%, #78350f 55%, #fdba74 100%)",
+        color: "#fff7ed",
+      }}
+    >
       <div
         style={{
-          height: "100%",
-          width: "100%",
           display: "flex",
-          flexDirection: "column",
           justifyContent: "space-between",
-          padding: "56px",
-          background:
-            "linear-gradient(145deg, #1c1917 0%, #78350f 55%, #fdba74 100%)",
-          color: "#fff7ed",
+          alignItems: "center",
+          fontSize: 28,
+          textTransform: "uppercase",
+          letterSpacing: "0.18em",
+        }}
+      >
+        <span>Velora</span>
+        <span style={{ opacity: 0.82 }}>{product?.category || "Product"}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div
+          style={{
+            display: "flex",
+            maxWidth: 920,
+            fontSize: 74,
+            fontWeight: 700,
+            lineHeight: 1.04,
+          }}
+        >
+          {product?.name || "Curated style, ready to shop"}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            maxWidth: 880,
+            fontSize: 28,
+            lineHeight: 1.35,
+            opacity: 0.92,
+          }}
+        >
+          {product?.description ||
+            "Browse the latest clothing, watches, and accessories from Velora."}
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontSize: 28,
-            textTransform: "uppercase",
-            letterSpacing: "0.18em",
+            fontSize: 44,
+            fontWeight: 700,
           }}
         >
-          <span>Velora</span>
-          <span style={{ opacity: 0.82 }}>{product?.category || "Product"}</span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div
-            style={{
-              display: "flex",
-              maxWidth: 920,
-              fontSize: 74,
-              fontWeight: 700,
-              lineHeight: 1.04,
-            }}
-          >
-            {product?.name || "Curated style, ready to shop"}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              maxWidth: 880,
-              fontSize: 28,
-              lineHeight: 1.35,
-              opacity: 0.92,
-            }}
-          >
-            {product?.description ||
-              "Browse the latest clothing, watches, and accessories from Velora."}
-          </div>
+          {formatPrice(product)}
         </div>
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            border: "1px solid rgba(255, 247, 237, 0.35)",
+            borderRadius: 9999,
+            padding: "16px 26px",
+            fontSize: 24,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              fontSize: 44,
-              fontWeight: 700,
-            }}
-          >
-            {formatPrice(product)}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              border: "1px solid rgba(255, 247, 237, 0.35)",
-              borderRadius: 9999,
-              padding: "16px 26px",
-              fontSize: 24,
-            }}
-          >
-            Velora Store
-          </div>
+          Velora Store
         </div>
       </div>
-    ),
+    </div>,
     size,
   );
 }

@@ -1,4 +1,4 @@
-import { buildNoIndexMetadata } from "@/lib/seo";
+import { buildNoIndexMetadata } from "@/app/lib/seo";
 
 export const metadata = buildNoIndexMetadata({
   title: "Checkout",

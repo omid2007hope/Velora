@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import ProductDetailClientPage from "@/features/product/ProductDetailPage";
-import JsonLd from "@/components/seo/JsonLd";
-import { getProductById, getReviewsByProductId } from "@/lib/server-api";
+import ProductDetailClientPage from "@/app/features/product/ProductDetailPage";
+import JsonLd from "@/app/components/seo/JsonLd";
+import { getProductById, getReviewsByProductId } from "@/app/lib/server-api";
 import {
   buildBreadcrumbSchema,
   buildNoIndexMetadata,
   buildPageMetadata,
   buildProductSchema,
   sanitizeDescription,
-} from "@/lib/seo";
+} from "@/app/lib/seo";
 
 function buildProductDescription(product) {
   if (!product) {
