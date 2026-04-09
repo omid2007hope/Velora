@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import ProductPage from "../../page/ProductPage.jsx";
+import ProductDetailClientPage from "@/features/product/ProductDetailPage";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProductById, getReviewsByProductId } from "@/lib/server-api";
 import {
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }) {
   });
 }
 
-export default async function ProductDetailPage({ params }) {
+export default async function ProductDetailRoute({ params }) {
   const productId = params?.id;
   const result = await getProductById(productId).catch(() => ({
     product: null,
@@ -98,7 +98,7 @@ export default async function ProductDetailPage({ params }) {
             : null
         }
       />
-      <ProductPage productId={productId} />
+      <ProductDetailClientPage productId={productId} />
     </>
   );
 }

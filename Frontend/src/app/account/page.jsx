@@ -1,6 +1,6 @@
 "use client";
-import AccountPage from "../page/AccountPage.jsx";
+import AccountProfilePage from "@/features/account/AccountProfilePage";
 
 export default function Account() {
-  return <AccountPage />;
+  return <AccountProfilePage />;
 }

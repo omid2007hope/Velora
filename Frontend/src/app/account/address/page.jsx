@@ -1,6 +1,6 @@
 "use client";
-import AddressForm from "../../component/layout/accountPage/accountSetting/Address.jsx";
+import AccountAddressPage from "@/features/account/AddressPage";
 
 export default function AddressPage() {
-  return <AddressForm />;
+  return <AccountAddressPage />;
 }

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 import { addItem } from "../../redux/slice/BasketSlice";
-import { fetchProducts } from "../../api/API_Products";
+import { fetchProducts } from "@/features/catalog/services/catalog-service";
 
 function normalizeProduct(item) {
   return {

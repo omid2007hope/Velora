@@ -1,6 +1,6 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-import HomePage from "./page/HomePage.jsx";
+import HomePage from "@/features/home/HomePage";
 import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 

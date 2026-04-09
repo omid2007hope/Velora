@@ -4,14 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, UserIcon, X } from "lucide-react";
-import SignOutForm from "@/app/component/layout/accountPage/accountSetting/Signout";
+import SignOutDialog from "@/features/account/components/SignOutDialog";
+import { accountLinks } from "@/features/account/constants/account-links";
 import { getStoredUser, subscribeToStoredUser } from "@/lib/browser-storage";
-
-const ACCOUNT_LINKS = [
-  { name: "Personal Information", to: "/account" },
-  { name: "Addresses", to: "/account/address" },
-  { name: "Payment Methods", to: "/account/payment" },
-];
 
 export default function AccountShell({ children }) {
   const [openSignOut, setOpenSignOut] = useState(false);
@@ -62,7 +57,7 @@ export default function AccountShell({ children }) {
         }`}
       >
         <nav className="space-y-2 px-4 py-3">
-          {ACCOUNT_LINKS.map((link) => {
+          {accountLinks.map((link) => {
             const active = pathname === link.to;
 
             return (
@@ -105,7 +100,7 @@ export default function AccountShell({ children }) {
           </div>
 
           <nav className="flex-1 space-y-2 px-4 py-4">
-            {ACCOUNT_LINKS.map((link) => {
+            {accountLinks.map((link) => {
               const active = pathname === link.to;
 
               return (
@@ -137,7 +132,7 @@ export default function AccountShell({ children }) {
         </main>
       </div>
 
-      <SignOutForm open={openSignOut} setOpen={setOpenSignOut} />
+      <SignOutDialog open={openSignOut} setOpen={setOpenSignOut} />
     </div>
   );
 }

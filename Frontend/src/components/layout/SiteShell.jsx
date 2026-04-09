@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import Header from "@/app/component/layout/header/Header";
+import Header from "@/components/layout/header/Header";
 
 export default function SiteShell({ children }) {
   return (

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import ProductListPage from "../../page/ProductListPage.jsx";
+import CatalogPage from "@/features/catalog/CatalogPage";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProducts } from "@/lib/server-api";
 import { getCatalogFilters, getCatalogRoute } from "@/lib/catalog";
@@ -57,8 +57,9 @@ export default async function CategoryPage({ params, searchParams }) {
   }
 
   const search = normalizeParam(searchParams?.search).trim();
+  const filters = getCatalogFilters(params?.slug);
   const products = await getProducts({
-    ...getCatalogFilters(params?.slug),
+    ...filters,
     search: search || undefined,
   }).catch(() => []);
 
@@ -81,7 +82,15 @@ export default async function CategoryPage({ params, searchParams }) {
           }),
         ]}
       />
-      <ProductListPage />
+      <CatalogPage
+        initialState={{
+          ...filters,
+          search,
+          category: filters.category || "",
+          subCategory: filters.subCategory || "",
+          isNew: Boolean(filters.isNew),
+        }}
+      />
     </>
   );
 }

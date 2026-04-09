@@ -1,6 +1,6 @@
 "use client";
-import PaymentForm from "../../component/layout/accountPage/accountSetting/Payment.jsx";
+import AccountPaymentPage from "@/features/account/PaymentPage";
 
 export default function PaymentPage() {
-  return <PaymentForm />;
+  return <AccountPaymentPage />;
 }
