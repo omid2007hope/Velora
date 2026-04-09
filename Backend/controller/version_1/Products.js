@@ -45,7 +45,15 @@ async function createProduct(req, res) {
         .json({ error: "Missing required fields", missing });
     }
 
-    const created = await productService.create(payload);
+    const normalizedPayload = {
+      ...payload,
+      subCategory:
+        typeof payload.subCategory === "string" && payload.subCategory.trim()
+          ? payload.subCategory.trim()
+          : String(payload.category).trim(),
+    };
+
+    const created = await productService.create(normalizedPayload);
     return res.status(201).json({ data: created });
   } catch (error) {
     console.error("createProduct error:", error.message);

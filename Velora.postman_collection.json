@@ -1,0 +1,588 @@
+{
+  "info": {
+    "_postman_id": "9a6326f5-32d2-4ecf-91d4-8aa99279f9c8",
+    "name": "Velora API",
+    "description": "Import-ready Postman collection for the Velora backend. Collection variables are updated automatically after register/login/product/cart/order requests where the API returns reusable IDs or tokens.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "email", "value": "test@example.com", "type": "string" },
+    { "key": "password", "value": "Password123!", "type": "string" },
+    { "key": "fullName", "value": "Test User", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" },
+    { "key": "customerId", "value": "", "type": "string" },
+    { "key": "emailVerificationToken", "value": "", "type": "string" },
+    { "key": "passwordResetToken", "value": "", "type": "string" },
+    { "key": "productId", "value": "", "type": "string" },
+    { "key": "cartItemId", "value": "", "type": "string" },
+    { "key": "orderId", "value": "", "type": "string" },
+    { "key": "paymentIntentId", "value": "", "type": "string" },
+    { "key": "paymentClientSecret", "value": "", "type": "string" },
+    { "key": "reviewId", "value": "", "type": "string" },
+    { "key": "paymentMethodId", "value": "pm_card_visa", "type": "string" },
+    { "key": "stripeSignature", "value": "test_signature", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] },
+            "description": "Returns `{ status: \"ok\" }` when the app is up."
+          },
+          "response": []
+        },
+        {
+          "name": "Server Ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server", "host": ["{{baseUrl}}"], "path": ["server"] },
+            "description": "Simple route-level health check from the API router."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data._id) pm.collectionVariables.set('customerId', data._id);",
+                  "if (data.emailVerificationToken) pm.collectionVariables.set('emailVerificationToken', data.emailVerificationToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"{{fullName}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer", "host": ["{{baseUrl}}"], "path": ["server", "customer"] },
+            "description": "Creates a customer account. In non-production mode the API may return `emailVerificationToken`, which this collection stores automatically."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('token', data.token);",
+                  "if (data.refreshToken) pm.collectionVariables.set('refreshToken', data.refreshToken);",
+                  "if (data.data && data.data._id) pm.collectionVariables.set('customerId', data.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/login", "host": ["{{baseUrl}}"], "path": ["server", "customer", "login"] },
+            "description": "Logs in and stores `token` and `refreshToken` at collection level."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('token', data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/token/refresh", "host": ["{{baseUrl}}"], "path": ["server", "customer", "token", "refresh"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Email Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('emailVerificationToken', data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/email/verify", "host": ["{{baseUrl}}"], "path": ["server", "customer", "email", "verify"] },
+            "description": "Triggers a verification email. In non-production mode the token may be returned and is saved to `emailVerificationToken`."
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{emailVerificationToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/email/verify/confirm", "host": ["{{baseUrl}}"], "path": ["server", "customer", "email", "verify", "confirm"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Password Reset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('passwordResetToken', data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"newPassword\": \"NewPassword123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/password-reset", "host": ["{{baseUrl}}"], "path": ["server", "customer", "password-reset"] },
+            "description": "Requests a reset token. In non-production mode the token is returned and stored as `passwordResetToken`."
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{passwordResetToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/password-reset/confirm", "host": ["{{baseUrl}}"], "path": ["server", "customer", "password-reset", "confirm"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Upsert Profile",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+43123456789\",\n  \"dateOfBirth\": \"1998-01-15\",\n  \"gender\": \"male\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/login/account", "host": ["{{baseUrl}}"], "path": ["server", "customer", "login", "account"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Address",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"country\": \"AT\",\n  \"city\": \"Vienna\",\n  \"street\": \"Stephansplatz 1\",\n  \"postalCode\": \"1010\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/login/account/address", "host": ["{{baseUrl}}"], "path": ["server", "customer", "login", "account", "address"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Payment Method",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethodId\": \"{{paymentMethodId}}\",\n  \"billingName\": \"{{fullName}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/customer/login/account/payment", "host": ["{{baseUrl}}"], "path": ["server", "customer", "login", "account", "payment"] },
+            "description": "Uses Stripe payment method IDs. With the mocked local Stripe client, `pm_card_visa` works as a realistic placeholder."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.data && data.data._id) pm.collectionVariables.set('productId', data.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"Integration test product for Postman\",\n  \"price\": 25,\n  \"newPrice\": 20,\n  \"oldPrice\": 25,\n  \"discount\": \"20%\",\n  \"category\": \"Men\",\n  \"subCategory\": \"Shirts\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"NewArrivals\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/products", "host": ["{{baseUrl}}"], "path": ["server", "products"] },
+            "description": "Creates a product and stores its `_id` as `productId`."
+          },
+          "response": []
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/server/products?category=Men&subCategory=Shirts&new=true&search=test",
+              "host": ["{{baseUrl}}"],
+              "path": ["server", "products"],
+              "query": [
+                { "key": "category", "value": "Men" },
+                { "key": "subCategory", "value": "Shirts" },
+                { "key": "new", "value": "true" },
+                { "key": "search", "value": "test" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["server", "products", "{{productId}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "List Product Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server/products/{{productId}}/reviews", "host": ["{{baseUrl}}"], "path": ["server", "products", "{{productId}}", "reviews"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.data && data.data._id) pm.collectionVariables.set('reviewId', data.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{customerId}}\",\n  \"name\": \"{{fullName}}\",\n  \"rating\": 5,\n  \"comment\": \"Great product and smooth checkout flow.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/products/{{productId}}/reviews", "host": ["{{baseUrl}}"], "path": ["server", "products", "{{productId}}", "reviews"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "const firstItem = data.data && data.data.items && data.data.items[0];",
+                  "if (firstItem && firstItem._id) pm.collectionVariables.set('cartItemId', firstItem._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server/cart", "host": ["{{baseUrl}}"], "path": ["server", "cart"] },
+            "description": "Preferred cart read endpoint. Stores the first cart item's `_id` as `cartItemId` if present."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart (POST Variant)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "const firstItem = data.data && data.data.items && data.data.items[0];",
+                  "if (firstItem && firstItem._id) pm.collectionVariables.set('cartItemId', firstItem._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/server/cart", "host": ["{{baseUrl}}"], "path": ["server", "cart"] },
+            "description": "The backend currently supports both GET and POST for reading the cart."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Cart Item",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "const firstItem = data.data && data.data.items && data.data.items[0];",
+                  "if (firstItem && firstItem._id) pm.collectionVariables.set('cartItemId', firstItem._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2,\n  \"variant\": {\n    \"selectedColor\": \"Black\",\n    \"selectedSize\": \"M\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/cart/item", "host": ["{{baseUrl}}"], "path": ["server", "cart", "item"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"{{cartItemId}}\",\n  \"quantity\": 3\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/cart/item", "host": ["{{baseUrl}}"], "path": ["server", "cart", "item"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"{{cartItemId}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/cart/item", "host": ["{{baseUrl}}"], "path": ["server", "cart", "item"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server/cart", "host": ["{{baseUrl}}"], "path": ["server", "cart"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data._id) pm.collectionVariables.set('orderId', data._id);",
+                  "if (data.paymentIntent && data.paymentIntent.providerIntentId) pm.collectionVariables.set('paymentIntentId', data.paymentIntent.providerIntentId);",
+                  "if (data.paymentIntent && data.paymentIntent.clientSecret) pm.collectionVariables.set('paymentClientSecret', data.paymentIntent.clientSecret);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"selectedColor\": \"Black\",\n      \"selectedSize\": \"M\"\n    }\n  ],\n  \"shipping\": 5,\n  \"tax\": 1.5,\n  \"currency\": \"usd\",\n  \"addressSnapshot\": {\n    \"street\": \"Stephansplatz 1\",\n    \"country\": \"AT\",\n    \"city\": \"Vienna\",\n    \"postalCode\": \"1010\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/checkout/order", "host": ["{{baseUrl}}"], "path": ["server", "checkout", "order"] },
+            "description": "Creates an order and stores `orderId`, `paymentIntentId`, and `paymentClientSecret` from the response."
+          },
+          "response": []
+        },
+        {
+          "name": "List Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "const first = data.data && data.data[0];",
+                  "if (first && first._id) pm.collectionVariables.set('orderId', first._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/server/checkout/order", "host": ["{{baseUrl}}"], "path": ["server", "checkout", "order"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentStatus\": \"paid\",\n  \"orderStatus\": \"processing\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/checkout/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["server", "checkout", "order", "{{orderId}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Stripe Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "stripe-signature", "value": "{{stripeSignature}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_test_webhook\",\n  \"object\": \"event\",\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"{{paymentIntentId}}\",\n      \"metadata\": {\n        \"orderId\": \"{{orderId}}\"\n      }\n    }\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/server/webhook/stripe", "host": ["{{baseUrl}}"], "path": ["server", "webhook", "stripe"] },
+            "description": "Useful mainly when `STRIPE_WEBHOOK_SECRET` is unset locally. If the secret is configured, Stripe signature validation will require a real signed payload."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("../Server");
 
 const user = {
   fullName: "Test User",
@@ -21,6 +21,11 @@ async function registerAndLogin() {
 }
 
 describe("Auth and protected routes", () => {
+  test("api prefix serves the same health route", async () => {
+    await request(app).get("/api/server").expect(200, "server is running");
+    await request(app).get("/api/v1/server").expect(200, "server is running");
+  });
+
   test("registration stays idempotent for an existing email", async () => {
     const first = await request(app).post("/server/customer").send(user).expect(201);
     const second = await request(app).post("/server/customer").send(user).expect(201);

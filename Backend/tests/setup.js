@@ -3,12 +3,14 @@ const mongoose = require("mongoose");
 
 let mongo;
 
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = "test-secret";
+process.env.JWT_REFRESH_SECRET = "test-refresh-secret";
+process.env.STRIPE_SECRET_KEY = "";
+
 beforeAll(async () => {
   mongo = await MongoMemoryServer.create();
   process.env.MONGO_URL = mongo.getUri();
-  process.env.JWT_SECRET = "test-secret";
-  process.env.JWT_REFRESH_SECRET = "test-refresh-secret";
-  process.env.STRIPE_SECRET_KEY = "";
 
   const connectDB = require("../database/MongoDB");
   await connectDB();
