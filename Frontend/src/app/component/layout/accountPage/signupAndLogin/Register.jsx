@@ -5,32 +5,13 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useMemo, useState } from "react";
 import GoogleSignIn from "./Google";
-import FetchCustomerData from "../../../../api/API_Register";
+import { registerCustomer } from "@/features/auth/services/auth-service";
+import {
+  getPasswordCriteriaState,
+  parseJwtPayload,
+  PASSWORD_CRITERIA,
+} from "@/features/auth/utils/auth-form-utils";
 import EmailVerificationPopup from "./EmailVerification";
-
-const PASSWORD_CRITERIA = [
-  { key: "length", label: "At least 8 characters" },
-  { key: "uppercase", label: "One uppercase letter" },
-  { key: "lowercase", label: "One lowercase letter" },
-  { key: "number", label: "A number" },
-  { key: "symbol", label: "A special symbol (!@#$%)" },
-];
-
-const PASSWORD_RULES = {
-  length: (value) => value.length >= 8,
-  uppercase: (value) => /[A-Z]/.test(value),
-  lowercase: (value) => /[a-z]/.test(value),
-  number: (value) => /[0-9]/.test(value),
-  symbol: (value) => /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(value),
-};
-
-const parseJwt = (token) => {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
-  }
-};
 
 export default function SignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
@@ -41,13 +22,7 @@ export default function SignupPopup({ open, setOpen }) {
     useState(false);
 
   const passwordCriteria = useMemo(() => {
-    const result = {};
-
-    Object.entries(PASSWORD_RULES).forEach(([key, rule]) => {
-      result[key] = rule(password);
-    });
-
-    return result;
+    return getPasswordCriteriaState(password);
   }, [password]);
 
   const handleChange = (setter) => (event) => setter(event.target.value);
@@ -86,7 +61,7 @@ export default function SignupPopup({ open, setOpen }) {
     // console.log("newUser:", newUser);
 
     try {
-      await FetchCustomerData(newUser);
+      await registerCustomer(newUser);
     } catch (error) {
       console.error("Signup request failed:", error.response?.data ?? error.message ?? error);
       const details = error.response?.data?.details;
@@ -103,7 +78,7 @@ export default function SignupPopup({ open, setOpen }) {
   }
 
   function handleGoogleSignup(token) {
-    const payload = parseJwt(token);
+    const payload = parseJwtPayload(token);
     console.log("Google signup requested for:", payload?.email);
 
     setOpen(false);

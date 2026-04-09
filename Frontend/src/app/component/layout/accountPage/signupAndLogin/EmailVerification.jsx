@@ -4,7 +4,8 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { requestEmailVerification } from "../../../../api/API_Recover";
+import { requestEmailVerification } from "@/features/auth/services/auth-service";
+import { isValidEmail } from "@/features/auth/utils/auth-form-utils";
 
 const DEFAULT_MESSAGE =
   "We just emailed you a verification link. Open your inbox, tap the button inside, then come back here to sign in.";
@@ -37,8 +38,7 @@ export default function EmailVerificationPopup({ open, setOpen, email = "" }) {
       return;
     }
 
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
-    if (!isValidEmail) {
+    if (!isValidEmail(normalizedEmail)) {
       setMessage("Please enter a valid email address.");
       return;
     }

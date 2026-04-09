@@ -5,17 +5,10 @@ import { useEffect, useState } from "react";
 import SignupPopup from "./Register";
 import { useRouter } from "next/navigation";
 import GoogleSignIn from "./Google";
-import FetchLoginData from "../../../../api/API_LoginData";
+import { loginCustomer } from "@/features/auth/services/auth-service";
+import { parseJwtPayload } from "@/features/auth/utils/auth-form-utils";
 import ResetPasswordPopup from "./RestPassword";
 import { saveAuthSession, saveStoredUser } from "@/lib/browser-storage";
-
-const parseJwt = (token) => {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
-  }
-};
 
 export default function LoginPopup({ open, setOpen, setUser }) {
   const [email, setEmail] = useState("");
@@ -51,7 +44,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         password: password.trim(),
       };
 
-      const response = await FetchLoginData(givenLoginData);
+      const response = await loginCustomer(givenLoginData);
       const user = response?.data;
 
       if (!user?.fullName || !response?.token) {
@@ -81,7 +74,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
   const openResetPasswordPopup = () => switchPopup(setOpenRestPassword);
 
   function handleGoogleLogin(googleToken) {
-    const payload = parseJwt(googleToken);
+    const payload = parseJwtPayload(googleToken);
     if (!payload) {
       alert("Google login failed. Please try again.");
       return;

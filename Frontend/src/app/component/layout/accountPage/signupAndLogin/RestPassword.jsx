@@ -4,23 +4,12 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useMemo, useState } from "react";
-import { requestPasswordReset } from "../../../../api/API_Recover";
-
-const PASSWORD_CRITERIA = [
-  { key: "length", label: "At least 8 characters" },
-  { key: "uppercase", label: "One uppercase letter" },
-  { key: "lowercase", label: "One lowercase letter" },
-  { key: "number", label: "A number" },
-  { key: "symbol", label: "A special symbol (!@#$%)" },
-];
-
-const PASSWORD_RULES = {
-  length: (value) => value.length >= 8,
-  uppercase: (value) => /[A-Z]/.test(value),
-  lowercase: (value) => /[a-z]/.test(value),
-  number: (value) => /[0-9]/.test(value),
-  symbol: (value) => /[!@#$%^&*(),.?"{}|<>~`_+=:\/\\\[\]-]/.test(value),
-};
+import { requestPasswordReset } from "@/features/auth/services/auth-service";
+import {
+  getPasswordCriteriaState,
+  isValidEmail,
+  PASSWORD_CRITERIA,
+} from "@/features/auth/utils/auth-form-utils";
 
 export default function ResetPasswordPopup({ open, setOpen }) {
   const [email, setEmail] = useState("");
@@ -34,13 +23,7 @@ export default function ResetPasswordPopup({ open, setOpen }) {
   }
 
   const passwordCriteria = useMemo(() => {
-    const result = {};
-
-    Object.entries(PASSWORD_RULES).forEach(([key, rule]) => {
-      result[key] = rule(newPassword);
-    });
-
-    return result;
+    return getPasswordCriteriaState(newPassword);
   }, [newPassword]);
 
   useEffect(() => {
@@ -59,7 +42,7 @@ export default function ResetPasswordPopup({ open, setOpen }) {
       return "Please enter the email tied to your account.";
     }
 
-    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+    const validEmail = isValidEmail(normalizedEmail);
     if (!validEmail) {
       return "Please enter a valid email address.";
     }
