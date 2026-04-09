@@ -1,18 +1,8 @@
 const asyncHandler = require("../utils/asyncHandler");
 const { createHttpError } = require("../utils/httpError");
-const { isValidObjectId } = require("../utils/validators");
 const orderService = require("../services/OrderService");
 const paymentIntentService = require("../services/PaymentIntentService");
-
-function getAuthorizedUserId(req) {
-  const userId = req.user?.id;
-
-  if (!isValidObjectId(userId)) {
-    throw createHttpError(401, "Unauthorized");
-  }
-
-  return userId;
-}
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createOrder = asyncHandler(async (req, res) => {
   const order = await orderService.createOrder({

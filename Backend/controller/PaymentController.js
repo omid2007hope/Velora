@@ -1,16 +1,10 @@
 const asyncHandler = require("../utils/asyncHandler");
 const paymentService = require("../services/PaymentService");
-const { createHttpError } = require("../utils/httpError");
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createPaymentMethod = asyncHandler(async (req, res) => {
-  const userId = req.user?.id;
-
-  if (!userId) {
-    throw createHttpError(401, "Unauthorized");
-  }
-
   const result = await paymentService.savePaymentMethod({
-    userId,
+    userId: getAuthorizedUserId(req),
     paymentMethodId: req.body.paymentMethodId,
     billingName: req.body.billingName,
   });

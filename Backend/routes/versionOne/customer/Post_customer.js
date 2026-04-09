@@ -1,5 +1,5 @@
 const express = require("express");
-const { authLimiter } = require("../../../middleware/rateLimit");
+const { authLimiter } = require("../../../middleware/request/rateLimit");
 const {
   createCustomer,
   loginCustomer,

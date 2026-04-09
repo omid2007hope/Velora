@@ -1,16 +1,10 @@
 const asyncHandler = require("../utils/asyncHandler");
 const accountService = require("../services/AccountService");
-const { createHttpError } = require("../utils/httpError");
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createAccountProfile = asyncHandler(async (req, res) => {
-  const userId = req.user?.id;
-
-  if (!userId) {
-    throw createHttpError(401, "Unauthorized");
-  }
-
   const result = await accountService.upsertAccountProfile({
-    userId,
+    userId: getAuthorizedUserId(req),
     phoneNumber: req.body.phoneNumber,
     dateOfBirth: req.body.dateOfBirth,
     gender: req.body.gender,

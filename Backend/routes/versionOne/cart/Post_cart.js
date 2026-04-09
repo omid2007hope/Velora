@@ -1,7 +1,7 @@
 const express = require("express");
-const { requireAuth } = require("../../../middleware/auth");
+const { requireAuth } = require("../../../middleware/auth/authenticate");
 const {
-  createCart,
+  getCart,
   addCartItem,
 } = require("../../../controller/CartController");
 const {
@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.post("/server/cart", requireAuth, createCart);
+router.post("/server/cart", requireAuth, getCart);
 router.post(
   "/server/cart/item",
   requireAuth,

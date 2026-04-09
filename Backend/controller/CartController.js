@@ -1,24 +1,8 @@
 const asyncHandler = require("../utils/asyncHandler");
 const cartService = require("../services/CartService");
-const { createHttpError } = require("../utils/httpError");
-const { isValidObjectId } = require("../utils/validators");
-
-function getAuthorizedUserId(req) {
-  const userId = req.user?.id;
-
-  if (!isValidObjectId(userId)) {
-    throw createHttpError(401, "Unauthorized");
-  }
-
-  return userId;
-}
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const getCart = asyncHandler(async (req, res) => {
-  const cart = await cartService.getCartByUser(getAuthorizedUserId(req));
-  return res.status(200).json({ data: cart });
-});
-
-const createCart = asyncHandler(async (req, res) => {
   const cart = await cartService.getCartByUser(getAuthorizedUserId(req));
   return res.status(200).json({ data: cart });
 });
@@ -58,7 +42,6 @@ const clearCart = asyncHandler(async (req, res) => {
 
 module.exports = {
   getCart,
-  createCart,
   addCartItem,
   updateCartItemQuantity,
   deleteCartItem,

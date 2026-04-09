@@ -1,16 +1,10 @@
 const asyncHandler = require("../utils/asyncHandler");
 const addressService = require("../services/AddressService");
-const { createHttpError } = require("../utils/httpError");
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createAddress = asyncHandler(async (req, res) => {
-  const userId = req.user?.id;
-
-  if (!userId) {
-    throw createHttpError(401, "Unauthorized");
-  }
-
   const result = await addressService.createAddress({
-    userId,
+    userId: getAuthorizedUserId(req),
     country: req.body.country,
     city: req.body.city,
     street: req.body.street,
