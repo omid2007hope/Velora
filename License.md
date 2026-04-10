@@ -1,5 +1,5 @@
 <!-- © 2026 Omid Teimory. All rights reserved. Signature: OmidTeimory-2026 -->
-Copyright (c) 2025 Omid Teimory. All Rights Reserved.
+Copyright (c) 2026 Omid Teimory. All Rights Reserved.
 
 This source code and any accompanying files are the exclusive property of the copyright holder listed above.
 
