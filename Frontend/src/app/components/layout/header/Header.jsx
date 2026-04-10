@@ -100,6 +100,15 @@ export default function Header() {
               </button>
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
+                <button
+                  onClick={() => {}}
+                  className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                >
+                  Sell panel
+                </button>
+              </div>
+
+              <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
                 {user ? (
                   <Link href="/account">
                     <CircleUserRound />
@@ -110,7 +119,7 @@ export default function Header() {
                       setOpen(false);
                       setTimeout(() => setLogin(true), 300);
                     }}
-                    className="text-sm text-amber-950"
+                    className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                   >
                     Sign in
                   </button>
