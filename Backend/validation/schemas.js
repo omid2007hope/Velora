@@ -18,9 +18,20 @@ const registerSchema = z.object({
   authView: authViewSchema,
 });
 
+const storeOwnerRegisterSchema = z.object({
+  storeOwnerName: z.string().min(2).max(120),
+  storeOwnerEmailAddress: z.string().email(),
+  storeOwnerPassword: z.string().min(8).max(128),
+});
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(128),
+});
+
+const storeOwnerLoginSchema = z.object({
+  storeOwnerEmailAddress: z.string().email(),
+  storeOwnerPassword: z.string().min(8).max(128),
 });
 
 const addressSchema = z.object({
@@ -149,7 +160,9 @@ const orderStatusSchema = z
 module.exports = {
   objectIdParamsSchema,
   registerSchema,
+  storeOwnerRegisterSchema,
   loginSchema,
+  storeOwnerLoginSchema,
   addressSchema,
   profileSchema,
   cartItemSchema,
