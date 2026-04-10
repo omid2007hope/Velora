@@ -99,6 +99,7 @@ export default function Header() {
       <LogIntoSellerPanelPopup
         sellerPanel={sellerPanel}
         setSellerPanel={setSellerPanel}
+        setUser={setUser}
       />
 
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
