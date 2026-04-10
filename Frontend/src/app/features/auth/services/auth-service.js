@@ -14,10 +14,10 @@ export async function registerCustomer(payload) {
   return response.data;
 }
 
-export async function requestEmailVerification(email) {
+export async function requestEmailVerification(email, authView) {
   const response = await axios.post(
     `${apiBaseUrl}/server/customer/email/verify`,
-    { email: email.trim().toLowerCase() },
+    { email: email.trim().toLowerCase(), authView },
   );
 
   return response.data;
@@ -32,12 +32,13 @@ export async function confirmEmailVerification(token) {
   return response.data;
 }
 
-export async function requestPasswordReset(email, newPassword) {
+export async function requestPasswordReset(email, newPassword, authView) {
   const response = await axios.post(
     `${apiBaseUrl}/server/customer/password-reset`,
     {
       email: email.trim().toLowerCase(),
       newPassword: newPassword.trim(),
+      authView,
     },
   );
 

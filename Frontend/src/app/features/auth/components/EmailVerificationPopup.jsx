@@ -6,6 +6,10 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { requestEmailVerification } from "@/app/features/auth/services/auth-service";
 import { isValidEmail } from "@/app/features/auth/utils/auth-form-utils";
+import {
+  AUTH_VIEW,
+  openAuthPopup,
+} from "@/app/features/auth/utils/auth-popup-events";
 
 const DEFAULT_MESSAGE =
   "We just emailed you a verification link. Open your inbox, tap the button inside, then come back here to sign in.";
@@ -14,6 +18,7 @@ export default function EmailVerificationPopup({
   open,
   setOpen,
   email = "",
+  authView = AUTH_VIEW.CUSTOMER,
 }) {
   const [emailInput, setEmailInput] = useState(email);
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
@@ -24,13 +29,9 @@ export default function EmailVerificationPopup({
     setMessage(DEFAULT_MESSAGE);
   }, [email, open]);
 
-  function openLoginPopup() {
-    document.dispatchEvent(new CustomEvent("open-login-popup"));
-  }
-
   function closeAndOpenLogin() {
     setOpen(false);
-    openLoginPopup();
+    openAuthPopup(authView);
   }
 
   async function handleResend() {
@@ -50,7 +51,7 @@ export default function EmailVerificationPopup({
     try {
       setLoading(true);
       setMessage("");
-      await requestEmailVerification(normalizedEmail);
+      await requestEmailVerification(normalizedEmail, authView);
       setMessage(
         "If an account exists for this email, a fresh verification link is on the way. Check your inbox and spam folder.",
       );

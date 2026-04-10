@@ -11,6 +11,7 @@ import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SignupPopup from "@/app/features/auth/components/SignupPopup";
 import { loginCustomer } from "@/app/features/auth/services/auth-service";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 
 export default function LoginPopup({ open, setOpen, setUser }) {
@@ -102,6 +103,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       <ResetPasswordPopup
         open={openResetPassword}
         setOpen={setOpenResetPassword}
+        authView={AUTH_VIEW.CUSTOMER}
       />
 
       <Dialog open={open} onClose={setOpen} className="relative z-50">

@@ -5,11 +5,18 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { confirmEmailVerification } from "@/app/features/auth/services/auth-service";
+import {
+  AUTH_VIEW,
+  openAuthPopup,
+} from "@/app/features/auth/utils/auth-popup-events";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
+  const authView = searchParams.get("authView") === AUTH_VIEW.SELLER
+    ? AUTH_VIEW.SELLER
+    : AUTH_VIEW.CUSTOMER;
 
   const [status, setStatus] = useState("pending"); // pending | success | error
   const [message, setMessage] = useState("Verifying your email...");
@@ -27,7 +34,7 @@ function VerifyEmailContent() {
         setStatus("success");
         setMessage("Your email is verified. You can sign in now.");
         setTimeout(() => {
-          document.dispatchEvent(new CustomEvent("open-login-popup"));
+          openAuthPopup(authView);
         }, 300);
       } catch (error) {
         const reason =
@@ -40,7 +47,7 @@ function VerifyEmailContent() {
     }
 
     verify();
-  }, [token]);
+  }, [authView, token]);
 
   function goHome() {
     router.push("/");

@@ -8,6 +8,7 @@ import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup";
 import { loginCustomer } from "@/app/features/auth/services/auth-service";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 
 export default function LogIntoSellerPanelPopup({
@@ -107,6 +108,7 @@ export default function LogIntoSellerPanelPopup({
       <ResetPasswordPopup
         open={openResetPassword}
         setOpen={setOpenResetPassword}
+        authView={AUTH_VIEW.SELLER}
       />
 
       <Dialog

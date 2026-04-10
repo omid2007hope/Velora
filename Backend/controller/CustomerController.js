@@ -36,7 +36,10 @@ const refreshCustomerToken = asyncHandler(async (req, res) => {
 });
 
 const requestCustomerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await customerService.requestEmailVerification(req.body.email);
+  const result = await customerService.requestEmailVerification(
+    req.body.email,
+    req.body.authView,
+  );
 
   if (result.status === "already-verified") {
     return res.status(200).json({
@@ -68,6 +71,7 @@ const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
   const result = await customerService.requestPasswordReset(
     req.body.email,
     req.body.newPassword,
+    req.body.authView,
   );
 
   return res.status(200).json({

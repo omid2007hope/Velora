@@ -8,6 +8,10 @@ import EmailVerificationPopup from "@/app/features/auth/components/EmailVerifica
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import { registerCustomer } from "@/app/features/auth/services/auth-service";
 import {
+  AUTH_VIEW,
+  openAuthPopup,
+} from "@/app/features/auth/utils/auth-popup-events";
+import {
   getPasswordCriteriaState,
   parseJwtPayload,
   PASSWORD_CRITERIA,
@@ -58,6 +62,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
         fullName: fullName.trim(),
         email: email.trim(),
         password: password.trim(),
+        authView: AUTH_VIEW.SELLER,
       });
     } catch (error) {
       console.error(
@@ -90,7 +95,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
   function goBack() {
     setOpen(false);
     setTimeout(() => {
-      document.dispatchEvent(new CustomEvent("open-login-popup"));
+      openAuthPopup(AUTH_VIEW.SELLER);
     }, 200);
   }
 
@@ -100,6 +105,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
         open={openEmailVerificationPopup}
         setOpen={setOpenEmailVerificationPopup}
         email={email}
+        authView={AUTH_VIEW.SELLER}
       />
 
       <Dialog

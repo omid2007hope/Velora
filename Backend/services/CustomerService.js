@@ -13,12 +13,17 @@ function generateToken(hoursValid = 24) {
   return { token, expires };
 }
 
-function buildClientLink(pathname, token) {
-  const { primaryClientUrl } = getEnvConfig();
-  return `${primaryClientUrl.replace(/\/$/, "")}${pathname}?token=${token}`;
+function normalizeAuthView(authView) {
+  return authView === "seller" ? "seller" : "customer";
 }
 
-async function registerCustomer({ email, fullName, password }) {
+function buildClientLink(pathname, token, authView) {
+  const { primaryClientUrl } = getEnvConfig();
+  const normalizedAuthView = normalizeAuthView(authView);
+  return `${primaryClientUrl.replace(/\/$/, "")}${pathname}?token=${token}&authView=${normalizedAuthView}`;
+}
+
+async function registerCustomer({ email, fullName, password, authView }) {
   const normalizedCustomer = {
     email: email.trim().toLowerCase(),
     fullName: fullName.trim(),
@@ -57,7 +62,7 @@ async function registerCustomer({ email, fullName, password }) {
       { returnDocument: "after" },
     );
 
-    const verificationLink = buildClientLink("/verify-email", token);
+    const verificationLink = buildClientLink("/verify-email", token, authView);
 
     await sendEmail({
       to: savedCustomer.email,
@@ -144,7 +149,7 @@ async function refreshAccessToken(refreshToken) {
   );
 }
 
-async function requestEmailVerification(email) {
+async function requestEmailVerification(email, authView) {
   const customer = await Customer.findOne({
     email: email.trim().toLowerCase(),
   });
@@ -168,7 +173,7 @@ async function requestEmailVerification(email) {
     { returnDocument: "after" },
   );
 
-  const verificationLink = buildClientLink("/verify-email", token);
+  const verificationLink = buildClientLink("/verify-email", token, authView);
 
   await sendEmail({
     to: customer.email,
@@ -212,7 +217,7 @@ async function confirmEmailVerification(token) {
   return { ok: true, email: customer.email };
 }
 
-async function requestPasswordReset(email, newPassword) {
+async function requestPasswordReset(email, newPassword, authView) {
   const customer = await Customer.findOne({
     email: email.trim().toLowerCase(),
   });
@@ -234,7 +239,7 @@ async function requestPasswordReset(email, newPassword) {
     { returnDocument: "after" },
   );
 
-  const resetLink = buildClientLink("/reset-password", token);
+  const resetLink = buildClientLink("/reset-password", token, authView);
 
   await sendEmail({
     to: customer.email,
