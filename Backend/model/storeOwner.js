@@ -35,6 +35,12 @@ const SellerSchema = new mongoose.Schema(
       default: "local",
       index: true,
     },
+
+    storeOwner: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
   },
   { versionKey: false, timestamps: true },
 );
