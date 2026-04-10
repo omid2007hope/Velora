@@ -310,7 +310,6 @@ export default function Header() {
                     Sign in
                   </button>
                 )}
-
                 <span className="h-6 w-px bg-amber-950" />
               </div>
 
