@@ -116,10 +116,10 @@ export default function LogIntoSellerPanelPopup({
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <DialogPanel className="w-full max-w-md rounded-xl bg-orange-50 p-8 shadow-2xl">
             <h2 className="text-center text-2xl font-bold text-amber-950">
-              Welcome Back
+              Welcome Back, Seller
             </h2>
             <p className="mt-1 text-center text-sm text-amber-700">
-              Sign into your seller panel
+              Sign in to manage your Velora store
             </p>
 
             <div className="mt-6 space-y-4">
@@ -128,7 +128,7 @@ export default function LogIntoSellerPanelPopup({
               </label>
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="Seller email"
                 id="login-email"
                 autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -140,19 +140,19 @@ export default function LogIntoSellerPanelPopup({
               </label>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Seller password"
                 id="login-password"
                 autoComplete="current-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
                 onChange={handleChange(setPassword)}
               />
               <p className="ml-1.5 text-left text-sm text-amber-900">
-                Forgot your password ?
+                Forgot your seller password?
                 <span
                   className="ml-1 cursor-pointer font-semibold text-amber-950 underline"
                   onClick={() => switchPopup(setOpenResetPassword)}
                 >
-                  Rest password
+                  Reset password
                 </span>
               </p>
             </div>
@@ -161,24 +161,24 @@ export default function LogIntoSellerPanelPopup({
               onClick={handleLogin}
               className="mt-6 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
-              Sign in
+              Sign in to Seller Panel
             </button>
             <button
               onClick={() => sellerPanel(false)}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
-              Back
+              Back to Store
             </button>
 
             <GoogleSignIn onLogin={handleGoogleLogin} />
 
             <p className="mt-4 text-center text-sm text-amber-900">
-              Still not a seller ?
+              Not selling on Velora yet?
               <span
                 onClick={() => switchPopup(setOpenSignup)}
                 className="cursor-pointer font-semibold text-amber-950 underline"
               >
-                Register as a seller in velora
+                Register as a seller on Velora
               </span>
             </p>
           </DialogPanel>
