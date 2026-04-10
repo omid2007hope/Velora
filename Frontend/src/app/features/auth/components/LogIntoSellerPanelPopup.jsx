@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { saveAuthSession, saveStoredUser } from "@/app/lib/browser-storage";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
-import SignupPopup from "@/app/features/auth/components/SignupPopup";
+import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup";
 import { loginCustomer } from "@/app/features/auth/services/auth-service";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 
@@ -18,7 +18,7 @@ export default function LogIntoSellerPanelPopup({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openResetPassword, setOpenResetPassword] = useState(false);
-  const [openSignup, setOpenSignup] = useState(false);
+  const [openSellerSignup, setOpenSellerSignup] = useState(false);
   const router = useRouter();
 
   const handleChange = (setter) => (event) => setter(event.target.value);
@@ -30,7 +30,7 @@ export default function LogIntoSellerPanelPopup({
   }
 
   function switchPopup(setNext) {
-    sellerPanel(false);
+    setSellerPanel(false);
     setTimeout(() => setNext(true), 250);
   }
 
@@ -59,7 +59,7 @@ export default function LogIntoSellerPanelPopup({
         refreshToken: response.refreshToken,
       });
       setUser(user);
-      sellerPanel(false);
+      setSellerPanel(false);
       router.push("/account");
     } catch (error) {
       const message =
@@ -86,21 +86,24 @@ export default function LogIntoSellerPanelPopup({
 
     saveStoredUser(user);
     setUser(user);
-    sellerPanel(false);
+    setSellerPanel(false);
     router.push("/account");
   }
 
   useEffect(() => {
-    const openSellerPanel = () => sellerPanel(true);
+    const openSellerPanel = () => setSellerPanel(true);
 
     document.addEventListener("open-sellerPanel-popup", openSellerPanel);
     return () =>
       document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
-  }, [sellerPanel]);
+  }, [setSellerPanel]);
 
   return (
     <>
-      <SignupPopup open={openSignup} setOpen={setOpenSignup} />
+      <SellerSignupPopup
+        open={openSellerSignup}
+        setOpen={setOpenSellerSignup}
+      />
       <ResetPasswordPopup
         open={openResetPassword}
         setOpen={setOpenResetPassword}
@@ -164,7 +167,7 @@ export default function LogIntoSellerPanelPopup({
               Sign in to Seller Panel
             </button>
             <button
-              onClick={() => sellerPanel(false)}
+              onClick={() => setSellerPanel(false)}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
               Back to Store
@@ -175,7 +178,7 @@ export default function LogIntoSellerPanelPopup({
             <p className="mt-4 text-center text-sm text-amber-900">
               Not selling on Velora yet?
               <span
-                onClick={() => switchPopup(setOpenSignup)}
+                onClick={() => switchPopup(setOpenSellerSignup)}
                 className="cursor-pointer font-semibold text-amber-950 underline"
               >
                 Register as a seller on Velora

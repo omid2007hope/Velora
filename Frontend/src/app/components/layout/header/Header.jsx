@@ -34,7 +34,7 @@ import {
   subscribeToStoredUser,
 } from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
-import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanel";
+import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
 
 const featuredPreviewByCategory = {
   women: <WomanCategory />,
