@@ -108,11 +108,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
         authView={AUTH_VIEW.SELLER}
       />
 
-      <Dialog
-        open={open}
-        onClose={setOpen}
-        className="relative z-50"
-      >
+      <Dialog open={open} onClose={setOpen} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -139,7 +135,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="email"
-                placeholder="Seller email address"
+                placeholder="Store owner email address"
                 id="signup-email"
                 autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -151,7 +147,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="password"
-                placeholder="Create a seller password"
+                placeholder="Create a Store owner password"
                 id="signup-password"
                 autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -182,7 +178,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="password"
-                placeholder="Confirm seller password"
+                placeholder="Confirm Store owner password"
                 id="signup-confirm"
                 autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"

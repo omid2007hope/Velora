@@ -105,6 +105,7 @@ export default function LogIntoSellerPanelPopup({
         open={openSellerSignup}
         setOpen={setOpenSellerSignup}
       />
+
       <ResetPasswordPopup
         open={openResetPassword}
         setOpen={setOpenResetPassword}
@@ -133,7 +134,7 @@ export default function LogIntoSellerPanelPopup({
               </label>
               <input
                 type="email"
-                placeholder="Seller email"
+                placeholder="Store owner email"
                 id="login-email"
                 autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -145,7 +146,7 @@ export default function LogIntoSellerPanelPopup({
               </label>
               <input
                 type="password"
-                placeholder="Seller password"
+                placeholder="Store owner password"
                 id="login-password"
                 autoComplete="current-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -183,7 +184,7 @@ export default function LogIntoSellerPanelPopup({
                 onClick={() => switchPopup(setOpenSellerSignup)}
                 className="cursor-pointer font-semibold text-amber-950 underline"
               >
-                Register as a seller on Velora
+                Register as a Store owner on Velora
               </span>
             </p>
           </DialogPanel>
