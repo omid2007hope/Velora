@@ -34,6 +34,7 @@ import {
   subscribeToStoredUser,
 } from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
+import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanel";
 
 const featuredPreviewByCategory = {
   women: <WomanCategory />,
@@ -43,6 +44,7 @@ const featuredPreviewByCategory = {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
+  const [sellerPanel, setSellerPanel] = useState(false);
   const [user, setUser] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
@@ -56,6 +58,15 @@ export default function Header() {
   useEffect(() => {
     setHasMounted(true);
     setUser(getStoredUser());
+  }, []);
+
+  useEffect(() => {
+    const openSellerPanel = () => setSellerPanel(true);
+    document.addEventListener("open-sellerPanel-popup", openSellerPanel);
+
+    return () => {
+      document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
+    };
   }, []);
 
   useEffect(() => {
@@ -85,6 +96,11 @@ export default function Header() {
         setUser={setUser}
       />
 
+      <LogIntoSellerPanelPopup
+        sellerPanel={sellerPanel}
+        setSellerPanel={setSellerPanel}
+      />
+
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
 
@@ -101,10 +117,13 @@ export default function Header() {
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
                 <button
-                  onClick={() => {}}
+                  onClick={() => {
+                    setOpen(false);
+                    setTimeout(() => setSellerPanel(true), 300);
+                  }}
                   className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                 >
-                  Sell panel
+                  Seller Panel
                 </button>
               </div>
 
@@ -304,8 +323,11 @@ export default function Header() {
 
             <div className="ml-auto flex items-center">
               <div className="hidden items-center space-x-6 lg:flex ">
-                <button className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out">
-                  Sell panel
+                <button
+                  className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                  onClick={() => setSellerPanel(true)}
+                >
+                  Seller Panel
                 </button>
                 {user ? (
                   <Link href="/account">
