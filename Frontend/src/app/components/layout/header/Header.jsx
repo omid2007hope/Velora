@@ -302,7 +302,24 @@ export default function Header() {
                 ) : (
                   <button
                     onClick={() => setLogin(true)}
-                    className="text-sm text-amber-950"
+                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100"
+                  >
+                    Sell panel
+                  </button>
+                )}
+
+                <span className="h-6 w-px bg-gray-300" />
+              </div>
+
+              <div className="hidden items-center space-x-6 lg:flex ">
+                {user ? (
+                  <Link href="/account">
+                    <CircleUserRound className="text-amber-950" />
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => setLogin(true)}
+                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100"
                   >
                     Sign in
                   </button>
