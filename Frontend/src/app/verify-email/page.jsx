@@ -30,7 +30,7 @@ function VerifyEmailContent() {
       }
 
       try {
-        await confirmEmailVerification(token);
+        await confirmEmailVerification(token, authView);
         setStatus("success");
         setMessage("Your email is verified. You can sign in now.");
         setTimeout(() => {

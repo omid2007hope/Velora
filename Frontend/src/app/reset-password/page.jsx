@@ -30,7 +30,7 @@ function ResetPasswordContent() {
       }
 
       try {
-        await confirmPasswordReset(token);
+        await confirmPasswordReset(token, authView);
         setStatus("success");
         setMessage("Your password was updated successfully. You can sign in with it now.");
         setTimeout(() => {

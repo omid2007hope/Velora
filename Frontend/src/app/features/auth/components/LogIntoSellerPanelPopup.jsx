@@ -10,7 +10,7 @@ import {
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup";
-import { loginCustomer } from "@/app/features/auth/services/auth-service";
+import { loginStoreOwner } from "@/app/features/auth/services/auth-service";
 import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 
@@ -38,6 +38,11 @@ export default function LogIntoSellerPanelPopup({
     setTimeout(() => setNext(true), 250);
   }
 
+  function clearStoredCustomerState() {
+    window.localStorage.removeItem("user");
+    window.dispatchEvent(new Event("user-updated"));
+  }
+
   async function handleLogin() {
     const errorMessage = validateLogin();
     if (errorMessage) {
@@ -46,7 +51,7 @@ export default function LogIntoSellerPanelPopup({
     }
 
     try {
-      const response = await loginCustomer({
+      const response = await loginStoreOwner({
         email: email.toLowerCase().trim(),
         password: password.trim(),
       });
@@ -57,7 +62,7 @@ export default function LogIntoSellerPanelPopup({
         return;
       }
 
-      window.localStorage.removeItem("user");
+      clearStoredCustomerState();
       saveAuthSession({
         storeOwner,
         token: response.token,
@@ -89,7 +94,7 @@ export default function LogIntoSellerPanelPopup({
       google: true,
     };
 
-    window.localStorage.removeItem("user");
+    clearStoredCustomerState();
     saveStoredStoreOwner(storeOwner);
     setStoreOwner(storeOwner);
     setSellerPanel(false);

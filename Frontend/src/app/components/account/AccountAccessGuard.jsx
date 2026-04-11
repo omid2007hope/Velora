@@ -32,8 +32,13 @@ export default function AccountAccessGuard({ children }) {
 
     if (storeOwner) {
       router.replace("/");
+      return;
     }
-  }, [ready, router, storeOwner]);
+
+    if (!user) {
+      router.replace("/?auth=login");
+    }
+  }, [ready, router, storeOwner, user]);
 
   if (!ready || storeOwner || !user) {
     return null;

@@ -34,6 +34,11 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     setTimeout(() => setNext(true), 250);
   }
 
+  function clearStoredSellerState() {
+    window.localStorage.removeItem("storeOwner");
+    window.dispatchEvent(new Event("storeOwner-updated"));
+  }
+
   async function handleLogin() {
     const errorMessage = validateLogin();
     if (errorMessage) {
@@ -53,7 +58,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         return;
       }
 
-      window.localStorage.removeItem("storeOwner");
+      clearStoredSellerState();
       saveAuthSession({
         user,
         token: response.token,
@@ -85,7 +90,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       google: true,
     };
 
-    window.localStorage.removeItem("storeOwner");
+    clearStoredSellerState();
     saveStoredUser(user);
     setUser(user);
     setOpen(false);

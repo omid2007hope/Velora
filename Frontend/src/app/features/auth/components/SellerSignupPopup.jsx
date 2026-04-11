@@ -6,7 +6,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useMemo, useState } from "react";
 import EmailVerificationPopup from "@/app/features/auth/components/EmailVerificationPopup";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
-import { registerCustomer } from "@/app/features/auth/services/auth-service";
+import { registerStoreOwner } from "@/app/features/auth/services/auth-service";
 import {
   AUTH_VIEW,
   openAuthPopup,
@@ -58,11 +58,10 @@ export default function SellerSignupPopup({ open, setOpen }) {
     }
 
     try {
-      await registerCustomer({
+      await registerStoreOwner({
         fullName: fullName.trim(),
         email: email.trim(),
         password: password.trim(),
-        authView: AUTH_VIEW.SELLER,
       });
     } catch (error) {
       console.error(

@@ -84,6 +84,12 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    if (searchParams.get("auth") === "login") {
+      setLogin(true);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     const syncAuthState = () => {
       setUser(getStoredUser());
       setStoreOwner(getStoredStoreOwner());
