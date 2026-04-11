@@ -31,7 +31,7 @@ import WomanCategory from "@/app/components/layout/header/category/WomanCategory
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
 import {
   getStoredUser,
-  subscribeToStoredUser,
+  subscribeToStorageChanges,
 } from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
 import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
@@ -46,6 +46,7 @@ export default function Header() {
   const [login, setLogin] = useState(false);
   const [sellerPanel, setSellerPanel] = useState(false);
   const [user, setUser] = useState(null);
+  const [storeOwner, setStoreOwner] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -80,7 +81,7 @@ export default function Header() {
 
   useEffect(() => {
     const updateUser = () => setUser(getStoredUser());
-    return subscribeToStoredUser(updateUser);
+    return subscribeToStorageChanges(updateUser);
   }, []);
 
   useEffect(() => {
@@ -99,7 +100,8 @@ export default function Header() {
       <LogIntoSellerPanelPopup
         sellerPanel={sellerPanel}
         setSellerPanel={setSellerPanel}
-        setUser={setUser}
+        storeOwner={storeOwner}
+        setStoreOwner={setStoreOwner}
       />
 
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">

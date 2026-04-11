@@ -3,7 +3,10 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { saveAuthSession, saveStoredUser } from "@/app/lib/browser-storage";
+import {
+  saveAuthSession,
+  saveStoredStoreOwner,
+} from "@/app/lib/browser-storage";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup";
@@ -14,7 +17,8 @@ import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 export default function LogIntoSellerPanelPopup({
   sellerPanel,
   setSellerPanel,
-  setUser,
+  storeOwner,
+  setStoreOwner,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,19 +51,19 @@ export default function LogIntoSellerPanelPopup({
         email: email.toLowerCase().trim(),
         password: password.trim(),
       });
-      const user = response?.data;
+      const storeOwner = response?.data;
 
-      if (!user?.fullName || !response?.token) {
+      if (!storeOwner?.fullName || !response?.token) {
         alert("Login failed. Please try again.");
         return;
       }
 
       saveAuthSession({
-        user,
+        storeOwner,
         token: response.token,
         refreshToken: response.refreshToken,
       });
-      setUser(user);
+      setStoreOwner(storeOwner);
       setSellerPanel(false);
       router.push("/account");
     } catch (error) {
@@ -78,15 +82,15 @@ export default function LogIntoSellerPanelPopup({
       return;
     }
 
-    const user = {
+    const storeOwner = {
       fullName: payload.name,
       email: payload.email,
       picture: payload.picture,
       google: true,
     };
 
-    saveStoredUser(user);
-    setUser(user);
+    saveStoredStoreOwner(storeOwner);
+    setStoreOwner(storeOwner);
     setSellerPanel(false);
     router.push("/account");
   }

@@ -8,7 +8,7 @@ import SignOutDialog from "@/app/features/account/components/SignOutDialog";
 import { accountLinks } from "@/app/features/account/constants/account-links";
 import {
   getStoredUser,
-  subscribeToStoredUser,
+  subscribeToStorageChanges,
 } from "@/app/lib/browser-storage";
 
 export default function AccountShell({ children }) {
@@ -21,7 +21,7 @@ export default function AccountShell({ children }) {
     const updateUser = () => setUser(getStoredUser());
 
     updateUser();
-    return subscribeToStoredUser(updateUser);
+    return subscribeToStorageChanges(updateUser);
   }, []);
 
   return (
