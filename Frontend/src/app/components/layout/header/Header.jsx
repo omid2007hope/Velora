@@ -22,7 +22,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CircleUserRound, Store } from "lucide-react";
 import { useSelector } from "react-redux";
 import LoginPopup from "@/app/features/auth/components/LoginPopup";
@@ -50,6 +50,7 @@ export default function Header() {
   const [storeOwner, setStoreOwner] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const cartItems = useSelector((state) => state.basket);
 
@@ -84,8 +85,15 @@ export default function Header() {
   useEffect(() => {
     if (searchParams.get("auth") === "login") {
       setLogin(true);
+
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+      nextSearchParams.delete("auth");
+      const nextQuery = nextSearchParams.toString();
+      router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, {
+        scroll: false,
+      });
     }
-  }, [searchParams]);
+  }, [pathname, router, searchParams]);
 
   useEffect(() => {
     const syncAuthState = () => {
@@ -139,7 +147,7 @@ export default function Header() {
                     }}
                     className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                   >
-                    Seller Panel
+                    Sell on Velora
                   </button>
                 ) : (
                   <button
@@ -362,7 +370,7 @@ export default function Header() {
                     className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                     onClick={() => setLogIntoSellerPanel(true)}
                   >
-                    Seller Panel
+                    Sell on Velora
                   </button>
                 ) : (
                   <button
