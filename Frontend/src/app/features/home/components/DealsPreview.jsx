@@ -28,7 +28,7 @@ export default function DealsPreview() {
     async function loadDeals() {
       try {
         const data = await fetchProducts({ isNew: true });
-        setPreview((data ?? []).slice(0, 4));
+        setPreview((data ?? []).slice(0, 8));
       } catch {
         setPreview([]);
       }
