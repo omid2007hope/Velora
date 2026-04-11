@@ -130,8 +130,8 @@ export default function Header() {
                 <XMarkIcon className="size-6" />
               </button>
 
-              <div className="w-auto">
-                {!storeOwner ? (
+              <div className="flex lg:hidden w-auto">
+                {user ? null : !storeOwner ? (
                   <button
                     onClick={() => {
                       setOpen(false);
@@ -158,22 +158,26 @@ export default function Header() {
                   </button>
                 )}
               </div>
-
-              {storeOwner ? null : user ? (
-                <Link href="/account">
-                  <CircleUserRound />
-                </Link>
-              ) : (
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setTimeout(() => setLogin(true), 300);
-                  }}
-                  className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
-                >
-                  Sign in
-                </button>
-              )}
+              <div className="flex lg:hidden p-4">
+                {storeOwner ? null : user ? (
+                  <Link
+                    href="/account"
+                    className="flex items-center text-amber-950"
+                  >
+                    <CircleUserRound className="size-6 text-amber-950" />
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setTimeout(() => setLogin(true), 300);
+                    }}
+                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                  >
+                    Sign in
+                  </button>
+                )}
+              </div>
             </div>
 
             <TabGroup className="mt-2">
@@ -353,7 +357,7 @@ export default function Header() {
 
             <div className="ml-auto flex items-center">
               <div className="hidden items-center space-x-6 lg:flex ">
-                {!storeOwner ? (
+                {user ? null : !storeOwner ? (
                   <button
                     className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                     onClick={() => setLogIntoSellerPanel(true)}
