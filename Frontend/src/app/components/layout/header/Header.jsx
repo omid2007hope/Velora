@@ -130,7 +130,7 @@ export default function Header() {
                 <XMarkIcon className="size-6" />
               </button>
 
-              <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
+              <div className="w-auto">
                 {!storeOwner ? (
                   <button
                     onClick={() => {
@@ -141,26 +141,39 @@ export default function Header() {
                   >
                     Seller Panel
                   </button>
-                ) : null}
-              </div>
-
-              <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                {storeOwner ? null : user ? (
-                  <Link href="/account">
-                    <CircleUserRound />
-                  </Link>
                 ) : (
                   <button
-                    onClick={() => {
-                      setOpen(false);
-                      setTimeout(() => setLogin(true), 300);
-                    }}
-                    className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    onClick={() => setLogIntoSellerPanel(true)}
+                    className="w-full h-full flex flex-col justify-between items-center text-amber-950 hover:text-orange-100 active:text-amber-950 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out border border-amber-950 rounded-lg p-1"
                   >
-                    Sign in
+                    <div className="h-1/2 w-full flex justify-center items-center text-sm">
+                      Sell on
+                    </div>
+                    <div className="h-1/2 w-full flex justify-center items-center font-bold">
+                      Velora
+                      <span className="flex flex-row justify-end items-center ml-1">
+                        <Store />
+                      </span>
+                    </div>
                   </button>
                 )}
               </div>
+
+              {storeOwner ? null : user ? (
+                <Link href="/account">
+                  <CircleUserRound />
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    setTimeout(() => setLogin(true), 300);
+                  }}
+                  className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                >
+                  Sign in
+                </button>
+              )}
             </div>
 
             <TabGroup className="mt-2">
@@ -349,10 +362,18 @@ export default function Header() {
                   </button>
                 ) : (
                   <button
-                    className="flex flex-row text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                     onClick={() => setLogIntoSellerPanel(true)}
+                    className="w-full h-full flex flex-col justify-between items-center text-amber-950 hover:text-orange-100 active:text-amber-950 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out border border-amber-950 rounded-lg p-1"
                   >
-                    <Store />
+                    <div className="h-1/2 w-full flex justify-center items-center text-sm">
+                      Sell on
+                    </div>
+                    <div className="h-1/2 w-full flex justify-center items-center font-bold">
+                      Velora
+                      <span className="flex flex-row justify-end items-center ml-1">
+                        <Store />
+                      </span>
+                    </div>
                   </button>
                 )}
 
