@@ -15,8 +15,8 @@ import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 
 export default function LogIntoSellerPanelPopup({
-  sellerPanel,
-  setSellerPanel,
+  logIntoSellerPanel,
+  setLogIntoSellerPanel,
   setStoreOwner,
 }) {
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ export default function LogIntoSellerPanelPopup({
   }
 
   function switchPopup(setNext) {
-    setSellerPanel(false);
+    setLogIntoSellerPanel(false);
     setTimeout(() => setNext(true), 250);
   }
 
@@ -69,7 +69,7 @@ export default function LogIntoSellerPanelPopup({
         refreshToken: response.refreshToken,
       });
       setStoreOwner(storeOwner);
-      setSellerPanel(false);
+      setLogIntoSellerPanel(false);
       router.push("/");
     } catch (error) {
       const message =
@@ -97,17 +97,17 @@ export default function LogIntoSellerPanelPopup({
     clearStoredCustomerState();
     saveStoredStoreOwner(storeOwner);
     setStoreOwner(storeOwner);
-    setSellerPanel(false);
+    setLogIntoSellerPanel(false);
     router.push("/");
   }
 
   useEffect(() => {
-    const openSellerPanel = () => setSellerPanel(true);
+    const openSellerPanel = () => setLogIntoSellerPanel(true);
 
     document.addEventListener("open-sellerPanel-popup", openSellerPanel);
     return () =>
       document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
-  }, [setSellerPanel]);
+  }, [setLogIntoSellerPanel]);
 
   return (
     <>
@@ -123,8 +123,8 @@ export default function LogIntoSellerPanelPopup({
       />
 
       <Dialog
-        open={sellerPanel}
-        onClose={setSellerPanel}
+        open={logIntoSellerPanel}
+        onClose={setLogIntoSellerPanel}
         className="relative z-50"
       >
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
@@ -180,7 +180,7 @@ export default function LogIntoSellerPanelPopup({
               Sign in to Seller Panel
             </button>
             <button
-              onClick={() => setSellerPanel(false)}
+              onClick={() => setLogIntoSellerPanel(false)}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
               Back to Store

@@ -23,7 +23,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { CircleUserRound } from "lucide-react";
+import { CircleUserRound, Store } from "lucide-react";
 import { useSelector } from "react-redux";
 import LoginPopup from "@/app/features/auth/components/LoginPopup";
 import MenCategory from "@/app/components/layout/header/category/MenCategory";
@@ -45,15 +45,13 @@ const featuredPreviewByCategory = {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
-  const [sellerPanel, setSellerPanel] = useState(false);
+  const [logIntoSellerPanel, setLogIntoSellerPanel] = useState(false);
   const [user, setUser] = useState(null);
   const [storeOwner, setStoreOwner] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const cartItems = useSelector((state) => state.basket);
-  const isStoreOwnerSignedIn = Boolean(storeOwner);
-  const isCustomerSignedIn = Boolean(user) && !isStoreOwnerSignedIn;
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -66,7 +64,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const openSellerPanel = () => setSellerPanel(true);
+    const openSellerPanel = () => setLogIntoSellerPanel(true);
     document.addEventListener("open-sellerPanel-popup", openSellerPanel);
 
     return () => {
@@ -112,8 +110,8 @@ export default function Header() {
       />
 
       <LogIntoSellerPanelPopup
-        sellerPanel={sellerPanel}
-        setSellerPanel={setSellerPanel}
+        logIntoSellerPanel={logIntoSellerPanel}
+        setLogIntoSellerPanel={setLogIntoSellerPanel}
         storeOwner={storeOwner}
         setStoreOwner={setStoreOwner}
       />
@@ -133,11 +131,11 @@ export default function Header() {
               </button>
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                {!isCustomerSignedIn ? (
+                {!storeOwner ? (
                   <button
                     onClick={() => {
                       setOpen(false);
-                      setTimeout(() => setSellerPanel(true), 300);
+                      setTimeout(() => setLogIntoSellerPanel(true), 300);
                     }}
                     className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                   >
@@ -147,7 +145,7 @@ export default function Header() {
               </div>
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                {isCustomerSignedIn ? (
+                {storeOwner ? null : user ? (
                   <Link href="/account">
                     <CircleUserRound />
                   </Link>
@@ -342,16 +340,23 @@ export default function Header() {
 
             <div className="ml-auto flex items-center">
               <div className="hidden items-center space-x-6 lg:flex ">
-                {!isCustomerSignedIn ? (
+                {!storeOwner ? (
                   <button
                     className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
-                    onClick={() => setSellerPanel(true)}
+                    onClick={() => setLogIntoSellerPanel(true)}
                   >
                     Seller Panel
                   </button>
-                ) : null}
+                ) : (
+                  <button
+                    className="flex flex-row text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    onClick={() => setLogIntoSellerPanel(true)}
+                  >
+                    <Store />
+                  </button>
+                )}
 
-                {isCustomerSignedIn ? (
+                {storeOwner ? null : user ? (
                   <Link href="/account">
                     <CircleUserRound className="text-amber-950" />
                   </Link>
