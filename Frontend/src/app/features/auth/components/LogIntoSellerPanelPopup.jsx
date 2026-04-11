@@ -17,7 +17,6 @@ import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 export default function LogIntoSellerPanelPopup({
   sellerPanel,
   setSellerPanel,
-  storeOwner,
   setStoreOwner,
 }) {
   const [email, setEmail] = useState("");
@@ -58,6 +57,7 @@ export default function LogIntoSellerPanelPopup({
         return;
       }
 
+      window.localStorage.removeItem("user");
       saveAuthSession({
         storeOwner,
         token: response.token,
@@ -65,7 +65,7 @@ export default function LogIntoSellerPanelPopup({
       });
       setStoreOwner(storeOwner);
       setSellerPanel(false);
-      router.push("/account");
+      router.push("/");
     } catch (error) {
       const message =
         error?.response?.data?.error ??
@@ -89,10 +89,11 @@ export default function LogIntoSellerPanelPopup({
       google: true,
     };
 
+    window.localStorage.removeItem("user");
     saveStoredStoreOwner(storeOwner);
     setStoreOwner(storeOwner);
     setSellerPanel(false);
-    router.push("/account");
+    router.push("/");
   }
 
   useEffect(() => {

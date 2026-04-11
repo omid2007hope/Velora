@@ -53,6 +53,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         return;
       }
 
+      window.localStorage.removeItem("storeOwner");
       saveAuthSession({
         user,
         token: response.token,
@@ -84,6 +85,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
       google: true,
     };
 
+    window.localStorage.removeItem("storeOwner");
     saveStoredUser(user);
     setUser(user);
     setOpen(false);

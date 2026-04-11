@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -30,6 +30,7 @@ import MenCategory from "@/app/components/layout/header/category/MenCategory";
 import WomanCategory from "@/app/components/layout/header/category/WomanCategory";
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
 import {
+  getStoredStoreOwner,
   getStoredUser,
   subscribeToStorageChanges,
 } from "@/app/lib/browser-storage";
@@ -51,6 +52,8 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const cartItems = useSelector((state) => state.basket);
+  const isStoreOwnerSignedIn = Boolean(storeOwner);
+  const isCustomerSignedIn = Boolean(user) && !isStoreOwnerSignedIn;
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -59,6 +62,7 @@ export default function Header() {
   useEffect(() => {
     setHasMounted(true);
     setUser(getStoredUser());
+    setStoreOwner(getStoredStoreOwner());
   }, []);
 
   useEffect(() => {
@@ -80,8 +84,12 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const updateUser = () => setUser(getStoredUser());
-    return subscribeToStorageChanges(updateUser);
+    const syncAuthState = () => {
+      setUser(getStoredUser());
+      setStoreOwner(getStoredStoreOwner());
+    };
+
+    return subscribeToStorageChanges(syncAuthState);
   }, []);
 
   useEffect(() => {
@@ -119,19 +127,21 @@ export default function Header() {
               </button>
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setTimeout(() => setSellerPanel(true), 300);
-                  }}
-                  className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
-                >
-                  Seller Panel
-                </button>
+                {!isCustomerSignedIn ? (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setTimeout(() => setSellerPanel(true), 300);
+                    }}
+                    className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                  >
+                    Seller Panel
+                  </button>
+                ) : null}
               </div>
 
               <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                {user ? (
+                {isCustomerSignedIn ? (
                   <Link href="/account">
                     <CircleUserRound />
                   </Link>
@@ -326,23 +336,16 @@ export default function Header() {
 
             <div className="ml-auto flex items-center">
               <div className="hidden items-center space-x-6 lg:flex ">
-                {user ? (
-                  <Link
-                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
-                    href="/account"
-                  >
-                    Start to sell
-                  </Link>
-                ) : (
+                {!isCustomerSignedIn ? (
                   <button
                     className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
                     onClick={() => setSellerPanel(true)}
                   >
                     Seller Panel
                   </button>
-                )}
+                ) : null}
 
-                {user ? (
+                {isCustomerSignedIn ? (
                   <Link href="/account">
                     <CircleUserRound className="text-amber-950" />
                   </Link>
