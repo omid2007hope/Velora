@@ -42,6 +42,15 @@ const featuredPreviewByCategory = {
   men: <MenCategory />,
 };
 
+const actionButtonClass =
+  "inline-flex items-center justify-center rounded-full border border-amber-950/90 bg-gradient-to-b from-orange-50 to-orange-200 px-4 py-2 text-sm font-semibold tracking-[0.02em] text-amber-950 shadow-[0_8px_24px_rgba(120,53,15,0.12)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-amber-950 hover:text-orange-50 hover:shadow-[0_14px_28px_rgba(120,53,15,0.18)] active:translate-y-0";
+
+const sellerPanelClass =
+  "inline-flex min-h-12 min-w-[9.5rem] flex-col items-center justify-center rounded-2xl border border-amber-950/90 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 px-4 py-2 text-amber-950 shadow-[0_10px_28px_rgba(120,53,15,0.14)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:from-amber-950 hover:via-amber-900 hover:to-amber-800 hover:text-orange-50 hover:shadow-[0_16px_32px_rgba(120,53,15,0.18)] active:translate-y-0";
+
+const accountLinkClass =
+  "inline-flex size-11 items-center justify-center rounded-full border border-amber-950/80 bg-gradient-to-b from-orange-50 to-orange-200 text-amber-950 shadow-[0_8px_22px_rgba(120,53,15,0.12)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-amber-950 hover:text-orange-50 hover:shadow-[0_14px_28px_rgba(120,53,15,0.18)] active:translate-y-0";
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
@@ -129,50 +138,47 @@ export default function Header() {
 
         <div className="fixed inset-0 z-40 flex">
           <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto border-r border-amber-950 bg-orange-100 pb-12 shadow-xl">
-            <div className="flex flex-row items-center justify-between border-b border-amber-950 px-4 pb-2 pt-5">
+            <div className="flex flex-row items-center justify-between gap-3 border-b border-amber-950 px-4 pb-3 pt-5">
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="rounded-md border border-amber-950 p-2 text-amber-900"
+                className="rounded-xl border border-amber-950 bg-orange-50 p-2 text-amber-900 shadow-sm transition-colors duration-300 hover:bg-amber-950 hover:text-orange-50"
               >
                 <XMarkIcon className="size-6" />
               </button>
 
-              <div className="flex lg:hidden w-auto">
+              <div className="flex w-auto flex-1 justify-center lg:hidden">
                 {user ? null : !storeOwner ? (
                   <button
                     onClick={() => {
                       setOpen(false);
                       setTimeout(() => setLogIntoSellerPanel(true), 300);
                     }}
-                    className="text-sm text-amber-950  hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    className={actionButtonClass}
                   >
                     Sell on Velora
                   </button>
                 ) : (
                   <button
                     onClick={() => setLogIntoSellerPanel(true)}
-                    className="w-full h-full flex flex-col justify-between items-center text-amber-950 hover:text-orange-100 active:text-amber-950 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out border border-amber-950 rounded-lg p-1"
+                    className={sellerPanelClass}
                   >
-                    <div className="h-1/2 w-full flex justify-center items-center text-sm">
+                    <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
                       Sell on
                     </div>
-                    <div className="h-1/2 w-full flex justify-center items-center font-bold">
+                    <div className="mt-1 flex w-full items-center justify-center text-sm font-bold">
                       Velora
-                      <span className="flex flex-row justify-end items-center ml-1">
-                        <Store />
+                      <span className="ml-1 flex flex-row items-center justify-end">
+                        <Store className="size-4" />
                       </span>
                     </div>
                   </button>
                 )}
               </div>
-              <div className="flex lg:hidden p-4">
+              <div className="flex items-center justify-end lg:hidden">
                 {storeOwner ? null : user ? (
-                  <Link
-                    href="/account"
-                    className="flex items-center text-amber-950"
-                  >
-                    <CircleUserRound className="size-6 text-amber-950" />
+                  <Link href="/account" className={accountLinkClass}>
+                    <CircleUserRound className="size-5" />
                   </Link>
                 ) : (
                   <button
@@ -180,7 +186,7 @@ export default function Header() {
                       setOpen(false);
                       setTimeout(() => setLogin(true), 300);
                     }}
-                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    className={actionButtonClass}
                   >
                     Sign in
                   </button>
@@ -364,10 +370,10 @@ export default function Header() {
             </PopoverGroup>
 
             <div className="ml-auto flex items-center">
-              <div className="hidden items-center space-x-6 lg:flex ">
+              <div className="hidden items-center gap-4 lg:flex ">
                 {user ? null : !storeOwner ? (
                   <button
-                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    className={actionButtonClass}
                     onClick={() => setLogIntoSellerPanel(true)}
                   >
                     Sell on Velora
@@ -375,33 +381,33 @@ export default function Header() {
                 ) : (
                   <button
                     onClick={() => setLogIntoSellerPanel(true)}
-                    className="w-full h-full flex flex-col justify-between items-center text-amber-950 hover:text-orange-100 active:text-amber-950 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out border border-amber-950 rounded-lg p-1"
+                    className={sellerPanelClass}
                   >
-                    <div className="h-1/2 w-full flex justify-center items-center text-sm">
+                    <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
                       Sell on
                     </div>
-                    <div className="h-1/2 w-full flex justify-center items-center font-bold">
+                    <div className="mt-1 flex w-full items-center justify-center text-sm font-bold">
                       Velora
-                      <span className="flex flex-row justify-end items-center ml-1">
-                        <Store />
+                      <span className="ml-1 flex flex-row items-center justify-end">
+                        <Store className="size-4" />
                       </span>
                     </div>
                   </button>
                 )}
 
                 {storeOwner ? null : user ? (
-                  <Link href="/account">
-                    <CircleUserRound className="text-amber-950" />
+                  <Link href="/account" className={accountLinkClass}>
+                    <CircleUserRound className="size-5" />
                   </Link>
                 ) : (
                   <button
                     onClick={() => setLogin(true)}
-                    className="text-sm text-amber-950 hover:text-orange-100 active:text-amber-950 border border-amber-950 rounded-lg px-4 py-2 bg-orange-100 hover:bg-orange-950 avtive:bg-orange-100 transition-colors duration-300 ease-in-out"
+                    className={actionButtonClass}
                   >
                     Sign in
                   </button>
                 )}
-                <span className="h-6 w-px bg-amber-950" />
+                <span className="h-8 w-px bg-gradient-to-b from-transparent via-amber-950 to-transparent" />
               </div>
 
               <Link href="/order" className="ml-4 flex items-center">
