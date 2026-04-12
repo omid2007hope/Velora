@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router.post(
-  "/server/products/:productId/reviews",
+  "/products/:productId/reviews",
   validateReviewProductId,
   validateCreateReview,
   createReview,

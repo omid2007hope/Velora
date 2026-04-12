@@ -10,12 +10,7 @@ const {
 
 const router = express.Router();
 
-router.post("/server/cart", requireAuth, getCart);
-router.post(
-  "/server/cart/item",
-  requireAuth,
-  validateAddCartItem,
-  addCartItem,
-);
+router.post("/", requireAuth, getCart);
+router.post("/item", requireAuth, validateAddCartItem, addCartItem);
 
 module.exports = router;

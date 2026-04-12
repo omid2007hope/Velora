@@ -3,6 +3,6 @@ const { handleStripeWebhook } = require("../../../controller/WebhookController")
 
 const router = express.Router();
 
-router.post("/server/webhook/stripe", handleStripeWebhook);
+router.post("/stripe", handleStripeWebhook);
 
 module.exports = router;

@@ -58,12 +58,7 @@ const CustomerSchema = new mongoose.Schema(
       select: false,
     },
   },
-
   { versionKey: false, timestamps: true },
 );
 
 module.exports = mongoose.model("Customer", CustomerSchema);
-
-// Mongoose model for caching X user data
-
-

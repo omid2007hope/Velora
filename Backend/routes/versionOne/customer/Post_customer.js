@@ -21,36 +21,36 @@ const {
 
 const router = express.Router();
 
-router.post("/server/customer", validateCreateCustomer, createCustomer);
+router.post("/", validateCreateCustomer, createCustomer);
 router.post(
-  "/server/customer/login",
+  "/login",
   authLimiter,
   validateCustomerLogin,
   loginCustomer,
 );
 router.post(
-  "/server/customer/token/refresh",
+  "/token/refresh",
   authLimiter,
   validateRefreshCustomerToken,
   refreshCustomerToken,
 );
 router.post(
-  "/server/customer/email/verify",
+  "/email/verify",
   validateRequestCustomerEmailVerification,
   requestCustomerEmailVerification,
 );
 router.post(
-  "/server/customer/email/verify/confirm",
+  "/email/verify/confirm",
   validateConfirmCustomerEmailVerification,
   confirmCustomerEmailVerification,
 );
 router.post(
-  "/server/customer/password-reset",
+  "/password-reset",
   validateRequestCustomerPasswordReset,
   requestCustomerPasswordReset,
 );
 router.post(
-  "/server/customer/password-reset/confirm",
+  "/password-reset/confirm",
   validateConfirmCustomerPasswordReset,
   confirmCustomerPasswordReset,
 );

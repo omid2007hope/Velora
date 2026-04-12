@@ -21,36 +21,36 @@ const {
 
 const router = express.Router();
 
-router.post("/server/store-owner", validateCreateStoreOwner, createStoreOwner);
+router.post("/", validateCreateStoreOwner, createStoreOwner);
 router.post(
-  "/server/store-owner/login",
+  "/login",
   authLimiter,
   validateStoreOwnerLogin,
   loginStoreOwner,
 );
 router.post(
-  "/server/store-owner/token/refresh",
+  "/token/refresh",
   authLimiter,
   validateRefreshStoreOwnerToken,
   refreshStoreOwnerToken,
 );
 router.post(
-  "/server/store-owner/email/verify",
+  "/email/verify",
   validateRequestStoreOwnerEmailVerification,
   requestStoreOwnerEmailVerification,
 );
 router.post(
-  "/server/store-owner/email/verify/confirm",
+  "/email/verify/confirm",
   validateConfirmStoreOwnerEmailVerification,
   confirmStoreOwnerEmailVerification,
 );
 router.post(
-  "/server/store-owner/password-reset",
+  "/password-reset",
   validateRequestStoreOwnerPasswordReset,
   requestStoreOwnerPasswordReset,
 );
 router.post(
-  "/server/store-owner/password-reset/confirm",
+  "/password-reset/confirm",
   validateConfirmStoreOwnerPasswordReset,
   confirmStoreOwnerPasswordReset,
 );

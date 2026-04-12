@@ -1,5 +1,5 @@
 const Cart = require("../model/Cart");
-const Product = require("../model/Products");
+const Product = require("../model/Product");
 const { createHttpError } = require("../utils/httpError");
 
 async function getOrCreateCart(userId) {

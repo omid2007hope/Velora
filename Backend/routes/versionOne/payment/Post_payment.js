@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router.post(
-  "/server/customer/login/account/payment",
+  "/",
   requireAuth,
   validateCreatePaymentMethod,
   createPaymentMethod,

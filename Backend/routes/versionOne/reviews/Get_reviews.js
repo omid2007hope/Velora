@@ -7,7 +7,7 @@ const {
 const router = express.Router();
 
 router.get(
-  "/server/products/:productId/reviews",
+  "/products/:productId/reviews",
   validateReviewProductId,
   listReviews,
 );

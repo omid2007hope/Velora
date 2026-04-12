@@ -3,6 +3,6 @@ const postWebhookRoutes = require("./Post_webhook");
 
 const router = express.Router();
 
-router.use(postWebhookRoutes);
+router.use("/server/webhook", postWebhookRoutes);
 
 module.exports = router;

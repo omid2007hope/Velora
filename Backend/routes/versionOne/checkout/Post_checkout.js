@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router.post(
-  "/server/checkout/order",
+  "/order",
   requireAuth,
   validateCreateOrder,
   createOrder,

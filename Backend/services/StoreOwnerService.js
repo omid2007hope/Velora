@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const StoreOwner = require("../model/storeOwner");
+const StoreOwner = require("../model/StoreOwner");
 const { sendEmail } = require("../utils/mailer");
 const { getEnvConfig } = require("../config/env");
 

@@ -6,9 +6,9 @@ const deleteCartRoutes = require("./Delete_cart");
 
 const router = express.Router();
 
-router.use(getCartRoutes);
-router.use(postCartRoutes);
-router.use(patchCartRoutes);
-router.use(deleteCartRoutes);
+router.use("/server/cart", getCartRoutes);
+router.use("/server/cart", postCartRoutes);
+router.use("/server/cart", patchCartRoutes);
+router.use("/server/cart", deleteCartRoutes);
 
 module.exports = router;

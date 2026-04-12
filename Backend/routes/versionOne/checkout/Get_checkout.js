@@ -4,6 +4,6 @@ const { listOrders } = require("../../../controller/OrderController");
 
 const router = express.Router();
 
-router.get("/server/checkout/order", requireAuth, listOrders);
+router.get("/order", requireAuth, listOrders);
 
 module.exports = router;

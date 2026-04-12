@@ -4,6 +4,6 @@ const { getCart } = require("../../../controller/CartController");
 
 const router = express.Router();
 
-router.get("/server/cart", requireAuth, getCart);
+router.get("/", requireAuth, getCart);
 
 module.exports = router;

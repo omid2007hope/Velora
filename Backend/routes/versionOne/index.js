@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// ! Import all version one routes
-
 const customerRoutes = require("./customer");
 const storeOwnerRoutes = require("./storeOwner");
 const accountRoutes = require("./account");
@@ -14,19 +12,21 @@ const cartRoutes = require("./cart");
 const checkoutRoutes = require("./checkout");
 const webhookRoutes = require("./webhook");
 
-// ! Register all version one routes
+const versionOneRouteGroups = [
+  customerRoutes,
+  storeOwnerRoutes,
+  accountRoutes,
+  addressRoutes,
+  paymentRoutes,
+  productRoutes,
+  reviewRoutes,
+  cartRoutes,
+  checkoutRoutes,
+  webhookRoutes,
+];
 
-router.use(customerRoutes);
-router.use(storeOwnerRoutes);
-router.use(accountRoutes);
-router.use(addressRoutes);
-router.use(paymentRoutes);
-router.use(productRoutes);
-router.use(reviewRoutes);
-router.use(cartRoutes);
-router.use(checkoutRoutes);
-router.use(webhookRoutes);
-
-// ! Export the routers
+versionOneRouteGroups.forEach((featureRouter) => {
+  router.use(featureRouter);
+});
 
 module.exports = router;

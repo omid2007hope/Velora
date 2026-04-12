@@ -11,8 +11,8 @@ const {
 
 const router = express.Router();
 
-router.get("/server/products", listProducts);
-router.get("/server/seller/products", requireSeller, listSellerProducts);
-router.get("/server/products/:id", validateProductId, getProductById);
+router.get("/products", listProducts);
+router.get("/seller/products", requireSeller, listSellerProducts);
+router.get("/products/:id", validateProductId, getProductById);
 
 module.exports = router;

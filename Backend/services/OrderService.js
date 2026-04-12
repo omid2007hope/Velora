@@ -1,5 +1,5 @@
 const Order = require("../model/Order");
-const Product = require("../model/Products");
+const Product = require("../model/Product");
 const { createHttpError } = require("../utils/httpError");
 
 async function buildOrderItems(items = []) {

@@ -26,8 +26,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CircleUserRound, Store } from "lucide-react";
 import { useSelector } from "react-redux";
 import LoginPopup from "@/app/features/auth/components/LoginPopup";
-import MenCategory from "@/app/components/layout/header/category/MenCategory";
-import WomanCategory from "@/app/components/layout/header/category/WomanCategory";
+import CategoryCarousel from "@/app/components/layout/header/category/CategoryCarousel";
+import { featuredPreviewImages } from "@/app/components/layout/header/category/featured-preview-images";
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
 import {
   getStoredStoreOwner,
@@ -38,8 +38,8 @@ import Logo from "@/app/assets/image/Logo.webp";
 import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
 
 const featuredPreviewByCategory = {
-  women: <WomanCategory />,
-  men: <MenCategory />,
+  women: <CategoryCarousel images={featuredPreviewImages.women} />,
+  men: <CategoryCarousel images={featuredPreviewImages.men} />,
 };
 
 const actionButtonClass =

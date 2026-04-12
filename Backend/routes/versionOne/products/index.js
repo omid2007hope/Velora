@@ -4,7 +4,7 @@ const postProductRoutes = require("./Post_products");
 
 const router = express.Router();
 
-router.use(getProductRoutes);
-router.use(postProductRoutes);
+router.use("/server", getProductRoutes);
+router.use("/server", postProductRoutes);
 
 module.exports = router;

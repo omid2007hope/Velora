@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 const { getEnvConfig, loadEnv } = require("./config/env");
 const connectDB = require("./database/MongoDB");
 const routes = require("./routes");
+const { apiLimiter } = require("./middleware/request/rateLimit");
 const { errorHandler } = require("./middleware/error/errorHandler");
 const { notFoundHandler } = require("./middleware/error/notFound");
 const logger = require("./utils/logger");
@@ -46,14 +46,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 200,
-    standardHeaders: true,
-    legacyHeaders: false,
-  }),
-);
+app.use(apiLimiter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });

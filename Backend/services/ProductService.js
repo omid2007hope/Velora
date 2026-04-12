@@ -1,4 +1,4 @@
-const Product = require("../model/Products");
+const Product = require("../model/Product");
 
 async function listProducts({ category, subCategory, isNew, search }) {
   const filter = { isDeleted: { $ne: true } };

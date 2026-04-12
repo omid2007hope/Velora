@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 router.patch(
-  "/server/checkout/order/:id",
+  "/order/:id",
   requireAuth,
   validateOrderId,
   validateUpdateOrderStatus,

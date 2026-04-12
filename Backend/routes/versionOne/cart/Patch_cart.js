@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.patch(
-  "/server/cart/item",
+  "/item",
   requireAuth,
   validateUpdateCartItemQuantity,
   updateCartItemQuantity,

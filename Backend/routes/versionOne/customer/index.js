@@ -3,6 +3,6 @@ const postCustomerRoutes = require("./Post_customer");
 
 const router = express.Router();
 
-router.use(postCustomerRoutes);
+router.use("/server/customer", postCustomerRoutes);
 
 module.exports = router;

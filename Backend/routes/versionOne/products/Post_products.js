@@ -10,9 +10,9 @@ const {
 
 const router = express.Router();
 
-router.post("/server/products", validateCreateProduct, createProduct);
+router.post("/products", validateCreateProduct, createProduct);
 router.post(
-  "/server/seller/products",
+  "/seller/products",
   requireSeller,
   validateCreateProduct,
   createSellerProduct,

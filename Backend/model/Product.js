@@ -126,7 +126,6 @@ const ProductSchema = new mongoose.Schema(
       },
     ],
   },
-
   { versionKey: false, timestamps: true },
 );
 

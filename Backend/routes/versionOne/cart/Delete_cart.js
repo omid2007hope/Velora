@@ -8,11 +8,11 @@ const {
 const router = express.Router();
 
 router.delete(
-  "/server/cart/item",
+  "/item",
   requireAuth,
   validateDeleteCartItem,
   deleteCartItem,
 );
-router.delete("/server/cart", requireAuth, clearCart);
+router.delete("/", requireAuth, clearCart);
 
 module.exports = router;

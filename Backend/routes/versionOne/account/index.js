@@ -3,6 +3,6 @@ const postAccountRoutes = require("./Post_account");
 
 const router = express.Router();
 
-router.use(postAccountRoutes);
+router.use("/server/customer/login/account", postAccountRoutes);
 
 module.exports = router;

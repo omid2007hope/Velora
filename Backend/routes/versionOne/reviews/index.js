@@ -4,7 +4,7 @@ const postReviewRoutes = require("./Post_reviews");
 
 const router = express.Router();
 
-router.use(getReviewRoutes);
-router.use(postReviewRoutes);
+router.use("/server", getReviewRoutes);
+router.use("/server", postReviewRoutes);
 
 module.exports = router;

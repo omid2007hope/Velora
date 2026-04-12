@@ -5,8 +5,8 @@ const patchCheckoutRoutes = require("./Patch_checkout");
 
 const router = express.Router();
 
-router.use(getCheckoutRoutes);
-router.use(postCheckoutRoutes);
-router.use(patchCheckoutRoutes);
+router.use("/server/checkout", getCheckoutRoutes);
+router.use("/server/checkout", postCheckoutRoutes);
+router.use("/server/checkout", patchCheckoutRoutes);
 
 module.exports = router;
