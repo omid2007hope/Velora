@@ -70,7 +70,7 @@ export default function LogIntoSellerPanelPopup({
       });
       setStoreOwner(storeOwner);
       setLogIntoSellerPanel(false);
-      router.push("/");
+      router.push("/seller");
     } catch (error) {
       const message =
         error?.response?.data?.error ??
@@ -98,7 +98,7 @@ export default function LogIntoSellerPanelPopup({
     saveStoredStoreOwner(storeOwner);
     setStoreOwner(storeOwner);
     setLogIntoSellerPanel(false);
-    router.push("/");
+    router.push("/seller");
   }
 
   useEffect(() => {

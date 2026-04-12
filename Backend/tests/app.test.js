@@ -113,6 +113,35 @@ describe("Auth and protected routes", () => {
     expect(refreshRes.body.token).toBeTruthy();
   });
 
+  test("seller can create and list seller-owned products from the panel routes", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+
+    const createRes = await request(app)
+      .post("/server/seller/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Seller Panel Product",
+        description: "Created from seller panel",
+        price: 60,
+        category: "Accessories",
+        subCategory: "Bags",
+        imageUrl: "https://example.com/seller-product.jpg",
+      })
+      .expect(201);
+
+    expect(createRes.body?.data?.storeOwnerId).toBeTruthy();
+
+    const listRes = await request(app)
+      .get("/server/seller/products")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    expect(Array.isArray(listRes.body?.data)).toBe(true);
+    expect(
+      listRes.body.data.some((product) => product.name === "Seller Panel Product"),
+    ).toBe(true);
+  });
+
   test("cart and order flow with payment intent", async () => {
     const { token } = await registerAndLogin();
 

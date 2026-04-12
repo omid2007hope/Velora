@@ -159,8 +159,8 @@ export default function Header() {
                     Sell on Velora
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setLogIntoSellerPanel(true)}
+                  <Link
+                    href="/seller"
                     className={sellerPanelClass}
                   >
                     <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
@@ -172,7 +172,7 @@ export default function Header() {
                         <Store className="size-4" />
                       </span>
                     </div>
-                  </button>
+                  </Link>
                 )}
               </div>
               <div className="flex items-center justify-end lg:hidden">
@@ -379,8 +379,8 @@ export default function Header() {
                     Sell on Velora
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setLogIntoSellerPanel(true)}
+                  <Link
+                    href="/seller"
                     className={sellerPanelClass}
                   >
                     <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
@@ -392,7 +392,7 @@ export default function Header() {
                         <Store className="size-4" />
                       </span>
                     </div>
-                  </button>
+                  </Link>
                 )}
 
                 {storeOwner ? null : user ? (

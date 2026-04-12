@@ -14,6 +14,11 @@ const listProducts = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: products });
 });
 
+const listSellerProducts = asyncHandler(async (req, res) => {
+  const products = await productService.listSellerProducts(req.user.id);
+  return res.status(200).json({ data: products });
+});
+
 const getProductById = asyncHandler(async (req, res) => {
   const product = await productService.getProductById(req.params.id);
 
@@ -29,8 +34,18 @@ const createProduct = asyncHandler(async (req, res) => {
   return res.status(201).json({ data: createdProduct });
 });
 
+const createSellerProduct = asyncHandler(async (req, res) => {
+  const createdProduct = await productService.createProduct(req.body, {
+    storeOwnerId: req.user.id,
+  });
+
+  return res.status(201).json({ data: createdProduct });
+});
+
 module.exports = {
   listProducts,
+  listSellerProducts,
   getProductById,
   createProduct,
+  createSellerProduct,
 };

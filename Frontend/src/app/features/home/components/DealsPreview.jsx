@@ -57,18 +57,10 @@ export default function DealsPreview() {
   return (
     <section className="bg-orange-100 px-4 py-8 sm:px-6 lg:px-16">
       <div className="w-full">
-        <div className="mb-8 flex flex-col gap-3 border-l-4 border-amber-950 pl-4">
-          <span className="w-fit rounded-full border border-amber-950 bg-orange-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-amber-900">
-            Limited Picks
-          </span>
-          <p className="text-3xl font-bold tracking-tight text-amber-950 sm:text-4xl">
-            Deals
-          </p>
-          <span className="max-w-2xl text-sm leading-6 text-amber-800 sm:text-base">
-            Fresh markdowns on standout pieces, picked for quick grabs before
-            they sell out.
-          </span>
-        </div>
+        <p className="text-3xl font-bold text-amber-950">
+          Deals
+          <span> </span>
+        </p>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {preview.map((item) => {
             const product = normalizeProduct(item);

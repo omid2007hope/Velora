@@ -22,13 +22,18 @@ async function listProducts({ category, subCategory, isNew, search }) {
   return Product.find(filter).sort({ createdAt: -1 });
 }
 
+async function listSellerProducts(storeOwnerId) {
+  return Product.find({ storeOwnerId }).sort({ createdAt: -1 });
+}
+
 async function getProductById(id) {
   return Product.findById(id);
 }
 
-async function createProduct(payload) {
+async function createProduct(payload, options = {}) {
   const normalizedPayload = {
     ...payload,
+    storeOwnerId: options.storeOwnerId,
     subCategory:
       typeof payload.subCategory === "string" && payload.subCategory.trim()
         ? payload.subCategory.trim()
@@ -41,6 +46,7 @@ async function createProduct(payload) {
 
 module.exports = {
   listProducts,
+  listSellerProducts,
   getProductById,
   createProduct,
 };
