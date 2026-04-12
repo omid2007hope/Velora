@@ -6,7 +6,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useMemo, useState } from "react";
 import EmailVerificationPopup from "@/app/features/auth/components/EmailVerificationPopup";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
-import { registerCustomer } from "@/app/features/auth/services/auth-service";
+import { registerStoreOwner } from "@/app/features/auth/services/auth-service";
 import {
   AUTH_VIEW,
   openAuthPopup,
@@ -17,7 +17,7 @@ import {
   PASSWORD_CRITERIA,
 } from "@/app/features/auth/utils/auth-form-utils";
 
-export default function SignupPopup({ open, setOpen }) {
+export default function SellerSignupPopup({ open, setOpen }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,11 +58,10 @@ export default function SignupPopup({ open, setOpen }) {
     }
 
     try {
-      await registerCustomer({
+      await registerStoreOwner({
         fullName: fullName.trim(),
         email: email.trim(),
         password: password.trim(),
-        authView: AUTH_VIEW.CUSTOMER,
       });
     } catch (error) {
       console.error(
@@ -73,7 +72,9 @@ export default function SignupPopup({ open, setOpen }) {
       const fallback =
         error.response?.data?.error ?? error.response?.data ?? error.message;
       const message = details
-        ? details.map((entry) => `${entry.path || "field"}: ${entry.message}`).join("\n")
+        ? details
+            .map((entry) => `${entry.path || "field"}: ${entry.message}`)
+            .join("\n")
         : fallback;
       alert(message || "Signup failed. Please try again.");
       return;
@@ -93,7 +94,7 @@ export default function SignupPopup({ open, setOpen }) {
   function goBack() {
     setOpen(false);
     setTimeout(() => {
-      openAuthPopup(AUTH_VIEW.CUSTOMER);
+      openAuthPopup(AUTH_VIEW.SELLER);
     }, 200);
   }
 
@@ -103,7 +104,7 @@ export default function SignupPopup({ open, setOpen }) {
         open={openEmailVerificationPopup}
         setOpen={setOpenEmailVerificationPopup}
         email={email}
-        authView={AUTH_VIEW.CUSTOMER}
+        authView={AUTH_VIEW.SELLER}
       />
 
       <Dialog open={open} onClose={setOpen} className="relative z-50">
@@ -112,7 +113,7 @@ export default function SignupPopup({ open, setOpen }) {
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <DialogPanel className="w-full max-w-md rounded-xl bg-orange-50 p-8 shadow-2xl">
             <h2 className="text-center text-2xl font-bold text-amber-950">
-              Create Your Account
+              Create Your Seller Account
             </h2>
 
             <div className="mt-6 space-y-4">
@@ -121,7 +122,7 @@ export default function SignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="text"
-                placeholder="Full Name"
+                placeholder="Store owner name"
                 id="signup-fullname"
                 autoComplete="name"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -133,7 +134,7 @@ export default function SignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder="Store owner email address"
                 id="signup-email"
                 autoComplete="email"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -145,7 +146,7 @@ export default function SignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Create a Store owner password"
                 id="signup-password"
                 autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -161,7 +162,9 @@ export default function SignupPopup({ open, setOpen }) {
                       >
                         {met ? "✓" : "○"}
                       </span>
-                      <span className={met ? "text-amber-950" : "text-amber-600"}>
+                      <span
+                        className={met ? "text-amber-950" : "text-amber-600"}
+                      >
                         {item.label}
                       </span>
                     </div>
@@ -174,7 +177,7 @@ export default function SignupPopup({ open, setOpen }) {
               </label>
               <input
                 type="password"
-                placeholder="Confirm password"
+                placeholder="Confirm Store owner password"
                 id="signup-confirm"
                 autoComplete="new-password"
                 className="w-full rounded-lg border border-amber-950 px-4 py-3 text-amber-900"
@@ -186,14 +189,14 @@ export default function SignupPopup({ open, setOpen }) {
               onClick={handleSignup}
               className="mt-6 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
-              Sign up
+              Create Seller Account
             </button>
 
             <button
               onClick={goBack}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
-              Back
+              Back to Seller Sign In
             </button>
             <GoogleSignIn onLogin={handleGoogleSignup} />
           </DialogPanel>

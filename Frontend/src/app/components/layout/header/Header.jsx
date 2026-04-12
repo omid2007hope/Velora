@@ -22,30 +22,44 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { CircleUserRound } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CircleUserRound, Store } from "lucide-react";
 import { useSelector } from "react-redux";
 import LoginPopup from "@/app/features/auth/components/LoginPopup";
 import MenCategory from "@/app/components/layout/header/category/MenCategory";
 import WomanCategory from "@/app/components/layout/header/category/WomanCategory";
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
 import {
+  getStoredStoreOwner,
   getStoredUser,
-  subscribeToStoredUser,
+  subscribeToStorageChanges,
 } from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
+import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
 
 const featuredPreviewByCategory = {
   women: <WomanCategory />,
   men: <MenCategory />,
 };
 
+const actionButtonClass =
+  "inline-flex items-center justify-center rounded-full border border-amber-950/90 bg-gradient-to-b from-orange-50 to-orange-200 px-4 py-2 text-sm font-semibold tracking-[0.02em] text-amber-950 shadow-[0_8px_24px_rgba(120,53,15,0.12)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-amber-950 hover:text-orange-50 hover:shadow-[0_14px_28px_rgba(120,53,15,0.18)] active:translate-y-0";
+
+const sellerPanelClass =
+  "inline-flex min-h-12 min-w-[9.5rem] flex-col items-center justify-center rounded-2xl border border-amber-950/90 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 px-4 py-2 text-amber-950 shadow-[0_10px_28px_rgba(120,53,15,0.14)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:from-amber-950 hover:via-amber-900 hover:to-amber-800 hover:text-orange-50 hover:shadow-[0_16px_32px_rgba(120,53,15,0.18)] active:translate-y-0";
+
+const accountLinkClass =
+  "inline-flex size-11 items-center justify-center rounded-full border border-amber-950/80 bg-gradient-to-b from-orange-50 to-orange-200 text-amber-950 shadow-[0_8px_22px_rgba(120,53,15,0.12)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-amber-950 hover:text-orange-50 hover:shadow-[0_14px_28px_rgba(120,53,15,0.18)] active:translate-y-0";
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [login, setLogin] = useState(false);
+  const [logIntoSellerPanel, setLogIntoSellerPanel] = useState(false);
   const [user, setUser] = useState(null);
+  const [storeOwner, setStoreOwner] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const cartItems = useSelector((state) => state.basket);
 
@@ -56,6 +70,16 @@ export default function Header() {
   useEffect(() => {
     setHasMounted(true);
     setUser(getStoredUser());
+    setStoreOwner(getStoredStoreOwner());
+  }, []);
+
+  useEffect(() => {
+    const openSellerPanel = () => setLogIntoSellerPanel(true);
+    document.addEventListener("open-sellerPanel-popup", openSellerPanel);
+
+    return () => {
+      document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
+    };
   }, []);
 
   useEffect(() => {
@@ -68,8 +92,25 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const updateUser = () => setUser(getStoredUser());
-    return subscribeToStoredUser(updateUser);
+    if (searchParams.get("auth") === "login") {
+      setLogin(true);
+
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+      nextSearchParams.delete("auth");
+      const nextQuery = nextSearchParams.toString();
+      router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, {
+        scroll: false,
+      });
+    }
+  }, [pathname, router, searchParams]);
+
+  useEffect(() => {
+    const syncAuthState = () => {
+      setUser(getStoredUser());
+      setStoreOwner(getStoredStoreOwner());
+    };
+
+    return subscribeToStorageChanges(syncAuthState);
   }, []);
 
   useEffect(() => {
@@ -85,24 +126,59 @@ export default function Header() {
         setUser={setUser}
       />
 
+      <LogIntoSellerPanelPopup
+        logIntoSellerPanel={logIntoSellerPanel}
+        setLogIntoSellerPanel={setLogIntoSellerPanel}
+        storeOwner={storeOwner}
+        setStoreOwner={setStoreOwner}
+      />
+
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
 
         <div className="fixed inset-0 z-40 flex">
           <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto border-r border-amber-950 bg-orange-100 pb-12 shadow-xl">
-            <div className="flex flex-row items-center justify-between border-b border-amber-950 px-4 pb-2 pt-5">
+            <div className="flex flex-row items-center justify-between gap-3 border-b border-amber-950 px-4 pb-3 pt-5">
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="rounded-md border border-amber-950 p-2 text-amber-900"
+                className="rounded-xl border border-amber-950 bg-orange-50 p-2 text-amber-900 shadow-sm transition-colors duration-300 hover:bg-amber-950 hover:text-orange-50"
               >
                 <XMarkIcon className="size-6" />
               </button>
 
-              <div className="rounded-md border border-amber-950 bg-orange-50 p-2">
-                {user ? (
-                  <Link href="/account">
-                    <CircleUserRound />
+              <div className="flex w-auto flex-1 justify-center lg:hidden">
+                {user ? null : !storeOwner ? (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setTimeout(() => setLogIntoSellerPanel(true), 300);
+                    }}
+                    className={actionButtonClass}
+                  >
+                    Sell on Velora
+                  </button>
+                ) : (
+                  <Link
+                    href="/seller"
+                    className={sellerPanelClass}
+                  >
+                    <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
+                      Sell on
+                    </div>
+                    <div className="mt-1 flex w-full items-center justify-center text-sm font-bold">
+                      Velora
+                      <span className="ml-1 flex flex-row items-center justify-end">
+                        <Store className="size-4" />
+                      </span>
+                    </div>
+                  </Link>
+                )}
+              </div>
+              <div className="flex items-center justify-end lg:hidden">
+                {storeOwner ? null : user ? (
+                  <Link href="/account" className={accountLinkClass}>
+                    <CircleUserRound className="size-5" />
                   </Link>
                 ) : (
                   <button
@@ -110,7 +186,7 @@ export default function Header() {
                       setOpen(false);
                       setTimeout(() => setLogin(true), 300);
                     }}
-                    className="text-sm text-amber-950"
+                    className={actionButtonClass}
                   >
                     Sign in
                   </button>
@@ -294,21 +370,44 @@ export default function Header() {
             </PopoverGroup>
 
             <div className="ml-auto flex items-center">
-              <div className="hidden items-center space-x-6 lg:flex">
-                {user ? (
-                  <Link href="/account">
-                    <CircleUserRound className="text-amber-950" />
+              <div className="hidden items-center gap-4 lg:flex ">
+                {user ? null : !storeOwner ? (
+                  <button
+                    className={actionButtonClass}
+                    onClick={() => setLogIntoSellerPanel(true)}
+                  >
+                    Sell on Velora
+                  </button>
+                ) : (
+                  <Link
+                    href="/seller"
+                    className={sellerPanelClass}
+                  >
+                    <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
+                      Sell on
+                    </div>
+                    <div className="mt-1 flex w-full items-center justify-center text-sm font-bold">
+                      Velora
+                      <span className="ml-1 flex flex-row items-center justify-end">
+                        <Store className="size-4" />
+                      </span>
+                    </div>
+                  </Link>
+                )}
+
+                {storeOwner ? null : user ? (
+                  <Link href="/account" className={accountLinkClass}>
+                    <CircleUserRound className="size-5" />
                   </Link>
                 ) : (
                   <button
                     onClick={() => setLogin(true)}
-                    className="text-sm text-amber-950"
+                    className={actionButtonClass}
                   >
                     Sign in
                   </button>
                 )}
-
-                <span className="h-6 w-px bg-gray-300" />
+                <span className="h-8 w-px bg-gradient-to-b from-transparent via-amber-950 to-transparent" />
               </div>
 
               <Link href="/order" className="ml-4 flex items-center">

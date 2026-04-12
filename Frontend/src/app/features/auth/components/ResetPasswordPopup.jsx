@@ -6,12 +6,20 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useMemo, useState } from "react";
 import { requestPasswordReset } from "@/app/features/auth/services/auth-service";
 import {
+  AUTH_VIEW,
+  openAuthPopup,
+} from "@/app/features/auth/utils/auth-popup-events";
+import {
   getPasswordCriteriaState,
   isValidEmail,
   PASSWORD_CRITERIA,
 } from "@/app/features/auth/utils/auth-form-utils";
 
-export default function ResetPasswordPopup({ open, setOpen }) {
+export default function ResetPasswordPopup({
+  open,
+  setOpen,
+  authView = AUTH_VIEW.CUSTOMER,
+}) {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,6 +42,11 @@ export default function ResetPasswordPopup({ open, setOpen }) {
 
   function close() {
     setOpen(false);
+  }
+
+  function closeAndOpenLogin() {
+    setOpen(false);
+    openAuthPopup(authView);
   }
 
   function validateForm() {
@@ -70,7 +83,11 @@ export default function ResetPasswordPopup({ open, setOpen }) {
     try {
       setLoading(true);
       setStatus("");
-      await requestPasswordReset(email.trim().toLowerCase(), newPassword);
+      await requestPasswordReset(
+        email.trim().toLowerCase(),
+        newPassword,
+        authView,
+      );
       setStatus(
         "If an account exists for this email, you will receive a password reset link shortly. Use the link to apply your new password.",
       );
@@ -177,7 +194,7 @@ export default function ResetPasswordPopup({ open, setOpen }) {
               {loading ? "Sending..." : "Send reset link"}
             </button>
             <button
-              onClick={close}
+              onClick={closeAndOpenLogin}
               className="w-full rounded-full border border-amber-950 bg-white py-3 text-lg font-semibold text-amber-950 hover:bg-amber-100"
             >
               Back to login

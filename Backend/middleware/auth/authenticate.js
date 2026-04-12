@@ -24,6 +24,7 @@ function requireAuth(req, _res, next) {
     req.user = {
       id: payload.sub,
       email: payload.email,
+      role: payload.role,
     };
 
     return next();
@@ -45,6 +46,7 @@ function optionalAuth(req, _res, next) {
     req.user = {
       id: payload.sub,
       email: payload.email,
+      role: payload.role,
     };
   } catch (_error) {
     // Ignore invalid token on optional auth.
@@ -53,7 +55,22 @@ function optionalAuth(req, _res, next) {
   return next();
 }
 
+function requireSeller(req, _res, next) {
+  return requireAuth(req, _res, (error) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (req.user?.role !== "seller") {
+      return next(createHttpError(403, "Seller access required"));
+    }
+
+    return next();
+  });
+}
+
 module.exports = {
   requireAuth,
   optionalAuth,
+  requireSeller,
 };

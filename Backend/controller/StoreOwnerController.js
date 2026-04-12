@@ -1,9 +1,9 @@
 const asyncHandler = require("../utils/asyncHandler");
 const { createHttpError } = require("../utils/httpError");
-const customerService = require("../services/CustomerService");
+const storeOwnerService = require("../services/StoreOwnerService");
 
-const createCustomer = asyncHandler(async (req, res) => {
-  const result = await customerService.registerCustomer(req.body);
+const createStoreOwner = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.registerStoreOwner(req.body);
 
   return res.status(201).json({
     _id: result?.data?._id,
@@ -11,8 +11,8 @@ const createCustomer = asyncHandler(async (req, res) => {
   });
 });
 
-const loginCustomer = asyncHandler(async (req, res) => {
-  const result = await customerService.loginCustomer(req.body);
+const loginStoreOwner = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.loginStoreOwner(req.body);
 
   if (!result?.authenticated) {
     throw createHttpError(401, "Invalid email or password");
@@ -26,20 +26,17 @@ const loginCustomer = asyncHandler(async (req, res) => {
   });
 });
 
-const refreshCustomerToken = asyncHandler(async (req, res) => {
+const refreshStoreOwnerToken = asyncHandler(async (req, res) => {
   try {
-    const token = await customerService.refreshAccessToken(req.body.refreshToken);
+    const token = await storeOwnerService.refreshAccessToken(req.body.refreshToken);
     return res.status(200).json({ token });
   } catch (_error) {
     throw createHttpError(401, "Invalid or expired refresh token");
   }
 });
 
-const requestCustomerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await customerService.requestEmailVerification(
-    req.body.email,
-    req.body.authView,
-  );
+const requestStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.requestEmailVerification(req.body.email);
 
   if (result.status === "already-verified") {
     return res.status(200).json({
@@ -54,8 +51,8 @@ const requestCustomerEmailVerification = asyncHandler(async (req, res) => {
   });
 });
 
-const confirmCustomerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await customerService.confirmEmailVerification(req.body.token);
+const confirmStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.confirmEmailVerification(req.body.token);
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");
@@ -67,11 +64,10 @@ const confirmCustomerEmailVerification = asyncHandler(async (req, res) => {
   });
 });
 
-const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await customerService.requestPasswordReset(
+const requestStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.requestPasswordReset(
     req.body.email,
     req.body.newPassword,
-    req.body.authView,
   );
 
   return res.status(200).json({
@@ -81,8 +77,8 @@ const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
   });
 });
 
-const confirmCustomerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await customerService.confirmPasswordReset(req.body.token);
+const confirmStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
+  const result = await storeOwnerService.confirmPasswordReset(req.body.token);
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");
@@ -95,11 +91,11 @@ const confirmCustomerPasswordReset = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  createCustomer,
-  loginCustomer,
-  refreshCustomerToken,
-  requestCustomerEmailVerification,
-  confirmCustomerEmailVerification,
-  requestCustomerPasswordReset,
-  confirmCustomerPasswordReset,
+  createStoreOwner,
+  loginStoreOwner,
+  refreshStoreOwnerToken,
+  requestStoreOwnerEmailVerification,
+  confirmStoreOwnerEmailVerification,
+  requestStoreOwnerPasswordReset,
+  confirmStoreOwnerPasswordReset,
 };

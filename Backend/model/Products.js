@@ -4,6 +4,12 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
+    storeOwnerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Seller",
+      index: true,
+    },
+
     name: {
       type: String,
       required: true,

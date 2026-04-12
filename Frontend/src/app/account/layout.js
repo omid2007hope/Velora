@@ -1,4 +1,5 @@
 import { buildNoIndexMetadata } from "@/app/lib/seo";
+import AccountAccessGuard from "@/app/components/account/AccountAccessGuard";
 
 export const metadata = buildNoIndexMetadata({
   title: "Account",
@@ -7,5 +8,5 @@ export const metadata = buildNoIndexMetadata({
 });
 
 export default function AccountLayout({ children }) {
-  return children;
+  return <AccountAccessGuard>{children}</AccountAccessGuard>;
 }

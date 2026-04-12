@@ -9,15 +9,29 @@ const objectId = z
     message: "Invalid ObjectId",
   });
 
+const authViewSchema = z.enum(["customer", "seller"]).optional();
+
 const registerSchema = z.object({
   fullName: z.string().min(2).max(120),
   email: z.string().email(),
   password: z.string().min(8).max(128),
+  authView: authViewSchema,
+});
+
+const storeOwnerRegisterSchema = z.object({
+  storeOwnerName: z.string().min(2).max(120),
+  storeOwnerEmailAddress: z.string().email(),
+  storeOwnerPassword: z.string().min(8).max(128),
 });
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(128),
+});
+
+const storeOwnerLoginSchema = z.object({
+  storeOwnerEmailAddress: z.string().email(),
+  storeOwnerPassword: z.string().min(8).max(128),
 });
 
 const addressSchema = z.object({
@@ -94,6 +108,7 @@ const passwordResetRequestSchema = z.object({
     .regex(/[a-z]/, "Must include a lowercase letter")
     .regex(/[0-9]/, "Must include a number")
     .regex(/[!@#$%^&*()[\]{};:'"\\|,.<>/?`~+\-=]/, "Must include a symbol"),
+  authView: authViewSchema,
 });
 
 const tokenOnlySchema = z.object({
@@ -102,6 +117,7 @@ const tokenOnlySchema = z.object({
 
 const emailOnlySchema = z.object({
   email: z.string().email(),
+  authView: authViewSchema,
 });
 
 const productCreateSchema = z.object({
@@ -144,7 +160,9 @@ const orderStatusSchema = z
 module.exports = {
   objectIdParamsSchema,
   registerSchema,
+  storeOwnerRegisterSchema,
   loginSchema,
+  storeOwnerLoginSchema,
   addressSchema,
   profileSchema,
   cartItemSchema,

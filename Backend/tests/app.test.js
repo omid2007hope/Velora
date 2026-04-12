@@ -20,6 +20,32 @@ async function registerAndLogin() {
   };
 }
 
+const storeOwnerUser = {
+  storeOwnerName: "Seller User",
+  storeOwnerEmailAddress: "seller@example.com",
+  storeOwnerPassword: "Password123!",
+};
+
+async function registerAndLoginStoreOwner() {
+  await request(app)
+    .post("/server/store-owner")
+    .send(storeOwnerUser)
+    .expect(201);
+
+  const loginRes = await request(app)
+    .post("/server/store-owner/login")
+    .send({
+      storeOwnerEmailAddress: storeOwnerUser.storeOwnerEmailAddress,
+      storeOwnerPassword: storeOwnerUser.storeOwnerPassword,
+    })
+    .expect(200);
+
+  return {
+    token: loginRes.body.token,
+    refreshToken: loginRes.body.refreshToken,
+  };
+}
+
 describe("Auth and protected routes", () => {
   test("api prefix serves the same health route", async () => {
     await request(app).get("/api/server").expect(200, "server is running");
@@ -66,6 +92,54 @@ describe("Auth and protected routes", () => {
       .expect(200);
 
     expect(res.body.token).toBeTruthy();
+  });
+
+  test("store owner routes support register, login, and refresh token", async () => {
+    const createRes = await request(app)
+      .post("/api/v1/server/store-owner")
+      .send(storeOwnerUser)
+      .expect(201);
+
+    expect(createRes.body.data.storeOwnerEmailAddress).toBe(
+      storeOwnerUser.storeOwnerEmailAddress,
+    );
+
+    const { refreshToken } = await registerAndLoginStoreOwner();
+    const refreshRes = await request(app)
+      .post("/server/store-owner/token/refresh")
+      .send({ refreshToken })
+      .expect(200);
+
+    expect(refreshRes.body.token).toBeTruthy();
+  });
+
+  test("seller can create and list seller-owned products from the panel routes", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+
+    const createRes = await request(app)
+      .post("/server/seller/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Seller Panel Product",
+        description: "Created from seller panel",
+        price: 60,
+        category: "Accessories",
+        subCategory: "Bags",
+        imageUrl: "https://example.com/seller-product.jpg",
+      })
+      .expect(201);
+
+    expect(createRes.body?.data?.storeOwnerId).toBeTruthy();
+
+    const listRes = await request(app)
+      .get("/server/seller/products")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    expect(Array.isArray(listRes.body?.data)).toBe(true);
+    expect(
+      listRes.body.data.some((product) => product.name === "Seller Panel Product"),
+    ).toBe(true);
   });
 
   test("cart and order flow with payment intent", async () => {
