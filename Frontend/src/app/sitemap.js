@@ -5,8 +5,7 @@ import { catalogRoutes } from "@/app/lib/catalog";
 export default async function sitemap() {
   const now = new Date();
   const products = await getProducts().catch(() => []);
-
-  return [
+  const staticRoutes = [
     {
       url: absoluteUrl("/"),
       lastModified: now,
@@ -25,11 +24,27 @@ export default async function sitemap() {
       changeFrequency: "daily",
       priority: 0.7,
     })),
-    ...products.map((product) => ({
-      url: absoluteUrl(`/products/${product._id || product.id}`),
-      lastModified: product.updatedAt || product.createdAt || now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    })),
   ];
+
+  const productRoutes = products
+    .map((product) => {
+      const productId = product?._id || product?.id;
+
+      if (!productId) {
+        return null;
+      }
+
+      return {
+        url: absoluteUrl(`/products/${productId}`),
+        lastModified: product.updatedAt || product.createdAt || now,
+        changeFrequency: "weekly",
+        priority: 0.8,
+      };
+    })
+    .filter(Boolean);
+
+  return Array.from(
+    new Map([...staticRoutes, ...productRoutes].map((entry) => [entry.url, entry]))
+      .values(),
+  );
 }
