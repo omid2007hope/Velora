@@ -1,6 +1,5 @@
 # Model
 
-model = "gpt-5.4"
 model_reasoning_effort = "medium"
 
 # Environment
@@ -37,6 +36,7 @@ focus = ["logic", "api", "ui"]
 Look at my backend and refactor it into a clean, scalable, separated architecture using this exact logic.
 
 Main goals:
+
 1. Keep the backend clean, structured, and easy to scale.
 2. Separate responsibilities clearly between routes, middleware, controllers, services, models, config, and utilities.
 3. Preserve existing API behavior unless a clear bug needs to be fixed.
@@ -47,6 +47,7 @@ Main goals:
 Required backend structure:
 
 ROUTES
+
 - Keep routes inside `routes/`
 - Organize routes by API version first, then by feature/resource
 - Example:
@@ -66,6 +67,7 @@ ROUTES
 - If needed, also preserve existing unversioned routes for backward compatibility.
 
 MIDDLEWARE
+
 - Keep middleware inside `middleware/`
 - Group middleware by responsibility:
   - `middleware/validation/`
@@ -82,6 +84,7 @@ MIDDLEWARE
 - Reuse middleware instead of duplicating validation across routes.
 
 CONTROLLERS
+
 - Keep controllers inside `controller/`
 - Use one controller file per resource
 - Example:
@@ -98,6 +101,7 @@ CONTROLLERS
   - duplicate validation logic
 
 SERVICES
+
 - Keep services inside `services/`
 - Use one service file per resource
 - Services should:
@@ -112,12 +116,14 @@ SERVICES
 - If repeated CRUD logic exists, create a base service only if it clearly improves clarity.
 
 MODELS
+
 - Keep models inside `model/` or `models/` based on the project’s current convention
 - Use one model per resource
 - Models should define schema and persistence rules only
 - Do not place request logic or controller logic in models
 
 CONFIG
+
 - Keep config files inside `config/`
 - Example:
   - database config
@@ -126,6 +132,7 @@ CONFIG
 - Centralize reusable environment/config logic instead of scattering it
 
 UTILS
+
 - Keep pure shared helpers inside `utils/`
 - Example:
   - async handler
@@ -134,6 +141,7 @@ UTILS
 - Do not place business logic in vague utility files
 
 SERVER
+
 - Prefer a single `Server.js` if I ask for one-file server setup
 - `Server.js` should contain:
   - dotenv/env loading
@@ -149,6 +157,7 @@ SERVER
   - `if (require.main === module) { ... }`
 
 RESPONSIBILITY SPLIT
+
 - Routes:
   - define endpoint paths
   - attach middleware
@@ -168,6 +177,7 @@ RESPONSIBILITY SPLIT
   - hold environment/database/app configuration
 
 NAMING RULES
+
 - Keep naming consistent across all layers
 - Example:
   - route folder: `products`
@@ -181,6 +191,7 @@ NAMING RULES
   - `misc.js`
 
 STYLE RULES
+
 - Keep the code simple and readable
 - Prefer small functions with clear purpose
 - Add comments only where helpful
@@ -189,12 +200,14 @@ STYLE RULES
 - Keep module style consistent with the project (CommonJS if already CommonJS)
 
 ERROR HANDLING RULES
+
 - Use centralized error handling
 - Use shared helpers such as `asyncHandler` or HTTP error utilities when appropriate
 - Do not repeat large try/catch blocks everywhere if the project already has a cleaner pattern
 - Keep validation errors, cast errors, duplicate key errors, and 404 behavior consistent
 
 TESTABILITY RULES
+
 - Keep app exportable for tests
 - Keep controllers testable by mocking services
 - Keep services testable by mocking models
@@ -202,6 +215,7 @@ TESTABILITY RULES
 - Do not tightly couple layers unnecessarily
 
 REFACTOR RULES
+
 - Refactor directly in the codebase
 - Fix broken route/controller/service wiring
 - Fix missing imports
@@ -211,6 +225,7 @@ REFACTOR RULES
 - Use `apply_patch` for edits
 
 What I want back:
+
 1. Refactor the backend directly
 2. Explain the final backend structure
 3. Tell me which files were added or changed
@@ -220,6 +235,7 @@ What I want back:
 Review my backend/frontend project for duplication and refactor safely.
 
 Goals:
+
 1. Find duplicate files, duplicate logic, duplicate helpers, duplicate middleware shims, and duplicate old-vs-new layers.
 2. Remove duplication only when it is clearly safe.
 3. Keep the app fully operational after cleanup.
@@ -229,6 +245,7 @@ Goals:
 7. Use apply_patch for edits.
 
 Safety rules:
+
 1. First inspect the project structure and map:
    - routes
    - controllers
@@ -254,6 +271,7 @@ Safety rules:
 9. If something looks risky or ambiguous, stop and explain instead of guessing.
 
 How to work:
+
 1. Inspect the codebase first.
 2. List duplication findings grouped by:
    - safe duplicate files
@@ -267,6 +285,7 @@ How to work:
 5. Continue until the obvious safe duplication is removed.
 
 Output format I want:
+
 1. What duplication you found
 2. What you removed
 3. What you kept and why
@@ -275,6 +294,7 @@ Output format I want:
 6. Any remaining duplication that was intentionally left because it was risky
 
 Important project-specific instruction:
+
 - Keep all newly written canonical files.
 - Remove only the old duplicated layer after confirming it is unused.
 - Be especially careful with:
@@ -284,6 +304,7 @@ Important project-specific instruction:
   - duplicate auth/validation helpers
 
 Definition of “safe to remove”:
+
 - no active imports remain
 - tests still pass
 - behavior stays the same
@@ -355,10 +376,10 @@ What I want back:
 4. Tell me how to add new routes in the same pattern
 5. Run tests and summarize the result
 
- 
- Look at my frontend structure and refactor it using this exact pattern:
+Look at my frontend structure and refactor it using this exact pattern:
 
 Goals:
+
 1. Make the frontend cleaner, more separated, and easier to scale.
 2. Keep code organized by feature and responsibility.
 3. Preserve the current UI/behavior unless a fix is clearly needed.
@@ -370,6 +391,7 @@ Goals:
 Frontend architecture rules:
 
 GENERAL STRUCTURE
+
 - Organize the frontend by feature and responsibility, not randomly by file type.
 - Keep pages focused on page composition.
 - Move reusable UI into dedicated component folders.
@@ -377,12 +399,14 @@ GENERAL STRUCTURE
 - Keep naming consistent across folders and files.
 
 If using Next.js App Router:
+
 - `app/` should contain route segments and page-level entry files
 - each route page should stay thin
 - page files should mostly assemble sections/components and call needed hooks/actions
 - avoid putting large UI blocks, fetch logic, and helper logic all inside one `page.jsx`
 
 PAGES
+
 - Page files should:
   - define the route-level page
   - compose sections/components
@@ -393,6 +417,7 @@ PAGES
   - mix layout, business logic, and reusable UI all together
 
 COMPONENTS
+
 - Put reusable UI in a clear components structure.
 - Separate:
   - shared UI components
@@ -417,6 +442,7 @@ COMPONENTS
 - Prefer smaller purposeful components over one huge file.
 
 FEATURE STRUCTURE
+
 - Group related frontend logic by feature when possible.
 - Example:
   - `src/features/account/`
@@ -432,6 +458,7 @@ FEATURE STRUCTURE
 - Keep feature-specific code inside the feature instead of scattering it globally.
 
 HOOKS
+
 - Put reusable stateful logic into hooks.
 - Use hooks for:
   - data fetching coordination
@@ -450,6 +477,7 @@ HOOKS
   - `useProductsFilter`
 
 SERVICES / API LAYER
+
 - Put API calls in a dedicated service layer.
 - Do not scatter fetch/axios calls across pages and components.
 - Example:
@@ -462,6 +490,7 @@ SERVICES / API LAYER
 - Components should call hooks or services, not build request logic repeatedly inline.
 
 FORMS
+
 - Keep forms modular and readable.
 - Separate:
   - form UI
@@ -475,6 +504,7 @@ FORMS
 - Avoid giant page files with all form state and JSX mixed together.
 
 STYLING
+
 - Keep styling consistent with the existing design system or project direction.
 - Do not introduce random one-off styles unless necessary.
 - Extract repeated class patterns into reusable components or helpers when useful.
@@ -486,6 +516,7 @@ STYLING
 - Preserve the existing visual language unless I explicitly ask for redesign.
 
 LAYOUT
+
 - Separate layout structure from page content.
 - Use dedicated layout components for:
   - headers
@@ -496,6 +527,7 @@ LAYOUT
 - Avoid repeating the same structural markup across pages.
 
 UTILS
+
 - Put pure helper functions in `utils/`.
 - Helpers should be:
   - pure
@@ -505,16 +537,19 @@ UTILS
 - If logic belongs to a feature, keep it in that feature’s `utils/`.
 
 CONSTANTS / CONFIG
+
 - Move repeated labels, options, static config, and mappings into constants files.
 - Avoid hardcoding repeated option arrays or display config in many components.
 
 STATE MANAGEMENT
+
 - Keep state close to where it is used, but not trapped in giant page files.
 - Local UI state stays local.
 - Shared feature state can move into hooks/context/store only when truly needed.
 - Do not over-engineer global state for simple local behavior.
 
 DATA FLOW
+
 - Keep data flow predictable:
   - page assembles feature
   - feature hook/service gets data
@@ -522,6 +557,7 @@ DATA FLOW
 - Avoid mixing fetching, formatting, mutation, and rendering all in one component.
 
 ERROR / LOADING / EMPTY STATES
+
 - Every data-driven page or section should handle:
   - loading state
   - error state
@@ -529,11 +565,13 @@ ERROR / LOADING / EMPTY STATES
 - Keep these states clean and intentional, not ad hoc in every file.
 
 REUSABILITY RULES
+
 - Extract a component only when it improves clarity or reuse.
 - Do not over-fragment simple UI.
 - Do not keep duplicated UI blocks in multiple pages if they represent the same thing.
 
 NAMING RULES
+
 - Use clear names that describe purpose.
 - Prefer names like:
   - `AddressForm`
@@ -548,12 +586,14 @@ NAMING RULES
   - `DataManager`
 
 CLEANUP RULES
+
 - Remove dead code, unused imports, commented-out code, and unnecessary wrappers.
 - Simplify overcomplicated JSX where possible.
 - Keep files focused and readable.
 - Do not change unrelated behavior.
 
 TESTABILITY RULES
+
 - Keep logic in places that are easy to test:
   - helpers in utils
   - request logic in services
@@ -562,6 +602,7 @@ TESTABILITY RULES
 - Do not bury important logic inside giant JSX trees.
 
 NEXT.JS RULES
+
 - Preserve App Router conventions if the project uses them.
 - Keep server/client boundaries clean.
 - Only use `"use client"` where needed.
@@ -570,6 +611,7 @@ NEXT.JS RULES
 - If interactive behavior is needed, isolate it into client components.
 
 IMPLEMENTATION RULES
+
 - Refactor directly in the codebase.
 - Keep the existing stack and style unless I explicitly ask to change them.
 - Preserve working behavior unless there is a bug or structural issue.
@@ -577,6 +619,7 @@ IMPLEMENTATION RULES
 - Use `apply_patch` for edits.
 
 What I want back:
+
 1. Refactor the frontend directly
 2. Explain the final structure
 3. Tell me which files were added or changed
@@ -586,6 +629,7 @@ What I want back:
 Review my frontend project for duplication and refactor safely.
 
 Goals:
+
 1. Find duplicate components, duplicate pages, duplicate hooks, duplicate utilities, duplicate validation logic, duplicate API wrappers, duplicate styling, and duplicate old-vs-new frontend layers.
 2. Remove duplication only when it is clearly safe.
 3. Keep the frontend fully operational after cleanup.
@@ -595,6 +639,7 @@ Goals:
 7. Use apply_patch for edits.
 
 Safety rules:
+
 1. First inspect the frontend structure and map:
    - app/pages/routes
    - components
@@ -622,6 +667,7 @@ Safety rules:
 9. If something looks risky or ambiguous, stop and explain instead of guessing.
 
 Frontend duplication to look for:
+
 1. Duplicate UI components with the same behavior but different names
 2. Duplicate form logic that should be a shared hook or form component
 3. Duplicate fetch/api logic that should be a shared service function
@@ -634,6 +680,7 @@ Frontend duplication to look for:
 10. Unused components, hooks, or utility files
 
 How to work:
+
 1. Inspect the codebase first.
 2. List duplication findings grouped by:
    - safe duplicate files
@@ -647,6 +694,7 @@ How to work:
 5. Continue until the obvious safe duplication is removed.
 
 Output format I want:
+
 1. What duplication you found
 2. What you removed
 3. What you kept and why
@@ -655,6 +703,7 @@ Output format I want:
 6. Any remaining duplication that was intentionally left because it was risky
 
 Important project-specific instruction:
+
 - Keep all newly written canonical files.
 - Remove only the old duplicated layer after confirming it is unused.
 - Be especially careful with:
@@ -666,9 +715,218 @@ Important project-specific instruction:
   - old and new component folders existing together
 
 Definition of “safe to remove”:
+
 - no active imports remain
 - tests/build/lint still pass
 - behavior stays the same
 - routing still works
 - visible UI is not accidentally broken
 
+Here’s the same idea, written cleanly as **instructions you can follow step-by-step**.
+
+---
+
+# Frontend API Structure — Instructions
+
+## 1. Create a central API folder
+
+Inside your `src` directory, create:
+
+```
+src/api/
+```
+
+This folder will contain all communication with your backend.
+
+---
+
+## 2. Create a base API client
+
+Create a file:
+
+```
+src/api/client.js
+```
+
+Purpose:
+
+- Store base URL (`/api`)
+- Handle headers, tokens, errors
+- Avoid repeating config in every request
+
+What it should include:
+
+- Axios (or fetch) instance
+- Base URL pointing to your backend
+- Optional interceptors for auth and error handling
+
+---
+
+## 3. Organize APIs by feature (NOT by HTTP method)
+
+Inside `api/`, create folders per resource:
+
+```
+api/
+  customer/
+  product/
+  seller/
+  auth/
+```
+
+Each folder represents one backend resource.
+
+---
+
+## 4. Create one API file per resource
+
+Inside each folder, create a single file:
+
+```
+Customer_API.js
+Product_API.js
+Seller_API.js
+Auth_API.js
+```
+
+---
+
+## 5. Inside each API file, group all requests
+
+Each file should contain:
+
+- GET functions
+- POST functions
+- PATCH functions
+- DELETE functions
+
+Example structure (conceptually):
+
+```
+GET:
+- getAll
+- getById
+
+POST:
+- create
+
+PATCH:
+- update
+
+DELETE:
+- remove
+```
+
+All functions call your backend endpoints using the base client.
+
+---
+
+## 6. Keep naming consistent
+
+Use clear, predictable naming:
+
+- `getCustomers`
+- `getCustomerById`
+- `createCustomer`
+- `updateCustomer`
+- `deleteCustomer`
+
+This makes usage obvious everywhere in your app.
+
+---
+
+## 7. Create a central export file
+
+Create:
+
+```
+src/api/index.js
+```
+
+This file should export all API modules.
+
+Goal:
+
+- Import everything from one place
+- Avoid deep import paths
+
+---
+
+## 8. Use APIs inside components
+
+In your React components:
+
+- Import from `api/index.js`
+- Call functions directly
+- Handle responses and errors
+
+---
+
+## 9. (Optional but recommended) Add a hooks layer
+
+If using React:
+
+Create custom hooks like:
+
+```
+useProducts
+useCustomers
+```
+
+These hooks:
+
+- Call API functions
+- Manage loading + error state
+- Keep components clean
+
+---
+
+## 10. How to add a new resource
+
+Example: adding `orders`
+
+Step-by-step:
+
+1. Create folder:
+
+```
+api/order/
+```
+
+2. Create file:
+
+```
+Order_API.js
+```
+
+3. Add functions:
+
+- getOrders
+- getOrderById
+- createOrder
+- updateOrder
+- deleteOrder
+
+4. Export it in:
+
+```
+api/index.js
+```
+
+---
+
+## 11. Important rules to follow
+
+- Do NOT split files by HTTP method on frontend
+- Do keep one file per resource
+- Do keep function names consistent
+- Do use a shared API client
+- Do not duplicate base URLs or configs
+- Keep everything simple and readable
+
+---
+
+## 12. Mental model
+
+- Backend = strict, method-separated, deeply modular
+- Frontend = simple, feature-based, easy to use
