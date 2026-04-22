@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import SectionCard from "@/app/components/ui/SectionCard";
-import SellerProductsOverview from "@/app/features/seller/components/SellerProductsOverview";
+import SellerProductsOverview from "@/app/features/seller/components/product/SellerProductsOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
 export default function SellerDashboardPage() {

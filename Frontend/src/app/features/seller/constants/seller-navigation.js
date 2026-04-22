@@ -4,6 +4,13 @@ export const sellerNavigation = [
     label: "Dashboard",
     icon: "dashboard",
   },
+
+  {
+    href: "/seller/store",
+    label: "Create Store",
+    icon: "create",
+  },
+
   {
     href: "/seller/products/new",
     label: "Add Product",

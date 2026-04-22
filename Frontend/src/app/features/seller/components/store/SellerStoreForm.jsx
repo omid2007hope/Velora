@@ -1,116 +1,91 @@
 "use client";
 
-import { useSellerProductForm } from "@/app/features/seller/hooks/use-seller-product-form";
+import { useSellerStoreForm } from "@/app/features/seller/hooks/store/use-seller-store-form";
 
 const fieldClassName =
   "mt-2 w-full rounded-2xl border border-amber-950/15 bg-orange-50 px-4 py-3 text-sm text-amber-950 outline-none transition placeholder:text-amber-500 focus:border-amber-900 focus:bg-white";
 
-export default function SellerProductForm() {
-  const {
-    form,
-    saving,
-    error,
-    successMessage,
-    updateField,
-    handleSubmit,
-  } = useSellerProductForm();
+export default function SellerStoreForm() {
+  const { form, saving, error, successMessage, updateField, handleSubmit } =
+    useSellerStoreForm();
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
       <div className="grid gap-6 md:grid-cols-2">
         <label className="block text-sm font-medium text-amber-950">
-          Product name
+          Store name
           <input
             required
-            value={form.name}
-            onChange={updateField("name")}
+            value={form.storeName}
+            onChange={updateField("storeName")}
             className={fieldClassName}
-            placeholder="Velora Linen Shirt"
+            placeholder="Velora Store"
           />
         </label>
 
         <label className="block text-sm font-medium text-amber-950">
-          Category
+          Country
           <input
             required
-            value={form.category}
-            onChange={updateField("category")}
+            value={form.countryStoreLocatedIn}
+            onChange={updateField("countryStoreLocatedIn")}
             className={fieldClassName}
-            placeholder="Men"
+            placeholder="United States"
           />
         </label>
 
         <label className="block text-sm font-medium text-amber-950">
-          Subcategory
+          State or Province
           <input
-            value={form.subCategory}
-            onChange={updateField("subCategory")}
+            value={form.stateOrProvinceStoreLocatedIn}
+            onChange={updateField("stateOrProvinceStoreLocatedIn")}
             className={fieldClassName}
-            placeholder="Shirts"
+            placeholder="California"
           />
         </label>
 
         <label className="block text-sm font-medium text-amber-950">
-          Price
+          City
           <input
             required
-            min="0"
-            step="0.01"
-            type="number"
-            value={form.price}
-            onChange={updateField("price")}
+            value={form.cityStoreLocatedIn}
+            onChange={updateField("cityStoreLocatedIn")}
             className={fieldClassName}
-            placeholder="79.00"
+            placeholder="Los Angeles"
           />
         </label>
 
         <label className="block text-sm font-medium text-amber-950">
-          Old price
+          Address
           <input
-            min="0"
-            step="0.01"
-            type="number"
-            value={form.oldPrice}
-            onChange={updateField("oldPrice")}
+            required
+            value={form.storeAddress}
+            onChange={updateField("storeAddress")}
             className={fieldClassName}
-            placeholder="99.00"
+            placeholder="123 Main St"
           />
         </label>
 
         <label className="block text-sm font-medium text-amber-950">
-          New price
+          Zipcode
           <input
-            min="0"
-            step="0.01"
-            type="number"
-            value={form.newPrice}
-            onChange={updateField("newPrice")}
+            required
+            value={form.storeZipcode}
+            onChange={updateField("storeZipcode")}
             className={fieldClassName}
-            placeholder="79.00"
+            placeholder="90210"
           />
         </label>
       </div>
 
       <label className="block text-sm font-medium text-amber-950">
-        Product image URL
-        <input
-          required
-          type="url"
-          value={form.imageUrl}
-          onChange={updateField("imageUrl")}
-          className={fieldClassName}
-          placeholder="https://images.example.com/velora-product.jpg"
-        />
-      </label>
-
-      <label className="block text-sm font-medium text-amber-950">
-        Description
+        Store description
         <textarea
           required
-          value={form.description}
-          onChange={updateField("description")}
+          value={form.storeDescription}
+          onChange={updateField("storeDescription")}
           className={`${fieldClassName} min-h-36 resize-y`}
-          placeholder="Describe the product, materials, and why shoppers should care."
+          placeholder="Describe your store, its mission, and what makes it unique."
         />
       </label>
 
@@ -132,7 +107,7 @@ export default function SellerProductForm() {
           disabled={saving}
           className="inline-flex rounded-full bg-amber-950 px-5 py-3 text-sm font-semibold text-orange-50 transition hover:bg-amber-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {saving ? "Publishing..." : "Publish product"}
+          {saving ? "Creating..." : "Create store"}
         </button>
       </div>
     </form>

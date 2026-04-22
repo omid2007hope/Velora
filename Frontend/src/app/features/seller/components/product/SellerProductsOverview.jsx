@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import SectionCard from "@/app/components/ui/SectionCard";
-import { useSellerProducts } from "@/app/features/seller/hooks/use-seller-products";
+import { useSellerProducts } from "@/app/features/seller/hooks/product/use-seller-products";
 
 export default function SellerProductsOverview() {
   const { products, loading, error } = useSellerProducts();
