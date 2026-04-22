@@ -3,6 +3,7 @@
 import Link from "next/link";
 import SectionCard from "@/app/components/ui/SectionCard";
 import SellerProductsOverview from "@/app/features/seller/components/product/SellerProductsOverview";
+import SellerStoreOverview from "@/app/features/seller/components/store/SellerStoreOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
 export default function SellerDashboardPage() {
@@ -74,6 +75,7 @@ export default function SellerDashboardPage() {
       </SectionCard>
 
       <SellerProductsOverview />
+      <SellerStoreOverview />
     </div>
   );
 }

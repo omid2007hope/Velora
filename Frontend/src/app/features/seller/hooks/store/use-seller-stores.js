@@ -1,0 +1,52 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { listSellerStore } from "@/app/features/seller/services/seller-store-service";
+
+export function useSellerStores() {
+  const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadStores() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const data = await listSellerStore();
+
+        if (!ignore) {
+          setStores(Array.isArray(data) ? data : []);
+        }
+      } catch (requestError) {
+        if (!ignore) {
+          setError(
+            requestError?.response?.data?.error ||
+              requestError?.message ||
+              "Could not load seller stores.",
+          );
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadStores();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  return {
+    stores,
+    loading,
+    error,
+    setStores,
+  };
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import SectionCard from "@/app/components/ui/SectionCard";
-import SellerStoreForm from "./components/store/SellerStoreForm";
+import SellerStoreForm from "@/app/features/seller/components/store/SellerStoreForm";
 
 export default function SellerStoreComposerPage() {
   return (

@@ -5,10 +5,10 @@
 
 import Link from "next/link";
 import SectionCard from "@/app/components/ui/SectionCard";
-import { useSellerStoreForm } from "@/app/features/seller/hooks/store/use-seller-store-form";
+import { useSellerStores } from "@/app/features/seller/hooks/store/use-seller-stores";
 
 export default function SellerStoreOverview() {
-  const { stores, loading, error } = useSellerStoreForm();
+  const { stores, loading, error } = useSellerStores();
 
   return (
     <SectionCard id="seller-stores" className="max-w-5xl">

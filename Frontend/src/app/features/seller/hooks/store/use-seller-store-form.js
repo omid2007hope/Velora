@@ -37,7 +37,7 @@ export function useSellerStoreForm() {
       const payload = createSellerStorePayload(form);
       await createAnStore(payload);
       setForm(initialForm);
-      setSuccessMessage("Product published to your seller catalog.");
+      setSuccessMessage("Store created successfully.");
     } catch (requestError) {
       const details = requestError?.response?.data?.details;
       const message = Array.isArray(details)

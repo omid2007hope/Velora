@@ -11,6 +11,10 @@ function getNavIcon(icon) {
     return Plus;
   }
 
+  if (icon === "dashboard") {
+    return LayoutDashboard;
+  }
+
   return LayoutDashboard;
 }
 
