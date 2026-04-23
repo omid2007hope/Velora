@@ -1,43 +1,37 @@
 const PaymentIntent = require("../model/PaymentIntent");
+const BaseService = require("./BaseService");
 const stripe = require("../utils/stripeClient");
 
-async function createPaymentIntentForOrder({
-  orderId,
-  provider = "stripe",
-  amount,
-  currency,
-}) {
-  const amountInCents = Math.round(Number(amount || 0) * 100);
-  const normalizedCurrency = (currency || "USD").toLowerCase();
-
-  const intent = await stripe.paymentIntents.create({
-    amount: amountInCents,
-    currency: normalizedCurrency,
-    metadata: {
-      orderId: String(orderId),
-    },
-  });
-
-  return new PaymentIntent({
+module.exports = new (class PaymentIntentService extends BaseService {
+  async createPaymentIntentForOrder({
     orderId,
-    provider,
-    providerIntentId: intent.id,
-    clientSecret: intent.client_secret,
+    provider = "stripe",
     amount,
-    currency: normalizedCurrency.toUpperCase(),
-    status: intent.status || "requires_payment_method",
-  }).save();
-}
+    currency,
+  }) {
+    const amountInCents = Math.round(Number(amount || 0) * 100);
+    const normalizedCurrency = (currency || "USD").toLowerCase();
 
-async function updatePaymentIntentStatus(orderId, status) {
-  return PaymentIntent.findOneAndUpdate(
-    { orderId },
-    { status },
-    { returnDocument: "after" },
-  );
-}
+    const intent = await stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency: normalizedCurrency,
+      metadata: {
+        orderId: String(orderId),
+      },
+    });
 
-module.exports = {
-  createPaymentIntentForOrder,
-  updatePaymentIntentStatus,
-};
+    return this.createObject({
+      orderId,
+      provider,
+      providerIntentId: intent.id,
+      clientSecret: intent.client_secret,
+      amount,
+      currency: normalizedCurrency.toUpperCase(),
+      status: intent.status || "requires_payment_method",
+    });
+  }
+
+  async updatePaymentIntentStatus(orderId, status) {
+    return this.update({ orderId }, { status });
+  }
+})(PaymentIntent);

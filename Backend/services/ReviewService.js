@@ -1,25 +1,20 @@
 const Review = require("../model/Review");
+const BaseService = require("./BaseService");
 
-async function listReviewsByProduct(productId) {
-  return Review.find({
-    productId,
-    isDeleted: { $ne: true },
-  }).sort({ createdAt: -1 });
-}
+module.exports = new (class ReviewService extends BaseService {
+  async listReviewsByProduct(productId) {
+    return this.model
+      .find({ productId, isDeleted: { $ne: true } })
+      .sort({ createdAt: -1 });
+  }
 
-async function createReview({ productId, userId, name, rating, comment }) {
-  const review = new Review({
-    productId,
-    userId: userId || null,
-    name: name.trim(),
-    rating: Number(rating),
-    comment: comment.trim(),
-  });
-
-  return review.save();
-}
-
-module.exports = {
-  listReviewsByProduct,
-  createReview,
-};
+  async createReview({ productId, userId, name, rating, comment }) {
+    return this.createObject({
+      productId,
+      userId: userId || null,
+      name: name.trim(),
+      rating: Number(rating),
+      comment: comment.trim(),
+    });
+  }
+})(Review);
