@@ -46,7 +46,9 @@ const noIndexRobots = {
 };
 
 function dedupeKeywords(keywords = []) {
-  return Array.from(new Set([...siteConfig.keywords, ...keywords].filter(Boolean)));
+  return Array.from(
+    new Set([...siteConfig.keywords, ...keywords].filter(Boolean)),
+  );
 }
 
 function formatSocialTitle(title) {
@@ -58,7 +60,10 @@ export function sanitizeDescription(value) {
     .replace(/\s+/g, " ")
     .trim();
 
-  return text.slice(0, 160);
+  const cut = text.slice(0, 160);
+  return cut.length < text.length
+    ? cut.slice(0, cut.lastIndexOf(" ")) || cut
+    : cut;
 }
 
 export function buildPageMetadata({
@@ -122,7 +127,13 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: siteConfig.name,
     url: getSiteUrl(),
-    logo: absoluteUrl("/favicon.ico"),
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl("/opengraph-image"),
+      width: 1200,
+      height: 630,
+    },
+    sameAs: [],
   };
 }
 
@@ -243,7 +254,7 @@ export function buildProductSchema({ product, reviews = [] }) {
     offers: {
       "@type": "Offer",
       url: absoluteUrl(`/products/${productId}`),
-      price,
+      price: Number(price).toFixed(2),
       priceCurrency: siteConfig.currency,
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",

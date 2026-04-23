@@ -3,16 +3,13 @@ import CatalogPage from "@/app/features/catalog/CatalogPage";
 import JsonLd from "@/app/components/seo/JsonLd";
 import { getProducts } from "@/app/lib/server-api";
 import { getCatalogFilters, getCatalogRoute } from "@/app/lib/catalog";
+import { normalizeParam } from "@/app/features/catalog/utils/catalog-state";
 import {
   buildBreadcrumbSchema,
   buildCollectionPageSchema,
   buildNoIndexMetadata,
   buildPageMetadata,
 } from "@/app/lib/seo";
-
-function normalizeParam(value) {
-  return Array.isArray(value) ? value[0] || "" : value || "";
-}
 
 function buildCatalogDescription(route, search) {
   if (search) {
@@ -22,7 +19,7 @@ function buildCatalogDescription(route, search) {
   return route.description;
 }
 
-export function generateMetadata({ params, searchParams }) {
+export async function generateMetadata({ params, searchParams }) {
   const route = getCatalogRoute(params?.slug);
 
   if (!route) {
@@ -35,7 +32,7 @@ export function generateMetadata({ params, searchParams }) {
 
   const search = normalizeParam(searchParams?.search).trim();
   const hasQueryFilters =
-    Boolean(normalizeParam(searchParams?.search).trim()) ||
+    Boolean(search) ||
     Boolean(normalizeParam(searchParams?.new).trim()) ||
     Boolean(normalizeParam(searchParams?.category).trim()) ||
     Boolean(normalizeParam(searchParams?.subCategory).trim());

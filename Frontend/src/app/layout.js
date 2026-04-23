@@ -62,7 +62,7 @@ export const metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [absoluteUrl("/twitter-image")],
+    images: [absoluteUrl("/opengraph-image")],
   },
 };
 

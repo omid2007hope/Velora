@@ -1,5 +1,3 @@
-"use client";
-
 const VALUE_POINTS = [
   {
     title: "Curated essentials",

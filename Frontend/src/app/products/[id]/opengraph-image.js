@@ -19,6 +19,14 @@ function formatPrice(product) {
   return `$${Number(price).toFixed(2)}`;
 }
 
+function truncateOgText(text, max = 120) {
+  if (!text) return "";
+  const cut = text.slice(0, max);
+  return cut.length < text.length
+    ? cut.slice(0, cut.lastIndexOf(" ")) || cut
+    : cut;
+}
+
 export default async function ProductOpenGraphImage({ params }) {
   const result = await getProductById(params?.id).catch(() => ({
     product: null,
@@ -73,8 +81,9 @@ export default async function ProductOpenGraphImage({ params }) {
             opacity: 0.92,
           }}
         >
-          {product?.description ||
-            "Browse the latest clothing, watches, and accessories from Velora."}
+          {product?.description
+            ? truncateOgText(product.description)
+            : "Browse the latest clothing, watches, and accessories from Velora."}
         </div>
       </div>
       <div

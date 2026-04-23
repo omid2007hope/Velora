@@ -18,7 +18,7 @@ export function getProductsRouteState(searchParams = {}) {
 
 export function buildCatalogPath({ category, subCategory, isNew, search }) {
   if (search) {
-    return "/products";
+    return `/products?search=${encodeURIComponent(search)}`;
   }
 
   const params = new URLSearchParams();
