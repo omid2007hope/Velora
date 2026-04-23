@@ -113,9 +113,71 @@ SERVICES
   - use `req` or `res`
   - contain route logic
   - send status codes directly
-- If repeated CRUD logic exists, create a base service only if it clearly improves clarity.
+- Every service MUST extend `BaseService` from `services/BaseService/index.js`
 
-MODELS
+BASE SERVICE PATTERN
+
+Every service must use this exact pattern:
+
+```js
+const Model = require("../model/ModelName");
+const BaseService = require("./BaseService");
+// other imports...
+
+module.exports = new (class ServiceName extends BaseService {
+  // business logic methods using this.model
+})(Model);
+```
+
+- The class is anonymous, instantiated immediately with the Mongoose model
+- `BaseService` is at `services/BaseService/index.js`
+- Import path from any service file: `require("./BaseService")`
+
+BASESERVICE INHERITED METHODS
+
+Use these inside any service via `this.*`:
+
+| Method                                                         | Description                                        |
+| -------------------------------------------------------------- | -------------------------------------------------- |
+| `this.findAll(condition)`                                      | Find all non-deleted matching condition            |
+| `this.findAllWithSort(condition, sort)`                        | Find all with sort                                 |
+| `this.findAllWithPagination(condition, { page, limit, sort })` | Paginated, returns `{ data, metaData }`            |
+| `this.findAllAndPopulate(condition, populate)`                 | Find all with populate                             |
+| `this.findAllRecursive(parentField)`                           | Tree from root nodes                               |
+| `this.findAllRecursiveByCondition(condition, parentField)`     | Tree from condition                                |
+| `this.findAllDeleted()`                                        | Find soft-deleted documents                        |
+| `this.findById(id)`                                            | Find by `_id`                                      |
+| `this.findByIdPopulate(id, populate)`                          | Find by `_id` with populate                        |
+| `this.findOneByCondition(condition)`                           | Find one non-deleted                               |
+| `this.findOneByConditionAndPopulate(condition, populate)`      | Find one non-deleted with populate                 |
+| `this.createObject(data)`                                      | Create and save a new document                     |
+| `this.update(condition, data, returnNew?)`                     | `findOneAndUpdate`, returns updated doc by default |
+| `this.updateAll(condition, data)`                              | `updateMany`                                       |
+| `this.softDelete(condition, user)`                             | Mark `isDeleted: true`                             |
+| `this.softDeleteRecursive(parentField, condition, user)`       | Soft-delete parent + all children                  |
+| `this.hardDelete(condition)`                                   | `findOneAndDelete`                                 |
+| `this.hardDeleteMany(condition)`                               | `deleteMany`                                       |
+| `this.restoreSoftDelete(condition)`                            | Restore soft-deleted document                      |
+
+Private helpers: `this._active(condition)`, `this._buildTree(nodes, parentField)`
+
+WHEN TO USE `this.model` DIRECTLY
+
+Use `this.model.*` only when chaining that BaseService does not expose is needed:
+
+- `.select("+hiddenField")`
+- `.lean()`
+- Complex raw queries with operators
+
+PRIVATE METHODS IN A SERVICE
+
+- Prefix with `_`: e.g. `_generateToken()`, `_buildClientLink()`, `_mapOwner()`
+- Do not call private methods from controllers
+
+SERVICES WITH MULTIPLE MODELS
+
+- Pass the primary model to `BaseService`
+- Import secondary models directly at the top of the file
 
 - Keep models inside `model/` or `models/` based on the project’s current convention
 - Use one model per resource
