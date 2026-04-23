@@ -2,6 +2,7 @@
 // Signature: OmidTeimory-2026
 const { z } = require("zod");
 const mongoose = require("mongoose");
+const { createHttpError } = require("../utils/httpError");
 
 const objectId = z
   .string()
@@ -10,6 +11,27 @@ const objectId = z
   });
 
 const authViewSchema = z.enum(["customer", "seller"]).optional();
+
+const storeSchema = z.object({
+  ownerOfStore: objectId,
+  storeName: z.string().min(2).max(120),
+  storeDescription: z.string().min(2).max(500),
+  countryStoreLocatedIn: z.string().min(2).max(100),
+  stateOrProvinceStoreLocatedIn: z.string().min(2).max(100),
+  cityStoreLocatedIn: z.string().min(2).max(100),
+  storeAddress: z.string().min(2).max(200),
+  storeZipcode: z.string().min(2).max(20),
+});
+
+function validateOwnerId(req, _res, next) {
+  const ownerId = req.body?.ownerOfStore;
+
+  if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
+    return next(createHttpError(400, "ownerOfStore must be a valid ObjectId"));
+  }
+
+  return next();
+}
 
 const registerSchema = z.object({
   fullName: z.string().min(2).max(120),
@@ -80,7 +102,11 @@ const orderSchema = z.object({
     .min(1, "Order items are required"),
   shipping: z.number().nonnegative().default(0),
   tax: z.number().nonnegative().default(0),
-  currency: z.string().length(3).transform((v) => v.toUpperCase()).default("USD"),
+  currency: z
+    .string()
+    .length(3)
+    .transform((v) => v.toUpperCase())
+    .default("USD"),
   addressSnapshot: z.object({
     street: z.string().min(2),
     country: z.string().min(2),
@@ -178,4 +204,6 @@ module.exports = {
   productIdParamsSchema,
   reviewCreateSchema,
   orderStatusSchema,
+  storeSchema,
+  validateOwnerId,
 };

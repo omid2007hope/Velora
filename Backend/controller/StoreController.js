@@ -1,11 +1,12 @@
-import storeService from "../services/StoreService";
-import asyncHandler from "../utils/asyncHandler";
+const storeService = require("../services/StoreService");
+const asyncHandler = require("../utils/asyncHandler");
 
 const createStore = asyncHandler(async (req, res) => {
-  const result = await storeService.mapStoreDetail(req.body);
+  const result = await storeService.createAnStore(req.body);
 
-  return res.status(201).json({
-    _id: result?.data?._id,
-    ...result,
-  });
+  return res.status(201).json(result);
 });
+
+module.exports = {
+  createStore,
+};

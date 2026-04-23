@@ -1,6 +1,8 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
-const { createAccountProfile } = require("../../../controller/AccountController");
+const {
+  createAccountProfile,
+} = require("../../../controller/AccountController");
 const {
   validateCreateAccountProfile,
 } = require("../../../middleware/validation/AccountValidation");

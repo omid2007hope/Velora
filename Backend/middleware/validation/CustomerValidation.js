@@ -14,6 +14,8 @@ module.exports = {
   validateRefreshCustomerToken: validateBody(refreshSchema),
   validateRequestCustomerEmailVerification: validateBody(emailOnlySchema),
   validateConfirmCustomerEmailVerification: validateBody(tokenOnlySchema),
-  validateRequestCustomerPasswordReset: validateBody(passwordResetRequestSchema),
+  validateRequestCustomerPasswordReset: validateBody(
+    passwordResetRequestSchema,
+  ),
   validateConfirmCustomerPasswordReset: validateBody(tokenOnlySchema),
 };
