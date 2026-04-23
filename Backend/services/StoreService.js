@@ -11,3 +11,5 @@ function mapStoreDetail(storeDetail) {
     storeZipcode: storeDetail.storeZipcode,
   };
 }
+
+function savedStoreOwner(normalizedStoreOwnerData) {}
