@@ -273,11 +273,11 @@ export default function Header() {
           <span className="rounded border border-orange-200/40 bg-orange-50/10 px-2 py-0.5 text-[11px] font-black uppercase tracking-widest text-orange-100">
             Demo
           </span>
-          <span>
+          <span className="hidden sm:inline">
             Work sample only — no copyright infringement intended. Images for
             demo purposes only. Still in progress.
           </span>
-          <span className="text-orange-300">·</span>
+          <span className="hidden sm:inline text-orange-300">·</span>
           <span>
             Built by{" "}
             <a
