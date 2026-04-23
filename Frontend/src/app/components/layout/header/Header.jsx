@@ -159,10 +159,7 @@ export default function Header() {
                     Sell on Velora
                   </button>
                 ) : (
-                  <Link
-                    href="/seller"
-                    className={sellerPanelClass}
-                  >
+                  <Link href="/seller" className={sellerPanelClass}>
                     <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
                       Sell on
                     </div>
@@ -272,8 +269,27 @@ export default function Header() {
       </Dialog>
 
       <header className="relative border-b border-amber-950 bg-orange-200">
-        <p className="flex h-10 items-center justify-center bg-amber-950 px-4 text-center text-sm text-white">
-          Still in progress. I am constantly updating Velora.
+        <p className="flex min-h-10 flex-wrap items-center justify-center gap-x-2 gap-y-1 border-b-2 border-amber-950 bg-amber-950 px-4 py-2 text-center text-xs font-medium text-orange-50">
+          <span className="rounded border border-orange-200/40 bg-orange-50/10 px-2 py-0.5 text-[11px] font-black uppercase tracking-widest text-orange-100">
+            Demo
+          </span>
+          <span>
+            Work sample only — no copyright infringement intended. Images for
+            demo purposes only. Still in progress.
+          </span>
+          <span className="text-orange-300">·</span>
+          <span>
+            Built by{" "}
+            <a
+              href="https://omidteimory.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-orange-200 underline underline-offset-2 hover:text-white"
+            >
+              Omid Teimory
+            </a>{" "}
+            © 2026 — available to hire
+          </span>
         </p>
 
         <nav className="w-full px-4 sm:px-6 lg:px-8">
@@ -379,10 +395,7 @@ export default function Header() {
                     Sell on Velora
                   </button>
                 ) : (
-                  <Link
-                    href="/seller"
-                    className={sellerPanelClass}
-                  >
+                  <Link href="/seller" className={sellerPanelClass}>
                     <div className="flex w-full items-center justify-center text-[11px] font-medium uppercase tracking-[0.22em]">
                       Sell on
                     </div>
