@@ -11,7 +11,9 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
     try {
       await submitOrder();
     } catch (error) {
-      alert(error.message || "Unable to submit order. Please login and try again.");
+      alert(
+        error.message || "Unable to submit order. Please login and try again.",
+      );
     }
   }
 
@@ -88,7 +90,9 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
               disabled={cartItems.length === 0 || submitting}
               className="w-full rounded-md bg-amber-950 py-3 text-white disabled:opacity-50"
             >
-              {submitting ? "Processing..." : `Pay $${pricing.total.toFixed(2)}`}
+              {submitting
+                ? "Processing..."
+                : `Pay $${pricing.total.toFixed(2)}`}
             </button>
           </div>
         </div>
@@ -109,6 +113,8 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
                       loading="lazy"
                       decoding="async"
                       fetchPriority="low"
+                      width="64"
+                      height="64"
                       className="h-16 w-16 rounded-md border border-amber-950 object-cover"
                       alt={item.name}
                     />

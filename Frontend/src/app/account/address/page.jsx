@@ -25,6 +25,9 @@ export default function AddressPage() {
   return (
     <AccountShell>
       <SectionCard className="w-full max-w-lg">
+        <h1 className="mb-2 text-2xl font-bold text-amber-950">
+          Shipping Address
+        </h1>
         <h2 className="mb-2 text-lg font-bold">Addresses</h2>
         <p className="mb-4 text-xs">Add or edit your shipping address below.</p>
 

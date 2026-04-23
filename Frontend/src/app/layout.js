@@ -19,7 +19,7 @@ export const metadata = {
   metadataBase: new URL(getSiteUrl()),
   applicationName: siteConfig.name,
   title: {
-    default: siteConfig.name,
+    default: "Velora – Fashion, Watches & Accessories",
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

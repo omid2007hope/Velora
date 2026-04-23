@@ -75,6 +75,8 @@ export default function DealsPreview() {
                     <img
                       src={product.image}
                       alt={product.name}
+                      width="400"
+                      height="224"
                       loading="lazy"
                       decoding="async"
                       fetchPriority="low"

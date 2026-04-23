@@ -29,6 +29,7 @@ export default function AccountPage() {
         </p>
 
         <form className="space-y-4">
+          <h2 className="sr-only">Account Details Form</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-amber-900">
@@ -57,7 +58,9 @@ export default function AccountPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-amber-900">Email</label>
+            <label className="block text-sm font-medium text-amber-900">
+              Email
+            </label>
             <input
               value={form.email}
               onChange={updateField("email")}
@@ -109,7 +112,9 @@ export default function AccountPage() {
                     name="gender"
                     className="h-4 w-4 border-amber-600 text-amber-800"
                   />
-                  <span className="text-sm capitalize text-amber-900">{value}</span>
+                  <span className="text-sm capitalize text-amber-900">
+                    {value}
+                  </span>
                 </label>
               ))}
             </div>

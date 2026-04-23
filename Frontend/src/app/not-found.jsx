@@ -1,4 +1,12 @@
 import Link from "next/link";
+import { buildNoIndexMetadata } from "@/app/lib/seo";
+
+export const metadata = buildNoIndexMetadata({
+  title: "Page Not Found – 404",
+  description:
+    "The page you requested does not exist or may have been removed from the Velora catalog. Browse our collections to find what you are looking for.",
+  path: "/404",
+});
 
 export default function NotFound() {
   return (

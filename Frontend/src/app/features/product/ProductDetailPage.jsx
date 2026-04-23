@@ -101,7 +101,7 @@ export default function ProductDetailPage({ productId }) {
             Back
           </button>
 
-          <h2 className="text-xl font-bold text-amber-950">Product Preview</h2>
+          <p className="text-xl font-bold text-amber-950">Product Preview</p>
         </div>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
@@ -109,25 +109,36 @@ export default function ProductDetailPage({ productId }) {
             <img
               src={imageSrc}
               alt={product.name}
+              width="600"
+              height="600"
               className="w-full rounded-lg object-cover"
             />
           </div>
 
           <div className="space-y-6 rounded-lg border-2 border-amber-950 bg-orange-50 p-6">
             <div>
-              <h1 className="text-2xl font-bold text-amber-950">{product.name}</h1>
+              <h1 className="text-2xl font-bold text-amber-950">
+                {product.name}
+              </h1>
               <p className="mt-2 text-amber-900">{product.description}</p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <p className="text-2xl font-semibold text-amber-950">${price}</p>
-                <p className="text-lg text-amber-800 line-through">${oldPrice}</p>
+                <p className="text-2xl font-semibold text-amber-950">
+                  ${price}
+                </p>
+                <p className="text-lg text-amber-800 line-through">
+                  ${oldPrice}
+                </p>
                 <span className="text-sm font-semibold text-green-700">
                   Save {product.discount}
                 </span>
               </div>
-              <a href="#reviews" className="text-amber-950 hover:text-amber-800">
+              <a
+                href="#reviews"
+                className="text-amber-950 hover:text-amber-800"
+              >
                 {totalRatings} reviews
               </a>
             </div>
@@ -203,7 +214,10 @@ export default function ProductDetailPage({ productId }) {
           </div>
         </div>
 
-        <section id="reviews" className="mt-16 border-t-2 border-amber-950 pt-10">
+        <section
+          id="reviews"
+          className="mt-16 border-t-2 border-amber-950 pt-10"
+        >
           <h2 className="mb-6 text-2xl font-bold text-amber-950">
             Customer Reviews
           </h2>
@@ -224,7 +238,10 @@ export default function ProductDetailPage({ productId }) {
                   const percent = Math.round((count / totalRatings) * 100);
 
                   return (
-                    <div key={stars} className="flex items-center gap-3 text-amber-950">
+                    <div
+                      key={stars}
+                      className="flex items-center gap-3 text-amber-950"
+                    >
                       <span className="w-16 text-right">{stars} stars</span>
                       <div className="h-3 w-full overflow-hidden rounded-full bg-orange-200">
                         <div
@@ -246,7 +263,9 @@ export default function ProductDetailPage({ productId }) {
                 className="rounded-lg border border-amber-950 bg-orange-50 p-5"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <h4 className="font-semibold text-amber-950">{review.name}</h4>
+                  <h4 className="font-semibold text-amber-950">
+                    {review.name}
+                  </h4>
                   <div className="flex gap-1">
                     {REVIEW_STARS.map((starIndex) => (
                       <Star

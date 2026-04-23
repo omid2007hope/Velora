@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  removeItem,
-  updateQuantity,
-} from "@/app/redux/slice/BasketSlice";
+import { removeItem, updateQuantity } from "@/app/redux/slice/BasketSlice";
 import CartSummary from "@/app/features/order/components/CartSummary";
 import { calculateOrderPricing } from "@/app/features/order/utils/order-pricing";
 
@@ -60,6 +57,8 @@ export default function CartStep({ onContinue }) {
                     <img
                       src={imageSrc}
                       alt={item.name}
+                      width="96"
+                      height="96"
                       loading="lazy"
                       decoding="async"
                       fetchPriority="low"
@@ -77,7 +76,9 @@ export default function CartStep({ onContinue }) {
                               ? `${item.selectedColor} | ${item.selectedSize}`
                               : "Selected options"}
                           </p>
-                          <p className="mt-2 text-xs text-green-700">In stock</p>
+                          <p className="mt-2 text-xs text-green-700">
+                            In stock
+                          </p>
                         </div>
 
                         <p className="text-sm font-bold text-amber-950">
@@ -86,14 +87,20 @@ export default function CartStep({ onContinue }) {
                       </div>
 
                       <div className="mt-3 flex items-center space-x-4">
-                        <label htmlFor={`quantity-${item.id}`} className="sr-only">
+                        <label
+                          htmlFor={`quantity-${item.id}`}
+                          className="sr-only"
+                        >
                           Quantity for {item.name}
                         </label>
                         <select
                           id={`quantity-${item.id}`}
                           value={item.quantity || 1}
                           onChange={(event) =>
-                            handleQuantityChange(item, Number(event.target.value))
+                            handleQuantityChange(
+                              item,
+                              Number(event.target.value),
+                            )
                           }
                           className="w-20 rounded-md border border-amber-950 bg-orange-50 text-amber-950 shadow-sm"
                         >

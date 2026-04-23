@@ -3,7 +3,7 @@ import { absoluteUrl, getSiteUrl, resolveImageUrl } from "./site";
 export const siteConfig = {
   name: "Velora",
   description:
-    "Shop curated clothing, statement watches, and everyday accessories at Velora, with refined essentials, new arrivals, easy browsing, and fast checkout.",
+    "Shop curated clothing, statement watches, and everyday accessories at Velora – refined essentials, new arrivals, easy browsing, and fast checkout for modern wardrobes.",
   category: "fashion",
   creator: "Omid Teimory",
   locale: "en_US",
@@ -60,7 +60,7 @@ export function sanitizeDescription(value) {
     .replace(/\s+/g, " ")
     .trim();
 
-  const cut = text.slice(0, 160);
+  const cut = text.slice(0, 155);
   return cut.length < text.length
     ? cut.slice(0, cut.lastIndexOf(" ")) || cut
     : cut;

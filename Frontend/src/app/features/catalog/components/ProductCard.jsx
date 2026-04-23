@@ -13,6 +13,8 @@ export default function ProductCard({ product }) {
           <img
             src={image}
             alt={product.name}
+            width="400"
+            height="240"
             loading="lazy"
             decoding="async"
             fetchPriority="low"
@@ -34,7 +36,9 @@ export default function ProductCard({ product }) {
 
         <div className="mt-2 flex items-center space-x-3">
           <span className="text-lg font-bold text-amber-950">${price}</span>
-          <span className="text-sm text-amber-800 line-through">${oldPrice}</span>
+          <span className="text-sm text-amber-800 line-through">
+            ${oldPrice}
+          </span>
         </div>
 
         <Link
