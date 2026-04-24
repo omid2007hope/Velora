@@ -2,9 +2,15 @@
  * Centralized Axios client for all backend API calls.
  * Reads base URL from environment; falls back to "/api".
  * Attaches Bearer token automatically for authenticated requests.
+ * Automatically refreshes an expired seller access token on 401 responses.
  */
 import axios from "axios";
-import { getAccessToken } from "@/app/lib/browser-storage";
+import {
+  getAccessToken,
+  getRefreshToken,
+  saveAuthSession,
+  clearAuthSession,
+} from "@/app/lib/browser-storage";
 
 const apiBaseUrl =
   (
@@ -27,14 +33,88 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
-// Normalise error responses so callers get a consistent shape.
-// NOTE: We re-throw the original Axios error unchanged so that callers can
-// still read error.response.data.error, error.response.data.details, etc.
-// Wrapping in a plain Error would strip error.response and break all
-// field-level validation error display across the app.
+// On 401, attempt a silent token refresh then replay the original request.
+// Only fires when we actually sent an Authorization header (i.e. we had a
+// token but it was expired). If no header was sent, we skip straight through.
+// After a confirmed failed refresh the session is cleared and a DOM event is
+// dispatched so UI guards can react (e.g. redirect to sign-in).
+let isRefreshing = false;
+let pendingQueue = [];
+
+function processPendingQueue(error, token = null) {
+  pendingQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  pendingQueue = [];
+}
+
+function expireSession() {
+  clearAuthSession();
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("auth:session-expired"));
+  }
+}
+
 client.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(error),
+  async (error) => {
+    const originalRequest = error.config;
+
+    const is401 = error?.response?.status === 401;
+    // Only attempt refresh when we actually sent a token that was rejected.
+    // If no Authorization header was present the request was unauthenticated
+    // to begin with — no point trying to refresh.
+    const hadAuthHeader = !!originalRequest.headers?.Authorization;
+    const alreadyRetried = originalRequest._retry;
+
+    if (!is401 || !hadAuthHeader || alreadyRetried) {
+      return Promise.reject(error);
+    }
+
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      expireSession();
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      // Queue this request until the refresh completes
+      return new Promise((resolve, reject) => {
+        pendingQueue.push({ resolve, reject });
+      }).then((newToken) => {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return client(originalRequest);
+      });
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      const { data } = await axios.post(
+        `${apiBaseUrl}/server/store-owner/token/refresh`,
+        { refreshToken },
+        { headers: { "Content-Type": "application/json" } },
+      );
+
+      const newToken = data.token;
+      saveAuthSession({ token: newToken });
+      processPendingQueue(null, newToken);
+
+      originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      return client(originalRequest);
+    } catch (refreshError) {
+      processPendingQueue(refreshError, null);
+      expireSession();
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  },
 );
 
 export default client;

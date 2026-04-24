@@ -13,7 +13,8 @@ const objectId = z
 const authViewSchema = z.enum(["customer", "seller"]).optional();
 
 const storeSchema = z.object({
-  ownerOfStore: objectId,
+  // ownerOfStore is injected server-side from the authenticated user (req.user.id)
+  // and must never be sent by the client.
   storeName: z.string().min(2).max(120),
   storeDescription: z.string().min(2).max(500),
   countryStoreLocatedIn: z.string().min(2).max(100),
@@ -23,15 +24,15 @@ const storeSchema = z.object({
   storeZipcode: z.string().min(2).max(20),
 });
 
-function validateOwnerId(req, _res, next) {
-  const ownerId = req.body?.ownerOfStore;
+// function validateOwnerId(req, _res, next) {
+//   const ownerId = req.body?.ownerOfStore;
 
-  if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
-    return next(createHttpError(400, "ownerOfStore must be a valid ObjectId"));
-  }
+//   if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
+//     return next(createHttpError(400, "ownerOfStore must be a valid ObjectId"));
+//   }
 
-  return next();
-}
+//   return next();
+// }
 
 const registerSchema = z.object({
   fullName: z.string().min(2).max(120),
@@ -205,5 +206,5 @@ module.exports = {
   reviewCreateSchema,
   orderStatusSchema,
   storeSchema,
-  validateOwnerId,
+  // validateOwnerId,
 };

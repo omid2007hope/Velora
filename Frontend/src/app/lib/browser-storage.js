@@ -77,6 +77,14 @@ export function getAccessToken() {
   return window.localStorage.getItem(TOKEN_KEY) || "";
 }
 
+export function getRefreshToken() {
+  if (!isBrowser()) {
+    return "";
+  }
+
+  return window.localStorage.getItem(REFRESH_TOKEN_KEY) || "";
+}
+
 export function saveAuthSession({ storeOwner, user, token, refreshToken }) {
   if (!isBrowser()) {
     return;
