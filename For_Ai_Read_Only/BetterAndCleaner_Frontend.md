@@ -1,6 +1,7 @@
 Look at my frontend structure and refactor it using this exact pattern:
 
 Goals:
+
 1. Make the frontend cleaner, more separated, and easier to scale.
 2. Keep code organized by feature and responsibility.
 3. Preserve the current UI/behavior unless a fix is clearly needed.
@@ -12,6 +13,7 @@ Goals:
 Frontend architecture rules:
 
 GENERAL STRUCTURE
+
 - Organize the frontend by feature and responsibility, not randomly by file type.
 - Keep pages focused on page composition.
 - Move reusable UI into dedicated component folders.
@@ -19,12 +21,14 @@ GENERAL STRUCTURE
 - Keep naming consistent across folders and files.
 
 If using Next.js App Router:
+
 - `app/` should contain route segments and page-level entry files
 - each route page should stay thin
 - page files should mostly assemble sections/components and call needed hooks/actions
 - avoid putting large UI blocks, fetch logic, and helper logic all inside one `page.jsx`
 
 PAGES
+
 - Page files should:
   - define the route-level page
   - compose sections/components
@@ -35,6 +39,7 @@ PAGES
   - mix layout, business logic, and reusable UI all together
 
 COMPONENTS
+
 - Put reusable UI in a clear components structure.
 - Separate:
   - shared UI components
@@ -59,6 +64,7 @@ COMPONENTS
 - Prefer smaller purposeful components over one huge file.
 
 FEATURE STRUCTURE
+
 - Group related frontend logic by feature when possible.
 - Example:
   - `src/features/account/`
@@ -74,6 +80,7 @@ FEATURE STRUCTURE
 - Keep feature-specific code inside the feature instead of scattering it globally.
 
 HOOKS
+
 - Put reusable stateful logic into hooks.
 - Use hooks for:
   - data fetching coordination
@@ -92,6 +99,7 @@ HOOKS
   - `useProductsFilter`
 
 SERVICES / API LAYER
+
 - Put API calls in a dedicated service layer.
 - Do not scatter fetch/axios calls across pages and components.
 - Example:
@@ -104,6 +112,7 @@ SERVICES / API LAYER
 - Components should call hooks or services, not build request logic repeatedly inline.
 
 FORMS
+
 - Keep forms modular and readable.
 - Separate:
   - form UI
@@ -117,6 +126,7 @@ FORMS
 - Avoid giant page files with all form state and JSX mixed together.
 
 STYLING
+
 - Keep styling consistent with the existing design system or project direction.
 - Do not introduce random one-off styles unless necessary.
 - Extract repeated class patterns into reusable components or helpers when useful.
@@ -128,6 +138,7 @@ STYLING
 - Preserve the existing visual language unless I explicitly ask for redesign.
 
 LAYOUT
+
 - Separate layout structure from page content.
 - Use dedicated layout components for:
   - headers
@@ -138,6 +149,7 @@ LAYOUT
 - Avoid repeating the same structural markup across pages.
 
 UTILS
+
 - Put pure helper functions in `utils/`.
 - Helpers should be:
   - pure
@@ -147,16 +159,19 @@ UTILS
 - If logic belongs to a feature, keep it in that feature’s `utils/`.
 
 CONSTANTS / CONFIG
+
 - Move repeated labels, options, static config, and mappings into constants files.
 - Avoid hardcoding repeated option arrays or display config in many components.
 
 STATE MANAGEMENT
+
 - Keep state close to where it is used, but not trapped in giant page files.
 - Local UI state stays local.
 - Shared feature state can move into hooks/context/store only when truly needed.
 - Do not over-engineer global state for simple local behavior.
 
 DATA FLOW
+
 - Keep data flow predictable:
   - page assembles feature
   - feature hook/service gets data
@@ -164,6 +179,7 @@ DATA FLOW
 - Avoid mixing fetching, formatting, mutation, and rendering all in one component.
 
 ERROR / LOADING / EMPTY STATES
+
 - Every data-driven page or section should handle:
   - loading state
   - error state
@@ -171,11 +187,13 @@ ERROR / LOADING / EMPTY STATES
 - Keep these states clean and intentional, not ad hoc in every file.
 
 REUSABILITY RULES
+
 - Extract a component only when it improves clarity or reuse.
 - Do not over-fragment simple UI.
 - Do not keep duplicated UI blocks in multiple pages if they represent the same thing.
 
 NAMING RULES
+
 - Use clear names that describe purpose.
 - Prefer names like:
   - `AddressForm`
@@ -190,12 +208,14 @@ NAMING RULES
   - `DataManager`
 
 CLEANUP RULES
+
 - Remove dead code, unused imports, commented-out code, and unnecessary wrappers.
 - Simplify overcomplicated JSX where possible.
 - Keep files focused and readable.
 - Do not change unrelated behavior.
 
 TESTABILITY RULES
+
 - Keep logic in places that are easy to test:
   - helpers in utils
   - request logic in services
@@ -204,6 +224,7 @@ TESTABILITY RULES
 - Do not bury important logic inside giant JSX trees.
 
 NEXT.JS RULES
+
 - Preserve App Router conventions if the project uses them.
 - Keep server/client boundaries clean.
 - Only use `"use client"` where needed.
@@ -211,7 +232,37 @@ NEXT.JS RULES
 - If data can stay server-side cleanly, prefer that.
 - If interactive behavior is needed, isolate it into client components.
 
+REDUX RULES
+
+- Redux is used for global client-side state that multiple disconnected components need.
+- The Redux store is at `src/app/redux/store/index.js`.
+- Slices are at `src/app/redux/slice/`.
+- Current slices:
+  - `BasketSlice` — shopping basket items (`state.basket`)
+  - `authSlice` — auth state and popup visibility (`state.auth`)
+- When adding new global state, create a new slice in `src/app/redux/slice/`.
+- Register it in `src/app/redux/store/index.js`.
+- Read state with `useSelector`. Write state with `useDispatch`.
+- Do NOT use DOM custom events or window events to share state between components.
+  Use Redux actions instead.
+- Do NOT use `subscribeToStorageChanges` for auth reactivity. Use `useSelector` instead.
+
+AUTH STATE RULES
+
+- Auth state is owned by Redux (`state.auth`). See `EVENT-BEHAVIOR-README.md` for full details.
+- `state.auth.user` — signed-in customer
+- `state.auth.storeOwner` — signed-in seller
+- `state.auth.hydrated` — true after first client-side localStorage read
+- `state.auth.loginPopupOpen` — customer login dialog visibility
+- `state.auth.sellerPopupOpen` — seller login dialog visibility
+- To open a popup: `dispatch(openLoginPopup())` or `dispatch(openSellerPopup())`
+- To read auth in a component: `useSelector(state => state.auth.user/storeOwner)`
+- For seller route guards: use `useSellerSession()` hook
+- Never re-introduce `openAuthPopup()`, `document.dispatchEvent`, or `subscribeToStorageChanges`
+  for auth or popup purposes.
+
 IMPLEMENTATION RULES
+
 - Refactor directly in the codebase.
 - Keep the existing stack and style unless I explicitly ask to change them.
 - Preserve working behavior unless there is a bug or structural issue.
@@ -219,6 +270,7 @@ IMPLEMENTATION RULES
 - Use `apply_patch` for edits.
 
 What I want back:
+
 1. Refactor the frontend directly
 2. Explain the final structure
 3. Tell me which files were added or changed
