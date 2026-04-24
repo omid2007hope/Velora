@@ -1,20 +1,25 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  saveAuthSession,
-  saveStoredUser,
-} from "@/app/lib/browser-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { saveAuthSession, saveStoredUser } from "@/app/lib/browser-storage";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SignupPopup from "@/app/features/auth/components/SignupPopup";
 import { loginCustomer } from "@/app/features/auth/services/auth-service";
 import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
+import {
+  closeLoginPopup,
+  setUser,
+  setStoreOwner,
+} from "@/app/redux/slice/authSlice";
 
-export default function LoginPopup({ open, setOpen, setUser }) {
+export default function LoginPopup() {
+  const dispatch = useDispatch();
+  const open = useSelector((state) => state.auth.loginPopupOpen);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSignup, setOpenSignup] = useState(false);
@@ -29,14 +34,18 @@ export default function LoginPopup({ open, setOpen, setUser }) {
     return null;
   }
 
+  function close() {
+    dispatch(closeLoginPopup());
+  }
+
   function switchPopup(setNext) {
-    setOpen(false);
+    close();
     setTimeout(() => setNext(true), 250);
   }
 
   function clearStoredSellerState() {
     window.localStorage.removeItem("storeOwner");
-    window.dispatchEvent(new Event("storeOwner-updated"));
+    dispatch(setStoreOwner(null));
   }
 
   async function handleLogin() {
@@ -64,8 +73,8 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         token: response.token,
         refreshToken: response.refreshToken,
       });
-      setUser(user);
-      setOpen(false);
+      dispatch(setUser(user));
+      close();
       router.push("/account");
     } catch (error) {
       const message =
@@ -92,17 +101,10 @@ export default function LoginPopup({ open, setOpen, setUser }) {
 
     clearStoredSellerState();
     saveStoredUser(user);
-    setUser(user);
-    setOpen(false);
+    dispatch(setUser(user));
+    close();
     router.push("/account");
   }
-
-  useEffect(() => {
-    const openLogin = () => setOpen(true);
-
-    document.addEventListener("open-login-popup", openLogin);
-    return () => document.removeEventListener("open-login-popup", openLogin);
-  }, [setOpen]);
 
   return (
     <>
@@ -113,7 +115,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
         authView={AUTH_VIEW.CUSTOMER}
       />
 
-      <Dialog open={open} onClose={setOpen} className="relative z-50">
+      <Dialog open={open} onClose={close} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -167,7 +169,7 @@ export default function LoginPopup({ open, setOpen, setUser }) {
               Sign in
             </button>
             <button
-              onClick={() => setOpen(false)}
+              onClick={close}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
               Back

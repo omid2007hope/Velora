@@ -1,24 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  getStoredStoreOwner,
-  subscribeToStorageChanges,
-} from "@/app/lib/browser-storage";
+import { useSelector } from "react-redux";
 
 export function useSellerSession() {
-  const [storeOwner, setStoreOwner] = useState(null);
-  const [hasHydrated, setHasHydrated] = useState(false);
-
-  useEffect(() => {
-    const syncStoreOwner = () => {
-      setStoreOwner(getStoredStoreOwner());
-      setHasHydrated(true);
-    };
-
-    syncStoreOwner();
-    return subscribeToStorageChanges(syncStoreOwner);
-  }, []);
+  const storeOwner = useSelector((state) => state.auth.storeOwner);
+  const hasHydrated = useSelector((state) => state.auth.hydrated);
 
   return {
     hasHydrated,

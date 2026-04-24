@@ -4,13 +4,12 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import EmailVerificationPopup from "@/app/features/auth/components/EmailVerificationPopup";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import { registerStoreOwner } from "@/app/features/auth/services/auth-service";
-import {
-  AUTH_VIEW,
-  openAuthPopup,
-} from "@/app/features/auth/utils/auth-popup-events";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openSellerPopup } from "@/app/redux/slice/authSlice";
 import {
   getPasswordCriteriaState,
   parseJwtPayload,
@@ -18,6 +17,7 @@ import {
 } from "@/app/features/auth/utils/auth-form-utils";
 
 export default function SellerSignupPopup({ open, setOpen }) {
+  const dispatch = useDispatch();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,7 +94,7 @@ export default function SellerSignupPopup({ open, setOpen }) {
   function goBack() {
     setOpen(false);
     setTimeout(() => {
-      openAuthPopup(AUTH_VIEW.SELLER);
+      dispatch(openSellerPopup());
     }, 200);
   }
 

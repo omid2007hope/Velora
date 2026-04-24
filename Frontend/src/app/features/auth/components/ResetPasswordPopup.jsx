@@ -4,11 +4,10 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import { requestPasswordReset } from "@/app/features/auth/services/auth-service";
-import {
-  AUTH_VIEW,
-  openAuthPopup,
-} from "@/app/features/auth/utils/auth-popup-events";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openLoginPopup, openSellerPopup } from "@/app/redux/slice/authSlice";
 import {
   getPasswordCriteriaState,
   isValidEmail,
@@ -20,6 +19,7 @@ export default function ResetPasswordPopup({
   setOpen,
   authView = AUTH_VIEW.CUSTOMER,
 }) {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,7 +46,9 @@ export default function ResetPasswordPopup({
 
   function closeAndOpenLogin() {
     setOpen(false);
-    openAuthPopup(authView);
+    dispatch(
+      authView === AUTH_VIEW.SELLER ? openSellerPopup() : openLoginPopup(),
+    );
   }
 
   function validateForm() {

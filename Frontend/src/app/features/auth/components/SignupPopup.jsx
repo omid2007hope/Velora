@@ -4,13 +4,12 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import EmailVerificationPopup from "@/app/features/auth/components/EmailVerificationPopup";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import { registerCustomer } from "@/app/features/auth/services/auth-service";
-import {
-  AUTH_VIEW,
-  openAuthPopup,
-} from "@/app/features/auth/utils/auth-popup-events";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openLoginPopup } from "@/app/redux/slice/authSlice";
 import {
   getPasswordCriteriaState,
   parseJwtPayload,
@@ -18,6 +17,7 @@ import {
 } from "@/app/features/auth/utils/auth-form-utils";
 
 export default function SignupPopup({ open, setOpen }) {
+  const dispatch = useDispatch();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -73,7 +73,9 @@ export default function SignupPopup({ open, setOpen }) {
       const fallback =
         error.response?.data?.error ?? error.response?.data ?? error.message;
       const message = details
-        ? details.map((entry) => `${entry.path || "field"}: ${entry.message}`).join("\n")
+        ? details
+            .map((entry) => `${entry.path || "field"}: ${entry.message}`)
+            .join("\n")
         : fallback;
       alert(message || "Signup failed. Please try again.");
       return;
@@ -93,7 +95,7 @@ export default function SignupPopup({ open, setOpen }) {
   function goBack() {
     setOpen(false);
     setTimeout(() => {
-      openAuthPopup(AUTH_VIEW.CUSTOMER);
+      dispatch(openLoginPopup());
     }, 200);
   }
 
@@ -161,7 +163,9 @@ export default function SignupPopup({ open, setOpen }) {
                       >
                         {met ? "✓" : "○"}
                       </span>
-                      <span className={met ? "text-amber-950" : "text-amber-600"}>
+                      <span
+                        className={met ? "text-amber-950" : "text-amber-600"}
+                      >
                         {item.label}
                       </span>
                     </div>

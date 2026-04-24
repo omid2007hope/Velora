@@ -4,19 +4,20 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { confirmPasswordReset } from "@/app/features/auth/services/auth-service";
-import {
-  AUTH_VIEW,
-  openAuthPopup,
-} from "@/app/features/auth/utils/auth-popup-events";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openLoginPopup, openSellerPopup } from "@/app/redux/slice/authSlice";
 
 function ResetPasswordContent() {
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
-  const authView = searchParams.get("authView") === AUTH_VIEW.SELLER
-    ? AUTH_VIEW.SELLER
-    : AUTH_VIEW.CUSTOMER;
+  const authView =
+    searchParams.get("authView") === AUTH_VIEW.SELLER
+      ? AUTH_VIEW.SELLER
+      : AUTH_VIEW.CUSTOMER;
 
   const [status, setStatus] = useState("pending"); // pending | success | error
   const [message, setMessage] = useState("Applying your new password...");
@@ -32,9 +33,15 @@ function ResetPasswordContent() {
       try {
         await confirmPasswordReset(token, authView);
         setStatus("success");
-        setMessage("Your password was updated successfully. You can sign in with it now.");
+        setMessage(
+          "Your password was updated successfully. You can sign in with it now.",
+        );
         setTimeout(() => {
-          openAuthPopup(authView);
+          dispatch(
+            authView === AUTH_VIEW.SELLER
+              ? openSellerPopup()
+              : openLoginPopup(),
+          );
         }, 300);
       } catch (error) {
         const reason =
@@ -47,7 +54,7 @@ function ResetPasswordContent() {
     }
 
     confirm();
-  }, [authView, token]);
+  }, [authView, dispatch, token]);
 
   function goHome() {
     router.push("/");

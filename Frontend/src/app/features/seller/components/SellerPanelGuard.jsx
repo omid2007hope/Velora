@@ -1,10 +1,12 @@
 "use client";
 
+import { useDispatch } from "react-redux";
 import SectionCard from "@/app/components/ui/SectionCard";
-import { openAuthPopup, AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openSellerPopup } from "@/app/redux/slice/authSlice";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
 export default function SellerPanelGuard({ children }) {
+  const dispatch = useDispatch();
   const { storeOwner, hasHydrated } = useSellerSession();
 
   if (!hasHydrated) {
@@ -35,7 +37,7 @@ export default function SellerPanelGuard({ children }) {
           </p>
           <button
             type="button"
-            onClick={() => openAuthPopup(AUTH_VIEW.SELLER)}
+            onClick={() => dispatch(openSellerPopup())}
             className="mt-8 inline-flex rounded-full bg-amber-950 px-5 py-3 text-sm font-semibold text-orange-50 transition hover:bg-amber-900"
           >
             Open seller sign in

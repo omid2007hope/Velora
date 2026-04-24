@@ -4,12 +4,11 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { requestEmailVerification } from "@/app/features/auth/services/auth-service";
 import { isValidEmail } from "@/app/features/auth/utils/auth-form-utils";
-import {
-  AUTH_VIEW,
-  openAuthPopup,
-} from "@/app/features/auth/utils/auth-popup-events";
+import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
+import { openLoginPopup, openSellerPopup } from "@/app/redux/slice/authSlice";
 
 const DEFAULT_MESSAGE =
   "We just emailed you a verification link. Open your inbox, tap the button inside, then come back here to sign in.";
@@ -20,6 +19,7 @@ export default function EmailVerificationPopup({
   email = "",
   authView = AUTH_VIEW.CUSTOMER,
 }) {
+  const dispatch = useDispatch();
   const [emailInput, setEmailInput] = useState(email);
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,9 @@ export default function EmailVerificationPopup({
 
   function closeAndOpenLogin() {
     setOpen(false);
-    openAuthPopup(authView);
+    dispatch(
+      authView === AUTH_VIEW.SELLER ? openSellerPopup() : openLoginPopup(),
+    );
   }
 
   async function handleResend() {
@@ -39,7 +41,9 @@ export default function EmailVerificationPopup({
 
     const normalizedEmail = emailInput.trim().toLowerCase();
     if (!normalizedEmail) {
-      setMessage("Enter the email you used to sign up so we can resend the link.");
+      setMessage(
+        "Enter the email you used to sign up so we can resend the link.",
+      );
       return;
     }
 
@@ -76,7 +80,10 @@ export default function EmailVerificationPopup({
           <h2 className="text-center text-2xl font-bold text-amber-950">
             Confirm your email
           </h2>
-          <p className="mt-1 text-center text-sm text-amber-700" aria-live="polite">
+          <p
+            className="mt-1 text-center text-sm text-amber-700"
+            aria-live="polite"
+          >
             {message}
           </p>
 

@@ -1,8 +1,9 @@
 "use client";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import {
   saveAuthSession,
   saveStoredStoreOwner,
@@ -13,12 +14,15 @@ import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup"
 import { loginStoreOwner } from "@/app/features/auth/services/auth-service";
 import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
-
-export default function LogIntoSellerPanelPopup({
-  logIntoSellerPanel,
-  setLogIntoSellerPanel,
+import {
+  closeSellerPopup,
   setStoreOwner,
-}) {
+  setUser,
+} from "@/app/redux/slice/authSlice";
+
+export default function LogIntoSellerPanelPopup() {
+  const dispatch = useDispatch();
+  const open = useSelector((state) => state.auth.sellerPopupOpen);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openResetPassword, setOpenResetPassword] = useState(false);
@@ -33,14 +37,18 @@ export default function LogIntoSellerPanelPopup({
     return null;
   }
 
+  function close() {
+    dispatch(closeSellerPopup());
+  }
+
   function switchPopup(setNext) {
-    setLogIntoSellerPanel(false);
+    close();
     setTimeout(() => setNext(true), 250);
   }
 
   function clearStoredCustomerState() {
     window.localStorage.removeItem("user");
-    window.dispatchEvent(new Event("user-updated"));
+    dispatch(setUser(null));
   }
 
   async function handleLogin() {
@@ -68,8 +76,8 @@ export default function LogIntoSellerPanelPopup({
         token: response.token,
         refreshToken: response.refreshToken,
       });
-      setStoreOwner(storeOwner);
-      setLogIntoSellerPanel(false);
+      dispatch(setStoreOwner(storeOwner));
+      close();
       router.push("/seller");
     } catch (error) {
       const message =
@@ -96,18 +104,10 @@ export default function LogIntoSellerPanelPopup({
 
     clearStoredCustomerState();
     saveStoredStoreOwner(storeOwner);
-    setStoreOwner(storeOwner);
-    setLogIntoSellerPanel(false);
+    dispatch(setStoreOwner(storeOwner));
+    close();
     router.push("/seller");
   }
-
-  useEffect(() => {
-    const openSellerPanel = () => setLogIntoSellerPanel(true);
-
-    document.addEventListener("open-sellerPanel-popup", openSellerPanel);
-    return () =>
-      document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
-  }, [setLogIntoSellerPanel]);
 
   return (
     <>
@@ -122,11 +122,7 @@ export default function LogIntoSellerPanelPopup({
         authView={AUTH_VIEW.SELLER}
       />
 
-      <Dialog
-        open={logIntoSellerPanel}
-        onClose={setLogIntoSellerPanel}
-        className="relative z-50"
-      >
+      <Dialog open={open} onClose={close} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -180,7 +176,7 @@ export default function LogIntoSellerPanelPopup({
               Sign in to Seller Panel
             </button>
             <button
-              onClick={() => setLogIntoSellerPanel(false)}
+              onClick={close}
               className="mt-4 w-full rounded-full bg-amber-950 py-3 text-lg font-semibold text-white hover:bg-amber-900"
             >
               Back to Store

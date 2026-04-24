@@ -24,18 +24,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CircleUserRound, Store } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LoginPopup from "@/app/features/auth/components/LoginPopup";
 import CategoryCarousel from "@/app/components/layout/header/category/CategoryCarousel";
 import { featuredPreviewImages } from "@/app/components/layout/header/category/featured-preview-images";
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
-import {
-  getStoredStoreOwner,
-  getStoredUser,
-  subscribeToStorageChanges,
-} from "@/app/lib/browser-storage";
+import { getStoredStoreOwner, getStoredUser } from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
 import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
+import {
+  hydrateAuth,
+  openLoginPopup,
+  openSellerPopup,
+} from "@/app/redux/slice/authSlice";
 
 const featuredPreviewByCategory = {
   women: <CategoryCarousel images={featuredPreviewImages.women} />,
@@ -53,47 +54,34 @@ const accountLinkClass =
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [login, setLogin] = useState(false);
-  const [logIntoSellerPanel, setLogIntoSellerPanel] = useState(false);
-  const [user, setUser] = useState(null);
-  const [storeOwner, setStoreOwner] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.basket);
+  const user = useSelector((state) => state.auth.user);
+  const storeOwner = useSelector((state) => state.auth.storeOwner);
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
   }, [cartItems]);
 
+  // Hydrate auth state from localStorage once on the client
   useEffect(() => {
+    dispatch(
+      hydrateAuth({
+        user: getStoredUser(),
+        storeOwner: getStoredStoreOwner(),
+      }),
+    );
     setHasMounted(true);
-    setUser(getStoredUser());
-    setStoreOwner(getStoredStoreOwner());
-  }, []);
+  }, [dispatch]);
 
-  useEffect(() => {
-    const openSellerPanel = () => setLogIntoSellerPanel(true);
-    document.addEventListener("open-sellerPanel-popup", openSellerPanel);
-
-    return () => {
-      document.removeEventListener("open-sellerPanel-popup", openSellerPanel);
-    };
-  }, []);
-
-  useEffect(() => {
-    const openLogin = () => setLogin(true);
-    document.addEventListener("open-login-popup", openLogin);
-
-    return () => {
-      document.removeEventListener("open-login-popup", openLogin);
-    };
-  }, []);
-
+  // Open login popup when ?auth=login query param is present
   useEffect(() => {
     if (searchParams.get("auth") === "login") {
-      setLogin(true);
+      dispatch(openLoginPopup());
 
       const nextSearchParams = new URLSearchParams(searchParams.toString());
       nextSearchParams.delete("auth");
@@ -102,16 +90,7 @@ export default function Header() {
         scroll: false,
       });
     }
-  }, [pathname, router, searchParams]);
-
-  useEffect(() => {
-    const syncAuthState = () => {
-      setUser(getStoredUser());
-      setStoreOwner(getStoredStoreOwner());
-    };
-
-    return subscribeToStorageChanges(syncAuthState);
-  }, []);
+  }, [pathname, router, searchParams, dispatch]);
 
   useEffect(() => {
     setOpen(false);
@@ -119,19 +98,9 @@ export default function Header() {
 
   return (
     <div className="fixed z-10 w-full bg-orange-100">
-      <LoginPopup
-        open={login}
-        setOpen={setLogin}
-        user={user}
-        setUser={setUser}
-      />
+      <LoginPopup />
 
-      <LogIntoSellerPanelPopup
-        logIntoSellerPanel={logIntoSellerPanel}
-        setLogIntoSellerPanel={setLogIntoSellerPanel}
-        storeOwner={storeOwner}
-        setStoreOwner={setStoreOwner}
-      />
+      <LogIntoSellerPanelPopup />
 
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/30" />
@@ -152,7 +121,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       setOpen(false);
-                      setTimeout(() => setLogIntoSellerPanel(true), 300);
+                      setTimeout(() => dispatch(openSellerPopup()), 300);
                     }}
                     className={actionButtonClass}
                   >
@@ -181,7 +150,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       setOpen(false);
-                      setTimeout(() => setLogin(true), 300);
+                      setTimeout(() => dispatch(openLoginPopup()), 300);
                     }}
                     className={actionButtonClass}
                   >
@@ -390,7 +359,7 @@ export default function Header() {
                 {user ? null : !storeOwner ? (
                   <button
                     className={actionButtonClass}
-                    onClick={() => setLogIntoSellerPanel(true)}
+                    onClick={() => dispatch(openSellerPopup())}
                   >
                     Sell on Velora
                   </button>
@@ -414,7 +383,7 @@ export default function Header() {
                   </Link>
                 ) : (
                   <button
-                    onClick={() => setLogin(true)}
+                    onClick={() => dispatch(openLoginPopup())}
                     className={actionButtonClass}
                   >
                     Sign in

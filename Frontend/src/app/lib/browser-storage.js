@@ -1,7 +1,3 @@
-// ! Update Storage
-const USER_STORAGE_EVENT = "user-updated";
-const STOREOWNER_STORAGE_EVENT = "storeOwner-updated";
-
 // ! Data
 const USER_KEY = "user";
 const STOREOWNER_KEY = "storeOwner";
@@ -31,23 +27,13 @@ function parseJson(value, fallback) {
 
 // !!! Store Owner LocalStorages
 
-// ! Update Store Owner
-function emitStoreOwnerUpdated() {
-  if (isBrowser()) {
-    window.dispatchEvent(new Event(STOREOWNER_STORAGE_EVENT));
-  }
-}
-
 // ! Save Store Owner
 export function saveStoredStoreOwner(storeOwner) {
   if (!isBrowser()) {
     return null;
   }
 
-  // ! save the storeOwner as STOREOWNER_KEY in  LocalStorage
-
   window.localStorage.setItem(STOREOWNER_KEY, JSON.stringify(storeOwner));
-  emitStoreOwnerUpdated();
 }
 
 // ! Get Store Owner
@@ -79,15 +65,6 @@ export function saveStoredUser(user) {
   }
 
   window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-  emitUserUpdated();
-}
-
-// ! Update User
-
-function emitUserUpdated() {
-  if (isBrowser()) {
-    window.dispatchEvent(new Event(USER_STORAGE_EVENT));
-  }
 }
 
 // ! Global Get Token
@@ -117,16 +94,14 @@ export function saveAuthSession({ storeOwner, user, token, refreshToken }) {
 
   if (storeOwner !== undefined) {
     window.localStorage.setItem(STOREOWNER_KEY, JSON.stringify(storeOwner));
-    emitStoreOwnerUpdated();
   }
 
   if (user !== undefined) {
     window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-    emitUserUpdated();
   }
 }
 
-// ! Global Clear Auth Sassion
+// ! Global Clear Auth Session
 
 export function clearAuthSession() {
   if (!isBrowser()) {
@@ -135,43 +110,11 @@ export function clearAuthSession() {
 
   window.localStorage.removeItem(TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
-
   window.localStorage.removeItem(STOREOWNER_KEY);
-  emitStoreOwnerUpdated();
-
   window.localStorage.removeItem(USER_KEY);
-  emitUserUpdated();
 }
 
 // !
-
-export function subscribeToStorageChanges(callback) {
-  if (!isBrowser()) {
-    return () => {};
-  }
-
-  const events = ["storage", USER_STORAGE_EVENT, STOREOWNER_STORAGE_EVENT];
-
-  const handler = (e) => {
-    if (e.type === "storage") {
-      if (e.key !== USER_KEY && e.key !== STOREOWNER_KEY) {
-        return;
-      }
-    }
-
-    callback(e);
-  };
-
-  events.forEach((event) => {
-    window.addEventListener(event, handler);
-  });
-
-  return () => {
-    events.forEach((event) => {
-      window.removeEventListener(event, handler);
-    });
-  };
-}
 
 // ! user only
 
