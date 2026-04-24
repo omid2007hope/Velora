@@ -27,14 +27,14 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
-// Normalise error responses so callers get a consistent shape
+// Normalise error responses so callers get a consistent shape.
+// NOTE: We re-throw the original Axios error unchanged so that callers can
+// still read error.response.data.error, error.response.data.details, etc.
+// Wrapping in a plain Error would strip error.response and break all
+// field-level validation error display across the app.
 client.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const message =
-      error?.response?.data?.message || error.message || "An error occurred";
-    return Promise.reject(new Error(message));
-  },
+  (error) => Promise.reject(error),
 );
 
 export default client;
