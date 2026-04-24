@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { listSellerStore } from "@/app/features/seller/services/seller-store-service";
 
 export function useSellerStores() {
+  const storeOwner = useSelector((state) => state.auth.storeOwner);
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,7 +43,7 @@ export function useSellerStores() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [storeOwner]);
 
   return {
     stores,

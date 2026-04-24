@@ -20,4 +20,8 @@ module.exports = new (class StoreService extends BaseService {
 
     return this.createObject(normalizedStoreData);
   }
+
+  async getStoreData(ownerId) {
+    return this.findOne({ ownerOfStore: ownerId });
+  }
 })(Store);

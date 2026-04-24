@@ -53,7 +53,7 @@ export default function SellerPanelShell({ children }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
+                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition border border-amber-950/50 ${
                     isActive
                       ? "bg-amber-950 text-orange-50 shadow-[0_16px_30px_rgba(120,53,15,0.24)]"
                       : "text-amber-950 hover:bg-orange-100"
