@@ -1,34 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  getStoredStoreOwner,
-  getStoredUser,
-  subscribeToStorageChanges,
-} from "@/app/lib/browser-storage";
+import { useSelector } from "react-redux";
 
 export default function AccountAccessGuard({ children }) {
-  const [ready, setReady] = useState(false);
-  const [user, setUser] = useState(null);
-  const [storeOwner, setStoreOwner] = useState(null);
+  const user = useSelector((state) => state.auth.user);
+  const storeOwner = useSelector((state) => state.auth.storeOwner);
+  const hydrated = useSelector((state) => state.auth.hydrated);
   const router = useRouter();
 
   useEffect(() => {
-    const syncAuthState = () => {
-      setUser(getStoredUser());
-      setStoreOwner(getStoredStoreOwner());
-      setReady(true);
-    };
-
-    syncAuthState();
-    return subscribeToStorageChanges(syncAuthState);
-  }, []);
-
-  useEffect(() => {
-    if (!ready) {
-      return;
-    }
+    if (!hydrated) return;
 
     if (storeOwner) {
       router.replace("/");
@@ -38,9 +21,9 @@ export default function AccountAccessGuard({ children }) {
     if (!user) {
       router.replace("/?auth=login");
     }
-  }, [ready, router, storeOwner, user]);
+  }, [hydrated, router, storeOwner, user]);
 
-  if (!ready || storeOwner || !user) {
+  if (!hydrated || storeOwner || !user) {
     return null;
   }
 

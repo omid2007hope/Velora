@@ -1,28 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, UserIcon, X } from "lucide-react";
+import { useSelector } from "react-redux";
 import SignOutDialog from "@/app/features/account/components/SignOutDialog";
 import { accountLinks } from "@/app/features/account/constants/account-links";
-import {
-  getStoredUser,
-  subscribeToStorageChanges,
-} from "@/app/lib/browser-storage";
 
 export default function AccountShell({ children }) {
   const [openSignOut, setOpenSignOut] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.auth.user);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const updateUser = () => setUser(getStoredUser());
-
-    updateUser();
-    return subscribeToStorageChanges(updateUser);
-  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-orange-50 pt-0">
