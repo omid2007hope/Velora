@@ -8,6 +8,7 @@ import { createSellerStorePayload } from "@/app/features/seller/utils/create-sel
 const initialForm = {
   storeName: "",
   storeDescription: "",
+  storeAddress: "",
   storeZipcode: "",
   cityStoreLocatedIn: "",
   stateOrProvinceStoreLocatedIn: "",

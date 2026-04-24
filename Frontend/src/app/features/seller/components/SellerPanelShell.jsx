@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Store, Plus, LayoutDashboard } from "lucide-react";
+import { Store, Plus, LayoutDashboard, ArrowLeft } from "lucide-react";
 import { sellerNavigation } from "@/app/features/seller/constants/seller-navigation";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
@@ -65,6 +65,12 @@ export default function SellerPanelShell({ children }) {
               );
             })}
           </nav>
+          <Link
+            href="/"
+            className="flex items-center gap-2 rounded-lg border border-amber-950 p-2.5 font-bold text-amber-950 transition hover:bg-amber-950 hover:text-white mt-5"
+          >
+            <ArrowLeft /> Back
+          </Link>
         </aside>
 
         <div className="min-w-0">{children}</div>
