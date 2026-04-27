@@ -1,0 +1,805 @@
+{
+  "info": {
+    "name": "Velora API v2",
+    "_postman_id": "velora-api-v2-collection",
+    "description": "Postman collection for Velora e-commerce backend API. Base URL: {{baseUrl}}. All authenticated routes require a Bearer token in the Authorization header.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sellerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cartItemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "storeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🟢 Health",
+      "item": [
+        {
+          "name": "Server Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/server",
+              "host": ["{{baseUrl}}"],
+              "path": ["server"]
+            }
+          }
+        },
+        {
+          "name": "V1 Server Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Customer",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\",\n  \"authView\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer"]
+            }
+          }
+        },
+        {
+          "name": "Login Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.collectionVariables.set('customerToken', json.accessToken);",
+                  "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Customer Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/token/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "token", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Request Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"authView\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/email/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "email", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<email-verification-token>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/email/verify/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "email", "verify", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "Request Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"newPassword\": \"NewPassword123!\",\n  \"authView\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/password-reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "password-reset"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<password-reset-token>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/password-reset/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "password-reset", "confirm"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏪 Store Owner",
+      "item": [
+        {
+          "name": "Register Store Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeOwnerName\": \"Jane Smith\",\n  \"storeOwnerEmailAddress\": \"jane@store.com\",\n  \"storeOwnerPassword\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner"]
+            }
+          }
+        },
+        {
+          "name": "Login Store Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.collectionVariables.set('sellerToken', json.accessToken);",
+                  "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeOwnerEmailAddress\": \"jane@store.com\",\n  \"storeOwnerPassword\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Store Owner Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/token/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "token", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Request Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@store.com\",\n  \"authView\": \"seller\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/email/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "email", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<email-verification-token>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/email/verify/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "email", "verify", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "Request Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@store.com\",\n  \"newPassword\": \"NewPassword123!\",\n  \"authView\": \"seller\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/password-reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "password-reset"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<password-reset-token>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/store-owner/password-reset/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "store-owner", "password-reset", "confirm"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏬 Store",
+      "item": [
+        {
+          "name": "Create Store",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{sellerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeName\": \"My Awesome Store\",\n  \"storeDescription\": \"We sell the best products.\",\n  \"countryStoreLocatedIn\": \"United States\",\n  \"stateOrProvinceStoreLocatedIn\": \"California\",\n  \"cityStoreLocatedIn\": \"Los Angeles\",\n  \"storeAddress\": \"123 Main Street\",\n  \"storeZipcode\": \"90001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/seller/store",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "seller", "store"]
+            }
+          }
+        },
+        {
+          "name": "Get Store Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{sellerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/seller/store/{{storeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "seller", "store", "{{storeId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Account (Customer Profile)",
+      "item": [
+        {
+          "name": "Create Account Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1-555-000-1234\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"gender\": \"male\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/login/account",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "login", "account"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📍 Address",
+      "item": [
+        {
+          "name": "Create Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"country\": \"United States\",\n  \"city\": \"Los Angeles\",\n  \"street\": \"456 Sunset Blvd\",\n  \"postalCode\": \"90028\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/login/account/address",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "login", "account", "address"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Payment",
+      "item": [
+        {
+          "name": "Create Payment Method",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethodId\": \"pm_card_visa\",\n  \"billingName\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/customer/login/account/payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "customer", "login", "account", "payment"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "List All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Product (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Classic T-Shirt\",\n  \"description\": \"A comfortable everyday t-shirt.\",\n  \"price\": 29.99,\n  \"newPrice\": 24.99,\n  \"oldPrice\": 29.99,\n  \"discount\": \"17%\",\n  \"category\": \"Apparel\",\n  \"subCategory\": \"T-Shirts\",\n  \"imageUrl\": \"https://example.com/images/tshirt.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "products"]
+            }
+          }
+        },
+        {
+          "name": "List Seller Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{sellerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/seller/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "seller", "products"]
+            }
+          }
+        },
+        {
+          "name": "Create Seller Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{sellerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Hoodie\",\n  \"description\": \"Warm and stylish hoodie.\",\n  \"price\": 59.99,\n  \"newPrice\": 49.99,\n  \"oldPrice\": 59.99,\n  \"discount\": \"17%\",\n  \"category\": \"Apparel\",\n  \"subCategory\": \"Hoodies\",\n  \"imageUrl\": \"https://example.com/images/hoodie.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/seller/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "seller", "products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ Reviews",
+      "item": [
+        {
+          "name": "List Reviews for Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/products/{{productId}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "products", "{{productId}}", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "Create Review for Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"rating\": 4,\n  \"comment\": \"Great product, highly recommend!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/products/{{productId}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "products", "{{productId}}", "reviews"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart"]
+            }
+          }
+        },
+        {
+          "name": "Get Cart (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart"]
+            }
+          }
+        },
+        {
+          "name": "Add Cart Item",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.cart && json.cart.items && json.cart.items.length > 0) {",
+                  "  pm.collectionVariables.set('cartItemId', json.cart.items[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2,\n  \"variant\": {\n    \"selectedColor\": \"Black\",\n    \"selectedSize\": \"M\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart", "item"]
+            }
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"{{cartItemId}}\",\n  \"quantity\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart", "item"]
+            }
+          }
+        },
+        {
+          "name": "Delete Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"{{cartItemId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart", "item"]
+            }
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "cart"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧾 Checkout / Orders",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/checkout/order",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "checkout", "order"]
+            }
+          }
+        },
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.order && json.order._id) pm.collectionVariables.set('orderId', json.order._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"selectedColor\": \"Black\",\n      \"selectedSize\": \"M\"\n    }\n  ],\n  \"shipping\": 5.99,\n  \"tax\": 2.50,\n  \"currency\": \"USD\",\n  \"addressSnapshot\": {\n    \"street\": \"456 Sunset Blvd\",\n    \"country\": \"United States\",\n    \"city\": \"Los Angeles\",\n    \"postalCode\": \"90028\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/checkout/order",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "checkout", "order"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentStatus\": \"paid\",\n  \"orderStatus\": \"processing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/checkout/order/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "checkout", "order", "{{orderId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔔 Webhook",
+      "item": [
+        {
+          "name": "Stripe Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "stripe-signature", "value": "<stripe-webhook-signature>" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_test_webhook\",\n  \"object\": \"event\",\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": {\n    \"object\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/server/webhook/stripe",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "server", "webhook", "stripe"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
