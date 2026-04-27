@@ -47,7 +47,6 @@ export default function LogIntoSellerPanelPopup() {
   }
 
   function clearStoredCustomerState() {
-    window.localStorage.removeItem("user");
     dispatch(setUser(null));
   }
 

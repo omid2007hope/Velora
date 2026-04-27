@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearBasket } from "@/app/redux/slice/BasketSlice";
 import { createOrder } from "@/app/features/order/services/order-service";
@@ -9,7 +9,6 @@ import { calculateOrderPricing } from "@/app/features/order/utils/order-pricing"
 import {
   clearSavedPaymentDraft,
   getSavedAddress,
-  getStoredUser,
   saveSavedAddress,
   saveStoredUser,
 } from "@/app/lib/browser-storage";
@@ -26,13 +25,14 @@ const initialForm = {
 export function useCheckoutForm(cartItems, onComplete) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const reduxUser = useSelector((state) => state.auth.user);
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     clearSavedPaymentDraft();
 
-    const user = getStoredUser() || {};
+    const user = reduxUser || {};
     const address = getSavedAddress();
 
     setForm((previousForm) => ({
@@ -44,7 +44,7 @@ export function useCheckoutForm(cartItems, onComplete) {
       city: address.city || previousForm.city,
       postal: address.postal || previousForm.postal,
     }));
-  }, []);
+  }, [reduxUser]);
 
   const pricing = useMemo(() => calculateOrderPricing(cartItems), [cartItems]);
 

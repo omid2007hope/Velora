@@ -44,7 +44,6 @@ export default function LoginPopup() {
   }
 
   function clearStoredSellerState() {
-    window.localStorage.removeItem("storeOwner");
     dispatch(setStoreOwner(null));
   }
 
