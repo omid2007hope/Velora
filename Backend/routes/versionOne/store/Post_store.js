@@ -1,5 +1,5 @@
 const express = require("express");
-const { requireAuth } = require("../../../middleware/auth/authenticate");
+const { requireSeller } = require("../../../middleware/auth/authenticate");
 const { createStore } = require("../../../controller/StoreController");
 const {
   validateCreateStore,
@@ -7,6 +7,6 @@ const {
 
 const router = express.Router();
 
-router.post("/", requireAuth, validateCreateStore, createStore);
+router.post("/", requireSeller, validateCreateStore, createStore);
 
 module.exports = router;

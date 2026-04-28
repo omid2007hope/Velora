@@ -23,7 +23,7 @@ export default function SellerStoreOverview() {
         </div>
 
         <Link
-          href="/seller/stores/new"
+          href="/seller/store"
           className="inline-flex rounded-full border border-amber-950 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-950 hover:text-orange-50"
         >
           Add another store

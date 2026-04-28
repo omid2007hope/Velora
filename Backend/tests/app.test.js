@@ -53,8 +53,14 @@ describe("Auth and protected routes", () => {
   });
 
   test("registration stays idempotent for an existing email", async () => {
-    const first = await request(app).post("/server/customer").send(user).expect(201);
-    const second = await request(app).post("/server/customer").send(user).expect(201);
+    const first = await request(app)
+      .post("/server/customer")
+      .send(user)
+      .expect(201);
+    const second = await request(app)
+      .post("/server/customer")
+      .send(user)
+      .expect(201);
 
     expect(first.body._id).toBeTruthy();
     expect(second.body._id).toBe(first.body._id);
@@ -64,6 +70,15 @@ describe("Auth and protected routes", () => {
 
   test("rejects unauthenticated cart access", async () => {
     await request(app).get("/server/cart").expect(401);
+  });
+
+  test("accepts lowercase bearer auth prefix", async () => {
+    const { token } = await registerAndLogin();
+
+    await request(app)
+      .get("/server/cart")
+      .set("Authorization", `bearer ${token}`)
+      .expect(200);
   });
 
   test("rejects invalid product payloads before controller logic", async () => {
@@ -92,6 +107,17 @@ describe("Auth and protected routes", () => {
       .expect(200);
 
     expect(res.body.token).toBeTruthy();
+  });
+
+  test("protected routes accept refresh-token-signed jwt as fallback auth", async () => {
+    const { refreshToken } = await registerAndLogin();
+
+    const res = await request(app)
+      .get("/server/cart")
+      .set("Authorization", `Bearer ${refreshToken}`)
+      .expect(200);
+
+    expect(res.body.data).toBeTruthy();
   });
 
   test("store owner routes support register, login, and refresh token", async () => {
@@ -138,8 +164,244 @@ describe("Auth and protected routes", () => {
 
     expect(Array.isArray(listRes.body?.data)).toBe(true);
     expect(
-      listRes.body.data.some((product) => product.name === "Seller Panel Product"),
+      listRes.body.data.some(
+        (product) => product.name === "Seller Panel Product",
+      ),
     ).toBe(true);
+  });
+
+  test("seller can create and list seller-owned stores", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+
+    const createRes = await request(app)
+      .post("/server/seller/store")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        storeName: "Seller Test Store",
+        storeDescription: "Created from integration test",
+        countryStoreLocatedIn: "United States",
+        stateOrProvinceStoreLocatedIn: "",
+        cityStoreLocatedIn: "Los Angeles",
+        storeAddress: "123 Main St",
+        storeZipcode: "90001",
+      })
+      .expect(201);
+
+    expect(createRes.body?.data?._id).toBeTruthy();
+
+    const listRes = await request(app)
+      .get("/server/seller/store")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    expect(Array.isArray(listRes.body?.data)).toBe(true);
+    expect(
+      listRes.body.data.some(
+        (store) => store.storeName === "Seller Test Store",
+      ),
+    ).toBe(true);
+  });
+
+  test("seller-only store endpoints reject customer token", async () => {
+    const { token } = await registerAndLogin();
+
+    await request(app)
+      .get("/server/seller/store")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(403);
+
+    await request(app)
+      .post("/server/seller/store")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        storeName: "Blocked Store",
+        storeDescription: "Should not be created by customer role",
+        countryStoreLocatedIn: "United States",
+        stateOrProvinceStoreLocatedIn: "California",
+        cityStoreLocatedIn: "Los Angeles",
+        storeAddress: "123 Main St",
+        storeZipcode: "90001",
+      })
+      .expect(403);
+  });
+
+  test("customer profile routes create account, address, and payment method", async () => {
+    const { token } = await registerAndLogin();
+
+    const accountRes = await request(app)
+      .post("/server/customer/login/account")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        phoneNumber: "+1-555-000-1234",
+        dateOfBirth: "1990-01-15",
+        gender: "male",
+      })
+      .expect(201);
+
+    expect(accountRes.body?.data?.phoneNumber).toBe("+1-555-000-1234");
+
+    const addressRes = await request(app)
+      .post("/server/customer/login/account/address")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        country: "United States",
+        city: "Los Angeles",
+        street: "456 Sunset Blvd",
+        postalCode: "90028",
+      })
+      .expect(201);
+
+    expect(addressRes.body?.data?.city).toBe("los angeles");
+
+    const paymentRes = await request(app)
+      .post("/server/customer/login/account/payment")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        paymentMethodId: "pm_card_visa",
+        billingName: "John Doe",
+      })
+      .expect(201);
+
+    expect(paymentRes.body?.data?.paymentMethodId).toBe("pm_card_visa");
+  });
+
+  test("reviews flow creates and lists product reviews", async () => {
+    const productRes = await request(app)
+      .post("/server/products")
+      .send({
+        name: "Reviewed Product",
+        description: "Product for review flow",
+        price: 50,
+        category: "Men",
+        imageUrl: "https://example.com/reviewed-product.jpg",
+      })
+      .expect(201);
+
+    const productId = productRes.body?.data?._id;
+    expect(productId).toBeTruthy();
+
+    await request(app)
+      .post(`/server/products/${productId}/reviews`)
+      .send({
+        name: "Review User",
+        rating: 5,
+        comment: "Great product!",
+      })
+      .expect(201);
+
+    const listRes = await request(app)
+      .get(`/server/products/${productId}/reviews`)
+      .expect(200);
+
+    expect(Array.isArray(listRes.body?.data)).toBe(true);
+    expect(listRes.body.data.length).toBeGreaterThan(0);
+  });
+
+  test("customer email verification and password reset lifecycle works", async () => {
+    const customCustomer = {
+      fullName: "Lifecycle User",
+      email: "lifecycle@example.com",
+      password: "Password123!",
+      nextPassword: "NextPassword123!",
+    };
+
+    await request(app)
+      .post("/server/customer")
+      .send({
+        fullName: customCustomer.fullName,
+        email: customCustomer.email,
+        password: customCustomer.password,
+      })
+      .expect(201);
+
+    const emailVerifyRequest = await request(app)
+      .post("/server/customer/email/verify")
+      .send({ email: customCustomer.email, authView: "customer" })
+      .expect(200);
+
+    expect(emailVerifyRequest.body?.token).toBeTruthy();
+
+    await request(app)
+      .post("/server/customer/email/verify/confirm")
+      .send({ token: emailVerifyRequest.body.token })
+      .expect(200);
+
+    const resetRequest = await request(app)
+      .post("/server/customer/password-reset")
+      .send({
+        email: customCustomer.email,
+        newPassword: customCustomer.nextPassword,
+        authView: "customer",
+      })
+      .expect(200);
+
+    expect(resetRequest.body?.token).toBeTruthy();
+
+    await request(app)
+      .post("/server/customer/password-reset/confirm")
+      .send({ token: resetRequest.body.token })
+      .expect(200);
+
+    await request(app)
+      .post("/server/customer/login")
+      .send({
+        email: customCustomer.email,
+        password: customCustomer.nextPassword,
+      })
+      .expect(200);
+  });
+
+  test("store owner email verification and password reset lifecycle works", async () => {
+    const customSeller = {
+      storeOwnerName: "Lifecycle Seller",
+      storeOwnerEmailAddress: "seller-lifecycle@example.com",
+      storeOwnerPassword: "Password123!",
+      nextPassword: "NextPassword123!",
+    };
+
+    await request(app)
+      .post("/server/store-owner")
+      .send({
+        storeOwnerName: customSeller.storeOwnerName,
+        storeOwnerEmailAddress: customSeller.storeOwnerEmailAddress,
+        storeOwnerPassword: customSeller.storeOwnerPassword,
+      })
+      .expect(201);
+
+    const emailVerifyRequest = await request(app)
+      .post("/server/store-owner/email/verify")
+      .send({ email: customSeller.storeOwnerEmailAddress })
+      .expect(200);
+
+    expect(emailVerifyRequest.body?.token).toBeTruthy();
+
+    await request(app)
+      .post("/server/store-owner/email/verify/confirm")
+      .send({ token: emailVerifyRequest.body.token })
+      .expect(200);
+
+    const resetRequest = await request(app)
+      .post("/server/store-owner/password-reset")
+      .send({
+        email: customSeller.storeOwnerEmailAddress,
+        newPassword: customSeller.nextPassword,
+      })
+      .expect(200);
+
+    expect(resetRequest.body?.token).toBeTruthy();
+
+    await request(app)
+      .post("/server/store-owner/password-reset/confirm")
+      .send({ token: resetRequest.body.token })
+      .expect(200);
+
+    await request(app)
+      .post("/server/store-owner/login")
+      .send({
+        storeOwnerEmailAddress: customSeller.storeOwnerEmailAddress,
+        storeOwnerPassword: customSeller.nextPassword,
+      })
+      .expect(200);
   });
 
   test("cart and order flow with payment intent", async () => {

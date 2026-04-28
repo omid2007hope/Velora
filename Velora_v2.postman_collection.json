@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5000",
+      "value": "http://localhost:4000",
       "type": "string"
     },
     {
@@ -106,6 +106,7 @@
               "script": {
                 "exec": [
                   "const json = pm.response.json();",
+                  "if (json.token) pm.collectionVariables.set('customerToken', json.token);",
                   "if (json.accessToken) pm.collectionVariables.set('customerToken', json.accessToken);",
                   "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);"
                 ],
@@ -250,7 +251,9 @@
               "script": {
                 "exec": [
                   "const json = pm.response.json();",
+                  "if (json.token) pm.collectionVariables.set('sellerToken', json.token);",
                   "if (json.accessToken) pm.collectionVariables.set('sellerToken', json.accessToken);",
+                  "if (json.data && json.data._id) pm.collectionVariables.set('sellerId', json.data._id);",
                   "if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);"
                 ],
                 "type": "text/javascript"
@@ -395,9 +398,9 @@
               { "key": "Authorization", "value": "Bearer {{sellerToken}}" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/v1/server/seller/store/{{storeId}}",
+              "raw": "{{baseUrl}}/v1/server/seller/store",
               "host": ["{{baseUrl}}"],
-              "path": ["v1", "server", "seller", "store", "{{storeId}}"]
+              "path": ["v1", "server", "seller", "store"]
             }
           }
         }

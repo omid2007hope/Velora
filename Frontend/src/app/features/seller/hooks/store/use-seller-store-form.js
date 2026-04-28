@@ -45,7 +45,7 @@ export function useSellerStoreForm() {
         ? details.map((entry) => `${entry.path}: ${entry.message}`).join(", ")
         : requestError?.response?.data?.error ||
           requestError?.message ||
-          "Could not publish product.";
+          "Could not create store.";
 
       setError(message);
     } finally {

@@ -7,13 +7,12 @@ const createStore = asyncHandler(async (req, res) => {
     ownerOfStore: req.user.id,
   });
 
-  return res.status(201).json(result);
+  return res.status(201).json({ data: result });
 });
 
 const getStoreData = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const result = await storeService.getStoreData(id);
-  return res.status(200).json(result);
+  const result = await storeService.getStoreData(req.user.id);
+  return res.status(200).json({ data: result });
 });
 
 module.exports = {

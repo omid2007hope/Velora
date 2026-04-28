@@ -1,4 +1,4 @@
-export const sellerNavigation = (id) => [
+export const sellerNavigation = () => [
   {
     href: "/seller",
     label: "Dashboard",
@@ -6,7 +6,7 @@ export const sellerNavigation = (id) => [
   },
 
   {
-    href: `/seller/store/${id}`,
+    href: "/seller/store",
     label: "Create Store",
     icon: "create",
   },

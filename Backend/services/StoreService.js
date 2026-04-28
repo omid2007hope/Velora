@@ -22,6 +22,6 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async getStoreData(ownerId) {
-    return this.findOne({ ownerOfStore: ownerId });
+    return this.findAll({ ownerOfStore: ownerId });
   }
 })(Store);

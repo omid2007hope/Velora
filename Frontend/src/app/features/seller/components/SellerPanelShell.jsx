@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { Store, Plus, LayoutDashboard, ArrowLeft } from "lucide-react";
 import { sellerNavigation } from "@/app/features/seller/constants/seller-navigation";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
-import { useSelector } from "react-redux";
 
 function getNavIcon(icon) {
   if (icon === "create") {
@@ -23,8 +22,7 @@ export default function SellerPanelShell({ children }) {
   const pathname = usePathname();
   const { storeOwner } = useSellerSession();
 
-  const id = useSelector((state) => state.auth.storeOwner?._id);
-  const navigation = sellerNavigation(id);
+  const navigation = sellerNavigation();
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fff7ed_0%,#ffedd5_40%,#fff7ed_100%)] pt-28">

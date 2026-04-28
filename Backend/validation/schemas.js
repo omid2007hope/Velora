@@ -18,7 +18,7 @@ const storeSchema = z.object({
   storeName: z.string().min(2).max(120),
   storeDescription: z.string().min(2).max(500),
   countryStoreLocatedIn: z.string().min(2).max(100),
-  stateOrProvinceStoreLocatedIn: z.string().min(2).max(100),
+  stateOrProvinceStoreLocatedIn: z.string().max(100).optional().default(""),
   cityStoreLocatedIn: z.string().min(2).max(100),
   storeAddress: z.string().min(2).max(200),
   storeZipcode: z.string().min(2).max(20),

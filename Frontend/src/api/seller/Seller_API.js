@@ -18,9 +18,8 @@ export async function createSellerProduct(payload) {
 
 // Store
 
-export async function getSellerStore(id) {
-  if (!id) throw new Error("Store Owner ID is required");
-  const response = await client.get(`/server/seller/store/${id}`);
+export async function getSellerStore() {
+  const response = await client.get("/server/seller/store");
   return response.data?.data ?? [];
 }
 
