@@ -1,26 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getStoredStoreOwner } from "../../lib/browser-storage";
 
-const data = getStoredStoreOwner();
+const initialState = {
+  id: null,
+  fullName: "",
+  email: "",
+  picture: null,
+  google: false,
+};
 
 const storeOwnerSlice = createSlice({
-  name: "storeOwner",
-  initialState: {
-    id: data?._id || null,
-    fullName: data?.fullName || "",
-    email: data?.email || "",
-    picture: data?.picture || null,
-    google: data?.google || false,
-  },
+  name: "storeOwnerProfile",
+  initialState,
   reducers: {
-    setStoreOwner: (state, action) => {
-      state.id = action.payload._id || null;
-      state.fullName = action.payload.fullName;
-      state.email = action.payload.email;
-      state.picture = action.payload.picture || null;
-      state.google = action.payload.google ?? false;
+    hydrateStoreOwner: (state, action) => {
+      const owner = action.payload || null;
+      state.id = owner?._id || null;
+      state.fullName = owner?.fullName || owner?.name || "";
+      state.email = owner?.email || "";
+      state.picture = owner?.picture || null;
+      state.google = owner?.google ?? false;
     },
-    clearStoreOwner: (state) => {
+    setStoreOwnerProfile: (state, action) => {
+      const owner = action.payload || null;
+      state.id = owner?._id || null;
+      state.fullName = owner?.fullName || owner?.name || "";
+      state.email = owner?.email || "";
+      state.picture = owner?.picture || null;
+      state.google = owner?.google ?? false;
+    },
+    clearStoreOwnerProfile: (state) => {
       state.id = null;
       state.fullName = "";
       state.email = "";
@@ -30,6 +38,10 @@ const storeOwnerSlice = createSlice({
   },
 });
 
-export const { setStoreOwner, clearStoreOwner } = storeOwnerSlice.actions;
+export const {
+  hydrateStoreOwner,
+  setStoreOwnerProfile,
+  clearStoreOwnerProfile,
+} = storeOwnerSlice.actions;
 
 export default storeOwnerSlice.reducer;

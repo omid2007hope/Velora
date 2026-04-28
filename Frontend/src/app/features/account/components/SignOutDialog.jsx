@@ -8,13 +8,21 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { clearAuthSession } from "@/app/lib/browser-storage";
+import { clearAuth } from "@/app/redux/slice/authSlice";
+import { clearUserProfile } from "@/app/redux/slice/UserSlice";
+import { clearStoreOwnerProfile } from "@/app/redux/slice/StoreOwnerSlice";
 
 export default function SignOutDialog({ open, setOpen }) {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   function signOut() {
     clearAuthSession();
+    dispatch(clearAuth());
+    dispatch(clearUserProfile());
+    dispatch(clearStoreOwnerProfile());
     setOpen(false);
     router.push("/");
   }

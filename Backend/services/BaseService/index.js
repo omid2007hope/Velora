@@ -66,7 +66,7 @@ class BaseService {
   findAllAndPopulate = async (condition, populate) =>
     this.model.find(this._active(condition)).populate(populate);
 
-  findById = async (id) => this.model.findById(id);
+  findById = async (id) => this.model.findOne(this._active({ _id: id }));
 
   findByIdPopulate = async (id, populate) =>
     this.model.findById(id).populate(populate);
@@ -87,35 +87,34 @@ class BaseService {
     );
 
   softDeleteRecursive = async (parentField, condition, user) => {
-    try {
-      const parent = await this.model.findOneAndUpdate(
-        condition,
-        { isDeleted: true, deletedBy: user },
-        { returnDocument: "after" },
-      );
+    const parent = await this.model.findOneAndUpdate(
+      condition,
+      { isDeleted: true, deletedBy: user },
+      { returnDocument: "after" },
+    );
 
-      const getChildren = async (parentId) => {
-        const children = await this.model.find({ [parentField]: parentId });
-        return Promise.all(
-          children.map(async (child) => {
-            await this.model.findByIdAndUpdate(child._id, {
-              isDeleted: true,
-              deletedBy: user,
-            });
-
-            return {
-              ...child.toObject(),
-              child: await getChildren(child._id),
-            };
-          }),
-        );
-      };
-
-      return getChildren(parent._id);
-    } catch (err) {
-      console.error(err);
-      return null;
+    if (!parent) {
+      throw new Error("Resource not found");
     }
+
+    const getChildren = async (parentId) => {
+      const children = await this.model.find({ [parentField]: parentId });
+      return Promise.all(
+        children.map(async (child) => {
+          await this.model.findByIdAndUpdate(child._id, {
+            isDeleted: true,
+            deletedBy: user,
+          });
+
+          return {
+            ...child.toObject(),
+            child: await getChildren(child._id),
+          };
+        }),
+      );
+    };
+
+    return getChildren(parent._id);
   };
 
   hardDeleteMany = async (condition) => this.model.deleteMany(condition);
@@ -125,10 +124,10 @@ class BaseService {
       returnDocument: returnNew ? "after" : "before",
     });
 
-  updateBySoftDelete = async (condition, data, req) => {
+  updateBySoftDelete = async (condition, data, deletedBy) => {
     await this.model.findOneAndUpdate(condition, {
       isDeleted: true,
-      deletedBy: req.admin?.userName,
+      deletedBy,
     });
     return this.createObject(data);
   };

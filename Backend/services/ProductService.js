@@ -1,6 +1,10 @@
 const Product = require("../model/Product");
 const BaseService = require("./BaseService");
 
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 module.exports = new (class ProductService extends BaseService {
   async listProducts({ category, subCategory, isNew, search }) {
     const filter = { isDeleted: { $ne: true } };
@@ -18,14 +22,20 @@ module.exports = new (class ProductService extends BaseService {
     }
 
     if (search) {
-      filter.name = { $regex: search, $options: "i" };
+      const normalizedSearch = escapeRegex(String(search).trim().slice(0, 100));
+
+      if (normalizedSearch) {
+        filter.name = { $regex: normalizedSearch, $options: "i" };
+      }
     }
 
     return this.model.find(filter).sort({ createdAt: -1 });
   }
 
   async listSellerProducts(storeOwnerId) {
-    return this.model.find({ storeOwnerId }).sort({ createdAt: -1 });
+    return this.model
+      .find({ storeOwnerId, isDeleted: { $ne: true } })
+      .sort({ createdAt: -1 });
   }
 
   async getProductById(id) {

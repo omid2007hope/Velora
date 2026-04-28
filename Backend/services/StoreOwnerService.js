@@ -92,6 +92,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
       source: "created",
       existed: false,
       data: this._mapStoreOwner(savedStoreOwner),
+      emailSent: !!emailVerificationToken,
       emailVerificationToken,
     };
   }
@@ -125,6 +126,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
       sub: storeOwner._id.toString(),
       email: storeOwner.storeOwnerEmailAddress,
       role: "seller",
+      tokenType: "access",
     };
 
     return {
@@ -134,21 +136,36 @@ module.exports = new (class StoreOwnerService extends BaseService {
         expiresIn: "15m",
       }),
       refreshToken: jwt.sign(
-        tokenPayload,
-        process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+        {
+          sub: storeOwner._id.toString(),
+          email: storeOwner.storeOwnerEmailAddress,
+          role: "seller",
+          tokenType: "refresh",
+        },
+        process.env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" },
       ),
     };
   }
 
   async refreshAccessToken(refreshToken) {
-    const payload = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
-    );
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error("JWT_REFRESH_SECRET is not set");
+    }
+
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    if (payload.tokenType !== "refresh") {
+      throw new Error("Invalid token type");
+    }
 
     return jwt.sign(
-      { sub: payload.sub, email: payload.email, role: payload.role },
+      {
+        sub: payload.sub,
+        email: payload.email,
+        role: payload.role,
+        tokenType: "access",
+      },
       process.env.JWT_SECRET,
       { expiresIn: "15m" },
     );
@@ -220,7 +237,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
     return { ok: true, email: storeOwner.storeOwnerEmailAddress };
   }
 
-  async requestPasswordReset(storeOwnerEmailAddress, newPassword) {
+  async requestPasswordReset(storeOwnerEmailAddress) {
     const storeOwner = await this.model.findOne({
       storeOwnerEmailAddress: storeOwnerEmailAddress.trim().toLowerCase(),
     });
@@ -229,7 +246,6 @@ module.exports = new (class StoreOwnerService extends BaseService {
       return { ok: true, status: "noop" };
     }
 
-    const hashedPendingPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
     const { token, expires } = this._generateToken(1);
 
     await this.update(
@@ -237,7 +253,6 @@ module.exports = new (class StoreOwnerService extends BaseService {
       {
         passwordResetToken: token,
         passwordResetExpires: expires,
-        pendingPasswordHash: hashedPendingPassword,
       },
     );
 
@@ -246,8 +261,8 @@ module.exports = new (class StoreOwnerService extends BaseService {
     await sendEmail({
       to: storeOwner.storeOwnerEmailAddress,
       subject: "Reset your Velora seller password",
-      text: `Someone requested a seller password reset. To apply the new password, open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
-      html: `<p>We received a request to reset your Velora seller password.</p><p>To apply the new password you chose, click the button below within 1 hour:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+      text: `Someone requested a seller password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
+      html: `<p>We received a request to reset your Velora seller password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
     });
 
     return {
@@ -257,7 +272,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
     };
   }
 
-  async confirmPasswordReset(token) {
+  async confirmPasswordReset(token, newPassword) {
     if (!token) {
       return { ok: false, reason: "missing-token" };
     }
@@ -266,17 +281,18 @@ module.exports = new (class StoreOwnerService extends BaseService {
       .findOne({
         passwordResetToken: token,
         passwordResetExpires: { $gt: new Date() },
-      })
-      .select("+pendingPasswordHash");
+      });
 
-    if (!storeOwner || !storeOwner.pendingPasswordHash) {
+    if (!storeOwner || !newPassword) {
       return { ok: false, reason: "invalid-or-expired" };
     }
+
+    const storeOwnerPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
     await this.update(
       { _id: storeOwner._id },
       {
-        storeOwnerPasswordHash: storeOwner.pendingPasswordHash,
+        storeOwnerPasswordHash,
         pendingPasswordHash: null,
         passwordResetToken: null,
         passwordResetExpires: null,

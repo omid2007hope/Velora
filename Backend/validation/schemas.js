@@ -101,8 +101,6 @@ const orderSchema = z.object({
       }),
     )
     .min(1, "Order items are required"),
-  shipping: z.number().nonnegative().default(0),
-  tax: z.number().nonnegative().default(0),
   currency: z
     .string()
     .length(3)
@@ -127,6 +125,11 @@ const refreshSchema = z.object({
 
 const passwordResetRequestSchema = z.object({
   email: z.string().email(),
+  authView: authViewSchema,
+});
+
+const passwordResetConfirmSchema = z.object({
+  token: z.string().min(10),
   newPassword: z
     .string()
     .min(8)
@@ -135,7 +138,6 @@ const passwordResetRequestSchema = z.object({
     .regex(/[a-z]/, "Must include a lowercase letter")
     .regex(/[0-9]/, "Must include a number")
     .regex(/[!@#$%^&*()[\]{};:'"\\|,.<>/?`~+\-=]/, "Must include a symbol"),
-  authView: authViewSchema,
 });
 
 const tokenOnlySchema = z.object({
@@ -156,7 +158,12 @@ const productCreateSchema = z.object({
   discount: z.string().optional(),
   category: z.string().min(1),
   subCategory: z.string().optional(),
-  imageUrl: z.string().min(1),
+  imageUrl: z
+    .string()
+    .url()
+    .refine((value) => /^https?:\/\//i.test(value), {
+      message: "imageUrl must be an http or https URL",
+    }),
 });
 
 const objectIdParamsSchema = z.object({
@@ -168,7 +175,6 @@ const productIdParamsSchema = z.object({
 });
 
 const reviewCreateSchema = z.object({
-  userId: objectId.optional(),
   name: z.string().min(1),
   rating: z.number().min(1).max(5),
   comment: z.string().min(1),
@@ -176,12 +182,13 @@ const reviewCreateSchema = z.object({
 
 const orderStatusSchema = z
   .object({
-    paymentStatus: z.string().min(1).optional(),
-    orderStatus: z.string().min(1).optional(),
+    orderStatus: z
+      .enum(["pending", "processing", "shipped", "delivered", "cancelled"])
+      .optional(),
   })
-  .refine((value) => value.paymentStatus || value.orderStatus, {
-    message: "At least one of paymentStatus or orderStatus must be provided",
-    path: ["paymentStatus"],
+  .refine((value) => value.orderStatus, {
+    message: "orderStatus must be provided",
+    path: ["orderStatus"],
   });
 
 module.exports = {
@@ -199,6 +206,7 @@ module.exports = {
   refreshSchema,
   removeItemSchema,
   passwordResetRequestSchema,
+  passwordResetConfirmSchema,
   tokenOnlySchema,
   emailOnlySchema,
   productCreateSchema,

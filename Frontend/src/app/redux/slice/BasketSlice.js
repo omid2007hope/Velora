@@ -1,10 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getStoredBasket, saveStoredBasket } from "@/app/lib/browser-storage";
+import { saveStoredBasket } from "@/app/lib/browser-storage";
 
 const basketSlice = createSlice({
   name: "basket",
-  initialState: getStoredBasket(),
+  initialState: [],
   reducers: {
+    hydrateBasket: (_state, action) => {
+      const items = Array.isArray(action.payload) ? action.payload : [];
+      return items;
+    },
+
     addItem: (state, action) => {
       const item = action.payload;
 
@@ -60,6 +65,11 @@ const basketSlice = createSlice({
   },
 });
 
-export const { addItem, updateQuantity, removeItem, clearBasket } =
-  basketSlice.actions;
+export const {
+  hydrateBasket,
+  addItem,
+  updateQuantity,
+  removeItem,
+  clearBasket,
+} = basketSlice.actions;
 export default basketSlice.reducer;

@@ -22,7 +22,7 @@ app.use(
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        localhostPattern.test(origin)
+        (process.env.NODE_ENV !== "production" && localhostPattern.test(origin))
       ) {
         return callback(null, true);
       }
@@ -38,7 +38,7 @@ app.use(
     type: "application/json",
     limit: "1mb",
     verify: (req, _res, buffer) => {
-      if (/^\/(?:api\/)?(?:v1\/)?server\/webhook\/stripe$/i.test(req.originalUrl)) {
+      if (/^\/api\/server\/webhook\/stripe$/i.test(req.originalUrl)) {
         req.rawBody = buffer;
       }
     },
@@ -52,7 +52,6 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.use(routes);
 app.use("/api", routes);
 
 app.use(notFoundHandler);
@@ -72,4 +71,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-

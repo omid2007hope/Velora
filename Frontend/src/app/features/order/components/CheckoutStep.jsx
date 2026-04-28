@@ -4,17 +4,18 @@ import CartSummary from "@/app/features/order/components/CartSummary";
 import { useCheckoutForm } from "@/app/features/order/hooks/use-checkout-form";
 
 export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
-  const { form, updateField, submitOrder, pricing, submitting } =
-    useCheckoutForm(cartItems, onComplete);
+  const {
+    form,
+    updateField,
+    submitOrder,
+    pricing,
+    submitting,
+    submitError,
+    submitMessage,
+  } = useCheckoutForm(cartItems, onComplete);
 
   async function handlePay() {
-    try {
-      await submitOrder();
-    } catch (error) {
-      alert(
-        error.message || "Unable to submit order. Please login and try again.",
-      );
-    }
+    await submitOrder();
   }
 
   return (
@@ -76,6 +77,18 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
           </form>
 
           <div className="mt-6 space-y-3">
+            {submitError ? (
+              <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {submitError}
+              </p>
+            ) : null}
+
+            {submitMessage ? (
+              <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+                {submitMessage}
+              </p>
+            ) : null}
+
             <button
               type="button"
               onClick={onBack}

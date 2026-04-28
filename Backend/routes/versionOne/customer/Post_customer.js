@@ -21,13 +21,8 @@ const {
 
 const router = express.Router();
 
-router.post("/", validateCreateCustomer, createCustomer);
-router.post(
-  "/login",
-  authLimiter,
-  validateCustomerLogin,
-  loginCustomer,
-);
+router.post("/", authLimiter, validateCreateCustomer, createCustomer);
+router.post("/login", authLimiter, validateCustomerLogin, loginCustomer);
 router.post(
   "/token/refresh",
   authLimiter,
@@ -36,21 +31,25 @@ router.post(
 );
 router.post(
   "/email/verify",
+  authLimiter,
   validateRequestCustomerEmailVerification,
   requestCustomerEmailVerification,
 );
 router.post(
   "/email/verify/confirm",
+  authLimiter,
   validateConfirmCustomerEmailVerification,
   confirmCustomerEmailVerification,
 );
 router.post(
   "/password-reset",
+  authLimiter,
   validateRequestCustomerPasswordReset,
   requestCustomerPasswordReset,
 );
 router.post(
   "/password-reset/confirm",
+  authLimiter,
   validateConfirmCustomerPasswordReset,
   confirmCustomerPasswordReset,
 );

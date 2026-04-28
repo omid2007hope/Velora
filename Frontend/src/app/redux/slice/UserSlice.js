@@ -1,26 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getStoredUser } from "../../lib/browser-storage";
 
-const data = getStoredUser();
+const initialState = {
+  id: null,
+  fullName: "",
+  email: "",
+  picture: null,
+  google: false,
+};
 
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    id: data?._id || null,
-    fullName: data?.fullName || "",
-    email: data?.email || "",
-    picture: data?.picture || null,
-    google: data?.google || false,
-  },
+  initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.id = action.payload._id || null;
-      state.fullName = action.payload.fullName || action.payload.name || "";
-      state.email = action.payload.email || "";
-      state.picture = action.payload.picture || null;
-      state.google = action.payload.google ?? false;
+    hydrateUser: (state, action) => {
+      const user = action.payload || null;
+      state.id = user?._id || null;
+      state.fullName = user?.fullName || user?.name || "";
+      state.email = user?.email || "";
+      state.picture = user?.picture || null;
+      state.google = user?.google ?? false;
     },
-    clearUser: (state) => {
+    setUserProfile: (state, action) => {
+      const user = action.payload || null;
+      state.id = user?._id || null;
+      state.fullName = user?.fullName || user?.name || "";
+      state.email = user?.email || "";
+      state.picture = user?.picture || null;
+      state.google = user?.google ?? false;
+    },
+    clearUserProfile: (state) => {
       state.id = null;
       state.fullName = "";
       state.email = "";
@@ -30,6 +38,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { hydrateUser, setUserProfile, clearUserProfile } =
+  userSlice.actions;
 
 export default userSlice.reducer;

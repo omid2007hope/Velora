@@ -28,7 +28,9 @@ const loginCustomer = asyncHandler(async (req, res) => {
 
 const refreshCustomerToken = asyncHandler(async (req, res) => {
   try {
-    const token = await customerService.refreshAccessToken(req.body.refreshToken);
+    const token = await customerService.refreshAccessToken(
+      req.body.refreshToken,
+    );
     return res.status(200).json({ token });
   } catch (_error) {
     throw createHttpError(401, "Invalid or expired refresh token");
@@ -70,7 +72,6 @@ const confirmCustomerEmailVerification = asyncHandler(async (req, res) => {
 const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
   const result = await customerService.requestPasswordReset(
     req.body.email,
-    req.body.newPassword,
     req.body.authView,
   );
 
@@ -82,7 +83,10 @@ const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
 });
 
 const confirmCustomerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await customerService.confirmPasswordReset(req.body.token);
+  const result = await customerService.confirmPasswordReset(
+    req.body.token,
+    req.body.newPassword,
+  );
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");

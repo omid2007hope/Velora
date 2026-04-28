@@ -8,17 +8,22 @@ const createOrder = asyncHandler(async (req, res) => {
   const order = await orderService.createOrder({
     userId: getAuthorizedUserId(req),
     items: req.body.items,
-    shipping: req.body.shipping,
-    tax: req.body.tax,
     currency: req.body.currency,
     addressSnapshot: req.body.addressSnapshot,
   });
 
-  const paymentIntent = await paymentIntentService.createPaymentIntentForOrder({
-    orderId: order._id,
-    amount: order.total,
-    currency: order.currency,
-  });
+  let paymentIntent;
+
+  try {
+    paymentIntent = await paymentIntentService.createPaymentIntentForOrder({
+      orderId: order._id,
+      amount: order.total,
+      currency: order.currency,
+    });
+  } catch (error) {
+    await orderService.hardDelete({ _id: order._id });
+    throw error;
+  }
 
   return res.status(201).json({
     _id: order?._id,
@@ -38,25 +43,11 @@ const listOrders = asyncHandler(async (req, res) => {
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const updatedOrder = await orderService.updateOrderStatus(req.params.id, {
     userId: getAuthorizedUserId(req),
-    paymentStatus: req.body.paymentStatus,
     orderStatus: req.body.orderStatus,
   });
 
   if (!updatedOrder) {
     throw createHttpError(404, "Order not found");
-  }
-
-  if (req.body.paymentStatus) {
-    const intentStatusMap = {
-      paid: "succeeded",
-      failed: "failed",
-      requires_action: "requires_action",
-    };
-
-    await paymentIntentService.updatePaymentIntentStatus(
-      req.params.id,
-      intentStatusMap[req.body.paymentStatus] || req.body.paymentStatus,
-    );
   }
 
   return res.status(200).json({ data: updatedOrder });

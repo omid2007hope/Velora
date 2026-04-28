@@ -4,21 +4,19 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  saveAuthSession,
-  saveStoredStoreOwner,
-} from "@/app/lib/browser-storage";
+import { saveAuthSession } from "@/app/lib/browser-storage";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SellerSignupPopup from "@/app/features/auth/components/SellerSignupPopup";
 import { loginStoreOwner } from "@/app/features/auth/services/auth-service";
 import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
-import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 import {
   closeSellerPopup,
   setStoreOwner,
   setUser,
 } from "@/app/redux/slice/authSlice";
+import { clearUserProfile } from "@/app/redux/slice/UserSlice";
+import { setStoreOwnerProfile } from "@/app/redux/slice/StoreOwnerSlice";
 
 export default function LogIntoSellerPanelPopup() {
   const dispatch = useDispatch();
@@ -48,6 +46,7 @@ export default function LogIntoSellerPanelPopup() {
 
   function clearStoredCustomerState() {
     dispatch(setUser(null));
+    dispatch(clearUserProfile());
   }
 
   async function handleLogin() {
@@ -76,6 +75,7 @@ export default function LogIntoSellerPanelPopup() {
         refreshToken: response.refreshToken,
       });
       dispatch(setStoreOwner(storeOwner));
+      dispatch(setStoreOwnerProfile(storeOwner));
       close();
       router.push("/seller");
     } catch (error) {
@@ -87,25 +87,10 @@ export default function LogIntoSellerPanelPopup() {
     }
   }
 
-  function handleGoogleLogin(googleToken) {
-    const payload = parseJwtPayload(googleToken);
-    if (!payload) {
-      alert("Google login failed. Please try again.");
-      return;
-    }
-
-    const storeOwner = {
-      fullName: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      google: true,
-    };
-
-    clearStoredCustomerState();
-    saveStoredStoreOwner(storeOwner);
-    dispatch(setStoreOwner(storeOwner));
-    close();
-    router.push("/seller");
+  function handleGoogleLogin(_googleToken) {
+    alert(
+      "Google sign-in is temporarily unavailable until backend token verification is enabled.",
+    );
   }
 
   return (

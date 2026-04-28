@@ -3,6 +3,13 @@ const Product = require("../model/Product");
 const BaseService = require("./BaseService");
 const { createHttpError } = require("../utils/httpError");
 
+const DEFAULT_SHIPPING_FEE = 5;
+const TAX_RATE = 0.0832;
+
+function roundCurrency(amount) {
+  return Math.round((Number(amount) + Number.EPSILON) * 100) / 100;
+}
+
 module.exports = new (class OrderService extends BaseService {
   async _buildOrderItems(items = []) {
     const productIds = items.map((item) => item.productId);
@@ -49,14 +56,12 @@ module.exports = new (class OrderService extends BaseService {
     userId,
     guestEmail,
     items,
-    shipping,
-    tax,
     currency = "USD",
     addressSnapshot,
   }) {
     const { normalizedItems, subtotal } = await this._buildOrderItems(items);
-    const shippingAmount = Number(shipping || 0);
-    const taxAmount = Number(tax || 0);
+    const shippingAmount = normalizedItems.length ? DEFAULT_SHIPPING_FEE : 0;
+    const taxAmount = normalizedItems.length ? roundCurrency(subtotal * TAX_RATE) : 0;
 
     return this.createObject({
       userId,
@@ -65,7 +70,7 @@ module.exports = new (class OrderService extends BaseService {
       subtotal,
       shipping: shippingAmount,
       tax: taxAmount,
-      total: subtotal + shippingAmount + taxAmount,
+      total: roundCurrency(subtotal + shippingAmount + taxAmount),
       currency: currency.toUpperCase(),
       addressSnapshot,
     });

@@ -28,7 +28,9 @@ const loginStoreOwner = asyncHandler(async (req, res) => {
 
 const refreshStoreOwnerToken = asyncHandler(async (req, res) => {
   try {
-    const token = await storeOwnerService.refreshAccessToken(req.body.refreshToken);
+    const token = await storeOwnerService.refreshAccessToken(
+      req.body.refreshToken,
+    );
     return res.status(200).json({ token });
   } catch (_error) {
     throw createHttpError(401, "Invalid or expired refresh token");
@@ -36,7 +38,9 @@ const refreshStoreOwnerToken = asyncHandler(async (req, res) => {
 });
 
 const requestStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.requestEmailVerification(req.body.email);
+  const result = await storeOwnerService.requestEmailVerification(
+    req.body.email,
+  );
 
   if (result.status === "already-verified") {
     return res.status(200).json({
@@ -52,7 +56,9 @@ const requestStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
 });
 
 const confirmStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.confirmEmailVerification(req.body.token);
+  const result = await storeOwnerService.confirmEmailVerification(
+    req.body.token,
+  );
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");
@@ -65,10 +71,7 @@ const confirmStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
 });
 
 const requestStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.requestPasswordReset(
-    req.body.email,
-    req.body.newPassword,
-  );
+  const result = await storeOwnerService.requestPasswordReset(req.body.email);
 
   return res.status(200).json({
     message:
@@ -78,7 +81,10 @@ const requestStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
 });
 
 const confirmStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.confirmPasswordReset(req.body.token);
+  const result = await storeOwnerService.confirmPasswordReset(
+    req.body.token,
+    req.body.newPassword,
+  );
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");

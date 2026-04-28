@@ -25,6 +25,7 @@ const CustomerDetailsSchema = new mongoose.Schema(
       type: String,
       index: true,
       unique: true,
+      sparse: true,
       trim: true,
     },
   },
@@ -35,5 +36,3 @@ const CustomerDetailsSchema = new mongoose.Schema(
 module.exports = mongoose.model("CustomerDetails", CustomerDetailsSchema);
 
 // Mongoose model for caching X user data
-
-

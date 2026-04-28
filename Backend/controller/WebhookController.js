@@ -8,10 +8,15 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
-    return res.status(200).json({ received: true, skipped: true });
+    throw createHttpError(500, "Stripe webhook secret is not configured");
   }
 
   const signature = req.headers["stripe-signature"];
+
+  if (!signature) {
+    throw createHttpError(400, "Missing Stripe signature header");
+  }
+
   let event;
 
   try {

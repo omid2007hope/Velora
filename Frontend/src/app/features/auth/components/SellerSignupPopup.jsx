@@ -12,7 +12,6 @@ import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
 import { openSellerPopup } from "@/app/redux/slice/authSlice";
 import {
   getPasswordCriteriaState,
-  parseJwtPayload,
   PASSWORD_CRITERIA,
 } from "@/app/features/auth/utils/auth-form-utils";
 
@@ -84,11 +83,10 @@ export default function SellerSignupPopup({ open, setOpen }) {
     openVerification();
   }
 
-  function handleGoogleSignup(token) {
-    const payload = parseJwtPayload(token);
-    console.log("Google signup requested for:", payload?.email);
-    setOpen(false);
-    openVerification();
+  function handleGoogleSignup(_token) {
+    alert(
+      "Google sign-up is temporarily unavailable until backend token verification is enabled.",
+    );
   }
 
   function goBack() {

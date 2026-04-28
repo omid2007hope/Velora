@@ -4,18 +4,21 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { saveAuthSession, saveStoredUser } from "@/app/lib/browser-storage";
+import { saveAuthSession } from "@/app/lib/browser-storage";
 import GoogleSignIn from "@/app/features/auth/components/GoogleSignIn";
 import ResetPasswordPopup from "@/app/features/auth/components/ResetPasswordPopup";
 import SignupPopup from "@/app/features/auth/components/SignupPopup";
 import { loginCustomer } from "@/app/features/auth/services/auth-service";
 import { AUTH_VIEW } from "@/app/features/auth/utils/auth-popup-events";
-import { parseJwtPayload } from "@/app/features/auth/utils/auth-form-utils";
 import {
   closeLoginPopup,
   setUser,
   setStoreOwner,
 } from "@/app/redux/slice/authSlice";
+import {
+  clearStoreOwnerProfile,
+} from "@/app/redux/slice/StoreOwnerSlice";
+import { setUserProfile } from "@/app/redux/slice/UserSlice";
 
 export default function LoginPopup() {
   const dispatch = useDispatch();
@@ -45,6 +48,7 @@ export default function LoginPopup() {
 
   function clearStoredSellerState() {
     dispatch(setStoreOwner(null));
+    dispatch(clearStoreOwnerProfile());
   }
 
   async function handleLogin() {
@@ -73,6 +77,7 @@ export default function LoginPopup() {
         refreshToken: response.refreshToken,
       });
       dispatch(setUser(user));
+      dispatch(setUserProfile(user));
       close();
       router.push("/account");
     } catch (error) {
@@ -84,25 +89,10 @@ export default function LoginPopup() {
     }
   }
 
-  function handleGoogleLogin(googleToken) {
-    const payload = parseJwtPayload(googleToken);
-    if (!payload) {
-      alert("Google login failed. Please try again.");
-      return;
-    }
-
-    const user = {
-      fullName: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      google: true,
-    };
-
-    clearStoredSellerState();
-    saveStoredUser(user);
-    dispatch(setUser(user));
-    close();
-    router.push("/account");
+  function handleGoogleLogin(_googleToken) {
+    alert(
+      "Google sign-in is temporarily unavailable until backend token verification is enabled.",
+    );
   }
 
   return (

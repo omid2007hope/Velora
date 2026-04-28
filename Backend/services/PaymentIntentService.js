@@ -1,6 +1,7 @@
 const PaymentIntent = require("../model/PaymentIntent");
 const BaseService = require("./BaseService");
 const stripe = require("../utils/stripeClient");
+const { createHttpError } = require("../utils/httpError");
 
 module.exports = new (class PaymentIntentService extends BaseService {
   async createPaymentIntentForOrder({
@@ -12,6 +13,10 @@ module.exports = new (class PaymentIntentService extends BaseService {
     const amountInCents = Math.round(Number(amount || 0) * 100);
     const normalizedCurrency = (currency || "USD").toLowerCase();
 
+    if (amountInCents < 50) {
+      throw createHttpError(400, "Order amount too low");
+    }
+
     const intent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: normalizedCurrency,
@@ -20,15 +25,20 @@ module.exports = new (class PaymentIntentService extends BaseService {
       },
     });
 
-    return this.createObject({
+    await this.createObject({
       orderId,
       provider,
       providerIntentId: intent.id,
-      clientSecret: intent.client_secret,
       amount,
       currency: normalizedCurrency.toUpperCase(),
       status: intent.status || "requires_payment_method",
     });
+
+    return {
+      providerIntentId: intent.id,
+      clientSecret: intent.client_secret,
+      status: intent.status || "requires_payment_method",
+    };
   }
 
   async updatePaymentIntentStatus(orderId, status) {

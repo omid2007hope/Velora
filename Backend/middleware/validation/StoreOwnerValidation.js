@@ -4,6 +4,7 @@ const {
   storeOwnerLoginSchema,
   refreshSchema,
   passwordResetRequestSchema,
+  passwordResetConfirmSchema,
   tokenOnlySchema,
   emailOnlySchema,
 } = require("../../validation/schemas");
@@ -14,6 +15,10 @@ module.exports = {
   validateRefreshStoreOwnerToken: validateBody(refreshSchema),
   validateRequestStoreOwnerEmailVerification: validateBody(emailOnlySchema),
   validateConfirmStoreOwnerEmailVerification: validateBody(tokenOnlySchema),
-  validateRequestStoreOwnerPasswordReset: validateBody(passwordResetRequestSchema),
-  validateConfirmStoreOwnerPasswordReset: validateBody(tokenOnlySchema),
+  validateRequestStoreOwnerPasswordReset: validateBody(
+    passwordResetRequestSchema,
+  ),
+  validateConfirmStoreOwnerPasswordReset: validateBody(
+    passwordResetConfirmSchema,
+  ),
 };

@@ -74,6 +74,7 @@ module.exports = new (class CustomerService extends BaseService {
         fullName: savedCustomer.fullName,
         isEmailVerified: !!savedCustomer.isEmailVerified,
       },
+      emailSent: !!emailVerificationToken,
       emailVerificationToken,
     };
   }
@@ -95,6 +96,7 @@ module.exports = new (class CustomerService extends BaseService {
     const tokenPayload = {
       sub: customer._id.toString(),
       email: customer.email,
+      tokenType: "access",
     };
     return {
       authenticated: true,
@@ -108,19 +110,29 @@ module.exports = new (class CustomerService extends BaseService {
         expiresIn: "15m",
       }),
       refreshToken: jwt.sign(
-        tokenPayload,
-        process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+        {
+          sub: customer._id.toString(),
+          email: customer.email,
+          tokenType: "refresh",
+        },
+        process.env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" },
       ),
     };
   }
   async refreshAccessToken(refreshToken) {
-    const payload = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
-    );
+    if (!process.env.JWT_REFRESH_SECRET) {
+      throw new Error("JWT_REFRESH_SECRET is not set");
+    }
+
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    if (payload.tokenType !== "refresh") {
+      throw new Error("Invalid token type");
+    }
+
     return jwt.sign(
-      { sub: payload.sub, email: payload.email },
+      { sub: payload.sub, email: payload.email, tokenType: "access" },
       process.env.JWT_SECRET,
       { expiresIn: "15m" },
     );
@@ -179,29 +191,28 @@ module.exports = new (class CustomerService extends BaseService {
     );
     return { ok: true, email: customer.email };
   }
-  async requestPasswordReset(email, newPassword, authView) {
+  async requestPasswordReset(email, authView) {
     const customer = await this.model.findOne({
       email: email.trim().toLowerCase(),
     });
     if (!customer) {
       return { ok: true, status: "noop" };
     }
-    const hashedPendingPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
     const { token, expires } = this._generateToken(1);
     await this.update(
       { _id: customer._id },
       {
         passwordResetToken: token,
         passwordResetExpires: expires,
-        pendingPasswordHash: hashedPendingPassword,
       },
     );
     const resetLink = this._buildClientLink("/reset-password", token, authView);
     await sendEmail({
       to: customer.email,
       subject: "Reset your Velora password",
-      text: `Someone requested a password reset. To apply the new password, open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
-      html: `<p>We received a request to reset your Velora password.</p><p>To apply the new password you chose, click the button below within 1 hour:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+      text: `Someone requested a password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
+      html: `<p>We received a request to reset your Velora password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
     });
     return {
       ok: true,
@@ -209,23 +220,27 @@ module.exports = new (class CustomerService extends BaseService {
       token: process.env.NODE_ENV === "production" ? undefined : token,
     };
   }
-  async confirmPasswordReset(token) {
+  async confirmPasswordReset(token, newPassword) {
     if (!token) {
       return { ok: false, reason: "missing-token" };
     }
+
     const customer = await this.model
       .findOne({
         passwordResetToken: token,
         passwordResetExpires: { $gt: new Date() },
-      })
-      .select("+pendingPasswordHash");
-    if (!customer || !customer.pendingPasswordHash) {
+      });
+
+    if (!customer || !newPassword) {
       return { ok: false, reason: "invalid-or-expired" };
     }
+
+    const password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
     await this.update(
       { _id: customer._id },
       {
-        password: customer.pendingPasswordHash,
+        password,
         pendingPasswordHash: null,
         passwordResetToken: null,
         passwordResetExpires: null,

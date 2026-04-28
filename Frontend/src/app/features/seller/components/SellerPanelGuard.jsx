@@ -1,29 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import SectionCard from "@/app/components/ui/SectionCard";
-import { openSellerPopup, clearAuth } from "@/app/redux/slice/authSlice";
+import { openSellerPopup } from "@/app/redux/slice/authSlice";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
 export default function SellerPanelGuard({ children }) {
   const dispatch = useDispatch();
   const { storeOwner, hasHydrated } = useSellerSession();
-
-  // When the API client detects that both the access token and the refresh
-  // token are expired it fires this custom event. We respond by clearing
-  // Redux state so the guard shows the "Sign in" screen instead of leaving
-  // the user on a page where every request silently fails with 401.
-  useEffect(() => {
-    function handleSessionExpired() {
-      dispatch(clearAuth());
-    }
-
-    window.addEventListener("auth:session-expired", handleSessionExpired);
-    return () => {
-      window.removeEventListener("auth:session-expired", handleSessionExpired);
-    };
-  }, [dispatch]);
 
   if (!hasHydrated) {
     return (

@@ -11,6 +11,10 @@ import {
   saveAuthSession,
   clearAuthSession,
 } from "@/app/lib/browser-storage";
+import { store } from "@/app/redux/store";
+import { clearAuth } from "@/app/redux/slice/authSlice";
+import { clearUserProfile } from "@/app/redux/slice/UserSlice";
+import { clearStoreOwnerProfile } from "@/app/redux/slice/StoreOwnerSlice";
 
 const apiBaseUrl =
   (
@@ -54,9 +58,18 @@ function processPendingQueue(error, token = null) {
 
 function expireSession() {
   clearAuthSession();
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("auth:session-expired"));
+  store.dispatch(clearAuth());
+  store.dispatch(clearUserProfile());
+  store.dispatch(clearStoreOwnerProfile());
+}
+
+function getRefreshEndpoint() {
+  const authState = store.getState()?.auth;
+  if (authState?.storeOwner) {
+    return "/server/store-owner/token/refresh";
   }
+
+  return "/server/customer/token/refresh";
 }
 
 client.interceptors.response.use(
@@ -96,7 +109,7 @@ client.interceptors.response.use(
 
     try {
       const { data } = await axios.post(
-        `${apiBaseUrl}/server/store-owner/token/refresh`,
+        `${apiBaseUrl}${getRefreshEndpoint()}`,
         { refreshToken },
         { headers: { "Content-Type": "application/json" } },
       );

@@ -28,6 +28,8 @@ export function useCheckoutForm(cartItems, onComplete) {
   const reduxUser = useSelector((state) => state.auth.user);
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitMessage, setSubmitMessage] = useState("");
 
   useEffect(() => {
     clearSavedPaymentDraft();
@@ -89,10 +91,12 @@ export function useCheckoutForm(cartItems, onComplete) {
   }
 
   async function submitOrder() {
-    validateForm();
     setSubmitting(true);
+    setSubmitError("");
+    setSubmitMessage("");
 
     try {
+      validateForm();
       persistCheckoutDetails();
 
       const payload = {
@@ -102,8 +106,6 @@ export function useCheckoutForm(cartItems, onComplete) {
           selectedColor: item.selectedColor ?? null,
           selectedSize: item.selectedSize ?? null,
         })),
-        shipping: pricing.shipping,
-        tax: pricing.tax,
         currency: "USD",
         addressSnapshot: {
           street: form.street,
@@ -115,18 +117,22 @@ export function useCheckoutForm(cartItems, onComplete) {
 
       const orderResponse = await createOrder(payload);
       dispatch(clearBasket());
-
-      if (orderResponse?.paymentIntent?.clientSecret) {
-        alert(
-          "Payment intent created. Use Stripe Elements to complete the payment with client secret:\n" +
-            orderResponse.paymentIntent.clientSecret,
-        );
-      } else {
-        alert("Order created. Payment pending.");
-      }
+      setSubmitMessage(
+        orderResponse?.paymentIntent?.providerIntentId
+          ? "Order created. Continue with secure Stripe payment."
+          : "Order created. Payment is pending.",
+      );
 
       onComplete?.();
       router.push("/order");
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Unable to submit order. Please login and try again.";
+      setSubmitError(message);
+      return false;
     } finally {
       setSubmitting(false);
     }
@@ -138,5 +144,7 @@ export function useCheckoutForm(cartItems, onComplete) {
     submitOrder,
     pricing,
     submitting,
+    submitError,
+    submitMessage,
   };
 }

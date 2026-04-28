@@ -29,7 +29,11 @@ import LoginPopup from "@/app/features/auth/components/LoginPopup";
 import CategoryCarousel from "@/app/components/layout/header/category/CategoryCarousel";
 import { featuredPreviewImages } from "@/app/components/layout/header/category/featured-preview-images";
 import { catalogNavigation } from "@/app/constants/catalog-navigation";
-import { getStoredStoreOwner, getStoredUser } from "@/app/lib/browser-storage";
+import {
+  getStoredBasket,
+  getStoredStoreOwner,
+  getStoredUser,
+} from "@/app/lib/browser-storage";
 import Logo from "@/app/assets/image/Logo.webp";
 import LogIntoSellerPanelPopup from "@/app/features/auth/components/LogIntoSellerPanelPopup";
 import {
@@ -37,6 +41,9 @@ import {
   openLoginPopup,
   openSellerPopup,
 } from "@/app/redux/slice/authSlice";
+import { hydrateBasket } from "@/app/redux/slice/BasketSlice";
+import { hydrateUser } from "@/app/redux/slice/UserSlice";
+import { hydrateStoreOwner } from "@/app/redux/slice/StoreOwnerSlice";
 
 const featuredPreviewByCategory = {
   women: <CategoryCarousel images={featuredPreviewImages.women} />,
@@ -69,12 +76,18 @@ export default function Header() {
 
   // Hydrate auth state from localStorage once on the client
   useEffect(() => {
+    const userData = getStoredUser();
+    const storeOwnerData = getStoredStoreOwner();
+
     dispatch(
       hydrateAuth({
-        user: getStoredUser(),
-        storeOwner: getStoredStoreOwner(),
+        user: userData,
+        storeOwner: storeOwnerData,
       }),
     );
+    dispatch(hydrateUser(userData));
+    dispatch(hydrateStoreOwner(storeOwnerData));
+    dispatch(hydrateBasket(getStoredBasket()));
     setHasMounted(true);
   }, [dispatch]);
 

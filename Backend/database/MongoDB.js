@@ -11,7 +11,7 @@ const connectDB = async () => {
 
   try {
     await mongoose.connect(mongoUrl, {
-      autoIndex: true,
+      autoIndex: process.env.NODE_ENV !== "production",
     });
 
     logger.info("MongoDB connected");
@@ -21,5 +21,3 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
-
-

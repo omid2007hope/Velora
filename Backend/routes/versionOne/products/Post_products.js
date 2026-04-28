@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.post("/products", validateCreateProduct, createProduct);
+router.post("/products", requireSeller, validateCreateProduct, createProduct);
 router.post(
   "/seller/products",
   requireSeller,
