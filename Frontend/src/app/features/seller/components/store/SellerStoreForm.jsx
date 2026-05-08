@@ -1,6 +1,8 @@
 "use client";
 
 import { useSellerStoreForm } from "@/app/features/seller/hooks/store/use-seller-store-form";
+import StoreCreatedPopup from "../StoreCreatedPopup";
+import { useState } from "react";
 
 const fieldClassName =
   "mt-2 w-full rounded-2xl border border-amber-950/15 bg-orange-50 px-4 py-3 text-sm text-amber-950 outline-none transition placeholder:text-amber-500 focus:border-amber-900 focus:bg-white";
@@ -8,6 +10,8 @@ const fieldClassName =
 export default function SellerStoreForm() {
   const { form, saving, error, successMessage, updateField, handleSubmit } =
     useSellerStoreForm();
+
+  const [open, setOpen] = useState(false);
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -103,6 +107,7 @@ export default function SellerStoreForm() {
 
       <div className="flex flex-wrap gap-3">
         <button
+          onClick={() => setOpen(true)}
           type="submit"
           disabled={saving}
           className="inline-flex rounded-full bg-amber-950 px-5 py-3 text-sm font-semibold text-orange-50 transition hover:bg-amber-900 disabled:cursor-not-allowed disabled:opacity-60"
@@ -110,6 +115,7 @@ export default function SellerStoreForm() {
           {saving ? "Creating..." : "Create store"}
         </button>
       </div>
+      <StoreCreatedPopup open={open} setOpen={setOpen} />
     </form>
   );
 }

@@ -24,12 +24,12 @@ export default function SellerPanelShell({ children }) {
   const { storeOwner } = useSellerSession();
   const [navigation, setNavigation] = useState([]);
 
-  useEffect(() => {
-    const fetchNavigation = async () => {
-      const nav = await getSellerNavigation();
-      setNavigation(nav);
-    };
+  const fetchNavigation = async () => {
+    const nav = await getSellerNavigation();
+    setNavigation(nav);
+  };
 
+  useEffect(() => {
     fetchNavigation();
   }, []);
 

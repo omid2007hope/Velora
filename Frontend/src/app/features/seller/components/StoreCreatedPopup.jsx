@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 
-export default function StoreCreatedPopup({ isVisible, onClose }) {
+export default function StoreCreatedPopup({ open, setOpen }) {
   const router = useRouter();
 
-  if (!isVisible) return null;
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -14,7 +14,7 @@ export default function StoreCreatedPopup({ isVisible, onClose }) {
         <p className="mb-6">You can now post products to your store.</p>
         <div className="flex justify-end gap-4">
           <button
-            onClick={onClose}
+            onClick={() => setOpen(false)}
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
           >
             Close
