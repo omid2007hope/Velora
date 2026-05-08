@@ -87,7 +87,10 @@ export default function SellerPage() {
       </SectionCard>
 
       {Array.isArray(store) && store.length > 0 ? (
-        <SellerProductsOverview />
+        <div>
+          <SellerStoreOverview />
+          <SellerProductsOverview />
+        </div>
       ) : (
         <SellerStoreOverview />
       )}
