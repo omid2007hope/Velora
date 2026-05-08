@@ -20,6 +20,7 @@ export function useSellerStoreForm() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
   const updateField = (field) => (event) => {
     setForm((current) => ({
@@ -39,6 +40,7 @@ export function useSellerStoreForm() {
       await createAnStore(payload);
       setForm(initialForm);
       setSuccessMessage("Store created successfully.");
+      setPopupVisible(true); // Show popup after successful creation
     } catch (requestError) {
       const details = requestError?.response?.data?.details;
       const message = Array.isArray(details)
@@ -53,12 +55,16 @@ export function useSellerStoreForm() {
     }
   };
 
+  const closePopup = () => setPopupVisible(false);
+
   return {
     form,
     saving,
     error,
     successMessage,
+    isPopupVisible,
     updateField,
     handleSubmit,
+    closePopup,
   };
 }

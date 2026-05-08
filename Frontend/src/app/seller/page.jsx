@@ -5,9 +5,21 @@ import SectionCard from "@/app/components/ui/SectionCard";
 import SellerProductsOverview from "@/app/features/seller/components/product/SellerProductsOverview";
 import SellerStoreOverview from "@/app/features/seller/components/store/SellerStoreOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
+import { getSellerStore } from "@/api/seller/Seller_API";
+import { useEffect, useState } from "react";
 
 export default function SellerPage() {
+  const [store, setStore] = useState([]);
   const { storeOwner } = useSellerSession();
+
+  useEffect(() => {
+    async function getStoreData() {
+      const storeData = await getSellerStore();
+      setStore(storeData);
+    }
+
+    getStoreData();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -74,8 +86,11 @@ export default function SellerPage() {
         </div>
       </SectionCard>
 
-      <SellerProductsOverview />
-      <SellerStoreOverview />
+      {Array.isArray(store) && store.length > 0 ? (
+        <SellerProductsOverview />
+      ) : (
+        <SellerStoreOverview />
+      )}
     </div>
   );
 }
