@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Store, Plus, LayoutDashboard, ArrowLeft } from "lucide-react";
-import { sellerNavigation } from "@/app/features/seller/constants/seller-navigation";
+import { useEffect, useState } from "react";
+import { getSellerNavigation } from "@/app/features/seller/constants/seller-navigation";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 
 function getNavIcon(icon) {
@@ -21,8 +22,16 @@ function getNavIcon(icon) {
 export default function SellerPanelShell({ children }) {
   const pathname = usePathname();
   const { storeOwner } = useSellerSession();
+  const [navigation, setNavigation] = useState([]);
 
-  const navigation = sellerNavigation();
+  useEffect(() => {
+    const fetchNavigation = async () => {
+      const nav = await getSellerNavigation();
+      setNavigation(nav);
+    };
+
+    fetchNavigation();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fff7ed_0%,#ffedd5_40%,#fff7ed_100%)] pt-28">

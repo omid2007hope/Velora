@@ -20,6 +20,7 @@ export async function createSellerProduct(payload) {
 
 export async function getSellerStore() {
   const response = await client.get("/server/seller/store");
+  //! console.log("getSellerStore response:", response.data?.data); // Log the response
   return response.data?.data ?? [];
 }
 
