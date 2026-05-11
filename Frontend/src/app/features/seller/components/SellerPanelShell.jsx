@@ -6,6 +6,7 @@ import { Store, Plus, LayoutDashboard, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getSellerNavigation } from "@/app/features/seller/constants/seller-navigation";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
+import { SellerNavContext } from "@/app/features/seller/constants/SellerNavContext";
 
 function getNavIcon(icon) {
   if (icon === "create") {
@@ -84,7 +85,11 @@ export default function SellerPanelShell({ children }) {
           </Link>
         </aside>
 
-        <div className="min-w-0">{children}</div>
+        <div className="min-w-0">
+          <SellerNavContext.Provider value={{ refreshNav: fetchNavigation }}>
+            {children}
+          </SellerNavContext.Provider>
+        </div>
       </div>
     </div>
   );

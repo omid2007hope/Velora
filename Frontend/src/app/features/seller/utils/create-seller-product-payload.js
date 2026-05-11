@@ -7,7 +7,7 @@ function toOptionalNumber(value) {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-export function createSellerProductPayload(form) {
+export function createSellerProductPayload(form, storeId) {
   return {
     name: form.name.trim(),
     description: form.description.trim(),
@@ -17,5 +17,6 @@ export function createSellerProductPayload(form) {
     oldPrice: toOptionalNumber(form.oldPrice),
     newPrice: toOptionalNumber(form.newPrice),
     imageUrl: form.imageUrl.trim(),
+    storeId: storeId || undefined,
   };
 }

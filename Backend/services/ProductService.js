@@ -46,6 +46,7 @@ module.exports = new (class ProductService extends BaseService {
     const normalizedPayload = {
       ...payload,
       storeOwnerId: options.storeOwnerId,
+      storeId: options.storeId,
       subCategory:
         typeof payload.subCategory === "string" && payload.subCategory.trim()
           ? payload.subCategory.trim()

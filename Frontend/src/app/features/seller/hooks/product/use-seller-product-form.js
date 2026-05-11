@@ -17,6 +17,7 @@ const initialForm = {
 
 export function useSellerProductForm() {
   const [form, setForm] = useState(initialForm);
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -35,7 +36,7 @@ export function useSellerProductForm() {
     setSuccessMessage("");
 
     try {
-      const payload = createSellerProductPayload(form);
+      const payload = createSellerProductPayload(form, selectedStoreId);
       await createSellerProduct(payload);
       setForm(initialForm);
       setSuccessMessage("Product published to your seller catalog.");
@@ -55,6 +56,8 @@ export function useSellerProductForm() {
 
   return {
     form,
+    selectedStoreId,
+    setSelectedStoreId,
     saving,
     error,
     successMessage,

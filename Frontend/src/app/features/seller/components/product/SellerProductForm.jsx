@@ -1,16 +1,31 @@
 "use client";
 
 import { useSellerProductForm } from "@/app/features/seller/hooks/product/use-seller-product-form";
+import StoreSelector from "@/app/features/seller/components/StoreSelector";
 
 const fieldClassName =
   "mt-2 w-full rounded-2xl border border-amber-950/15 bg-orange-50 px-4 py-3 text-sm text-amber-950 outline-none transition placeholder:text-amber-500 focus:border-amber-900 focus:bg-white";
 
 export default function SellerProductForm() {
-  const { form, saving, error, successMessage, updateField, handleSubmit } =
-    useSellerProductForm();
+  const {
+    form,
+    selectedStoreId,
+    setSelectedStoreId,
+    saving,
+    error,
+    successMessage,
+    updateField,
+    handleSubmit,
+  } = useSellerProductForm();
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
+      {/* ── Store picker ─────────────────────────────────────────── */}
+      <StoreSelector
+        selectedStoreId={selectedStoreId}
+        onSelect={(id) => setSelectedStoreId(id)}
+      />
+
       <div className="grid gap-6 md:grid-cols-2">
         <label className="block text-sm font-medium text-amber-950">
           Product name
@@ -123,11 +138,16 @@ export default function SellerProductForm() {
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || !selectedStoreId}
           className="inline-flex rounded-full bg-amber-950 px-5 py-3 text-sm font-semibold text-orange-50 transition hover:bg-amber-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {saving ? "Publishing..." : "Publish product"}
         </button>
+        {!selectedStoreId && (
+          <p className="self-center text-xs text-amber-700">
+            Select a store above to publish.
+          </p>
+        )}
       </div>
     </form>
   );

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { createAnStore } from "@/app/features/seller/services/seller-store-service";
 import { createSellerStorePayload } from "@/app/features/seller/utils/create-seller-store-payload";
+import { useSellerNav } from "@/app/features/seller/constants/SellerNavContext";
 
 const initialForm = {
   storeName: "",
@@ -16,6 +17,7 @@ const initialForm = {
 };
 
 export function useSellerStoreForm() {
+  const { refreshNav } = useSellerNav();
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +42,7 @@ export function useSellerStoreForm() {
       await createAnStore(payload);
       setForm(initialForm);
       setSuccessMessage("Store created successfully.");
+      await refreshNav();
       setPopupVisible(true); // Show popup after successful creation
     } catch (requestError) {
       const details = requestError?.response?.data?.details;
