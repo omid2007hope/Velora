@@ -4,5 +4,6 @@ const { storeSchema } = require("../../validation/schemas");
 
 module.exports = {
   validateCreateStore: validateBody(storeSchema),
+  validatePatchStore: validateBody(storeSchema),
   // validateOwnerId,
 };

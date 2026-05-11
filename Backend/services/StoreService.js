@@ -42,6 +42,46 @@ module.exports = new (class StoreService extends BaseService {
     return this.createObject(normalizedStoreData);
   }
 
+  async patchStoreData(storeId, storeData) {
+    const ownerAlreadyHasThisStore = await this.findOne({
+      _id: { $ne: storeId },
+      storeName: this._safeTrim(storeData.storeName),
+      ownerOfStore: storeData.ownerOfStore,
+      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
+    });
+
+    const storeNameWasPickedBySomeoneElse = await this.findOne({
+      _id: { $ne: storeId },
+      storeName: this._safeTrim(storeData.storeName),
+      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
+    });
+
+    if (ownerAlreadyHasThisStore) {
+      throw new Error(
+        "You already have a store with this name in your country",
+      );
+    }
+
+    if (storeNameWasPickedBySomeoneElse) {
+      throw new Error("This store already exist in your country");
+    }
+
+    const normalizedStoreData = {
+      ownerOfStore: storeData.ownerOfStore,
+      storeName: this._safeTrim(storeData.storeName),
+      storeDescription: this._safeTrim(storeData.storeDescription),
+      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
+      stateOrProvinceStoreLocatedIn: this._safeTrim(
+        storeData.stateOrProvinceStoreLocatedIn,
+      ),
+      cityStoreLocatedIn: this._safeTrim(storeData.cityStoreLocatedIn),
+      storeAddress: this._safeTrim(storeData.storeAddress),
+      storeZipcode: this._safeTrim(storeData.storeZipcode),
+    };
+
+    return this.updateOne({ _id: storeId }, normalizedStoreData);
+  }
+
   async getStoreData(ownerId) {
     return this.findAll({ ownerOfStore: ownerId });
   }
