@@ -7,6 +7,6 @@ const {
 
 const router = express.Router();
 
-router.patch("/", requireSeller, validatePatchStore, patchStoreData);
+router.patch("/:id", requireSeller, validatePatchStore, patchStoreData);
 
 module.exports = router;

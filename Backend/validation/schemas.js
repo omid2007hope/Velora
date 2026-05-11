@@ -24,6 +24,8 @@ const storeSchema = z.object({
   storeZipcode: z.string().min(2).max(20),
 });
 
+const patchStoreSchema = storeSchema.partial();
+
 // function validateOwnerId(req, _res, next) {
 //   const ownerId = req.body?.ownerOfStore;
 
@@ -214,5 +216,6 @@ module.exports = {
   reviewCreateSchema,
   orderStatusSchema,
   storeSchema,
+  patchStoreSchema,
   // validateOwnerId,
 };

@@ -5,13 +5,13 @@ module.exports = new (class StoreService extends BaseService {
   _safeTrim = (val) => (typeof val === "string" ? val.trim() : "");
 
   async createAnStore(storeData) {
-    const ownerAlreadyHasThisStore = await this.findOne({
+    const ownerAlreadyHasThisStore = await this.findOneByCondition({
       storeName: this._safeTrim(storeData.storeName),
       ownerOfStore: storeData.ownerOfStore,
       countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
     });
 
-    const storeNameWasPickedBySomeoneElse = await this.findOne({
+    const storeNameWasPickedBySomeoneElse = await this.findOneByCondition({
       storeName: this._safeTrim(storeData.storeName),
       countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
     });
@@ -43,43 +43,61 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async patchStoreData(storeId, storeData) {
-    const ownerAlreadyHasThisStore = await this.findOne({
-      _id: { $ne: storeId },
-      storeName: this._safeTrim(storeData.storeName),
-      ownerOfStore: storeData.ownerOfStore,
-      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
-    });
+    const trimmedStoreName = this._safeTrim(storeData.storeName);
 
-    const storeNameWasPickedBySomeoneElse = await this.findOne({
-      _id: { $ne: storeId },
-      storeName: this._safeTrim(storeData.storeName),
-      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
-    });
+    if (trimmedStoreName) {
+      const ownerAlreadyHasThisStore = await this.findOneByCondition({
+        _id: { $ne: storeId },
+        storeName: trimmedStoreName,
+        ownerOfStore: storeData.ownerOfStore,
+        countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
+      });
 
-    if (ownerAlreadyHasThisStore) {
-      throw new Error(
-        "You already have a store with this name in your country",
+      const storeNameWasPickedBySomeoneElse = await this.findOneByCondition({
+        _id: { $ne: storeId },
+        storeName: trimmedStoreName,
+        countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
+      });
+
+      if (ownerAlreadyHasThisStore) {
+        throw new Error(
+          "You already have a store with this name in your country",
+        );
+      }
+
+      if (storeNameWasPickedBySomeoneElse) {
+        throw new Error("This store already exist in your country");
+      }
+    }
+
+    const normalizedStoreData = {};
+    if (storeData.storeName !== undefined)
+      normalizedStoreData.storeName = this._safeTrim(storeData.storeName);
+    if (storeData.storeDescription !== undefined)
+      normalizedStoreData.storeDescription = this._safeTrim(
+        storeData.storeDescription,
       );
-    }
-
-    if (storeNameWasPickedBySomeoneElse) {
-      throw new Error("This store already exist in your country");
-    }
-
-    const normalizedStoreData = {
-      ownerOfStore: storeData.ownerOfStore,
-      storeName: this._safeTrim(storeData.storeName),
-      storeDescription: this._safeTrim(storeData.storeDescription),
-      countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
-      stateOrProvinceStoreLocatedIn: this._safeTrim(
+    if (storeData.countryStoreLocatedIn !== undefined)
+      normalizedStoreData.countryStoreLocatedIn = this._safeTrim(
+        storeData.countryStoreLocatedIn,
+      );
+    if (storeData.stateOrProvinceStoreLocatedIn !== undefined)
+      normalizedStoreData.stateOrProvinceStoreLocatedIn = this._safeTrim(
         storeData.stateOrProvinceStoreLocatedIn,
-      ),
-      cityStoreLocatedIn: this._safeTrim(storeData.cityStoreLocatedIn),
-      storeAddress: this._safeTrim(storeData.storeAddress),
-      storeZipcode: this._safeTrim(storeData.storeZipcode),
-    };
+      );
+    if (storeData.cityStoreLocatedIn !== undefined)
+      normalizedStoreData.cityStoreLocatedIn = this._safeTrim(
+        storeData.cityStoreLocatedIn,
+      );
+    if (storeData.storeAddress !== undefined)
+      normalizedStoreData.storeAddress = this._safeTrim(storeData.storeAddress);
+    if (storeData.storeZipcode !== undefined)
+      normalizedStoreData.storeZipcode = this._safeTrim(storeData.storeZipcode);
 
-    return this.updateOne({ _id: storeId }, normalizedStoreData);
+    return this.update(
+      { _id: storeId, ownerOfStore: storeData.ownerOfStore },
+      normalizedStoreData,
+    );
   }
 
   async getStoreData(ownerId) {

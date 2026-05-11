@@ -11,7 +11,7 @@ const createStore = asyncHandler(async (req, res) => {
 });
 
 const patchStoreData = asyncHandler(async (req, res) => {
-  const result = await storeService.patchStoreData({
+  const result = await storeService.patchStoreData(req.params.id, {
     ...req.body,
     ownerOfStore: req.user.id,
   });
