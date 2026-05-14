@@ -168,6 +168,8 @@ const productCreateSchema = z.object({
     }),
 });
 
+const patchProductSchema = productCreateSchema.partial();
+
 const objectIdParamsSchema = z.object({
   id: objectId,
 });
@@ -212,6 +214,7 @@ module.exports = {
   tokenOnlySchema,
   emailOnlySchema,
   productCreateSchema,
+  patchProductSchema,
   productIdParamsSchema,
   reviewCreateSchema,
   orderStatusSchema,

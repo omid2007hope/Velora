@@ -48,7 +48,7 @@ const patchProductByid = asyncHandler(async (req, res) => {
     ...req.body,
     storeOwnerId: req.user.id,
   });
-  return res.status(201).json({ data: result });
+  return res.status(200).json({ data: result });
 });
 
 const deleteProductById = asyncHandler(async (req, res) => {
@@ -56,7 +56,7 @@ const deleteProductById = asyncHandler(async (req, res) => {
     req.params.id,
     req.user.id,
   );
-  return res.status(201).json({ data: result });
+  return res.status(200).json({ data: result });
 });
 
 module.exports = {

@@ -55,4 +55,20 @@ module.exports = new (class ProductService extends BaseService {
 
     return this.createObject(normalizedPayload);
   }
+
+  async patchProductByid(productId, payload) {
+    const normalizedPayload = {
+      ...payload,
+      subCategory:
+        typeof payload.subCategory === "string" && payload.subCategory.trim()
+          ? payload.subCategory.trim()
+          : payload.subCategory,
+    };
+
+    return this.update(productId, normalizedPayload);
+  }
+
+  async deleteProductById(productId, userId) {
+    return this.hardDelete({ _id: productId, storeOwnerId: userId });
+  }
 })(Product);
