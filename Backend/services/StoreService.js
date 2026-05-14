@@ -100,6 +100,10 @@ module.exports = new (class StoreService extends BaseService {
     );
   }
 
+  async deleteStore(storeId, ownerId) {
+    return this.softDelete({ _id: storeId, ownerOfStore: ownerId });
+  }
+
   async getStoreData(ownerId) {
     return this.findAll({ ownerOfStore: ownerId });
   }
