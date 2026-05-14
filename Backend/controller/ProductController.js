@@ -43,10 +43,28 @@ const createSellerProduct = asyncHandler(async (req, res) => {
   return res.status(201).json({ data: createdProduct });
 });
 
+const patchProductByid = asyncHandler(async (req, res) => {
+  const result = await productService.patchProductByid(req.params.id, {
+    ...req.body,
+    storeOwnerId: req.user.id,
+  });
+  return res.status(201).json({ data: result });
+});
+
+const deleteProductById = asyncHandler(async (req, res) => {
+  const result = await productService.deleteProductById(
+    req.params.id,
+    req.user.id,
+  );
+  return res.status(201).json({ data: result });
+});
+
 module.exports = {
   listProducts,
   listSellerProducts,
   getProductById,
   createProduct,
   createSellerProduct,
+  patchProductByid,
+  deleteProductById,
 };
