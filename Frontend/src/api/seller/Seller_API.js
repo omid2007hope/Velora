@@ -28,3 +28,13 @@ export async function createAnStore(payload) {
   const response = await client.post("/server/seller/store", payload);
   return response.data?.data;
 }
+
+export async function patchAnStore(id, payload) {
+  const response = await client.patch(`/server/seller/store${id}`, payload);
+  return response.data?.data;
+}
+
+export async function deleteAnStore() {
+  const response = await client.patch(`/server/seller/store${id}`);
+  return response.data?.data;
+}
