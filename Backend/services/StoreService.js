@@ -101,7 +101,7 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async deleteStore(storeId, ownerId) {
-    return this.softDelete({ _id: storeId, ownerOfStore: ownerId });
+    return this.hardDelete({ _id: storeId, ownerOfStore: ownerId });
   }
 
   async getStoreData(ownerId) {
