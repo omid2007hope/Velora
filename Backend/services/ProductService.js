@@ -1,4 +1,5 @@
 const Product = require("../model/Product");
+const Review = require("../model/Review");
 const BaseService = require("./BaseService");
 
 function escapeRegex(value) {
@@ -58,14 +59,26 @@ module.exports = new (class ProductService extends BaseService {
 
   async patchProductByid(productId, payload) {
     const normalizedPayload = {
-      ...payload,
-      subCategory:
-        typeof payload.subCategory === "string" && payload.subCategory.trim()
-          ? payload.subCategory.trim()
-          : payload.subCategory,
+      name: payload.name,
+      description: payload.description || "",
+      price: payload.price,
+      oldPrice: payload.oldPrice || null,
+      newPrice: payload.newPrice || null,
+      discount: payload.discount || null,
+      category: payload.category,
+      subCategory: payload.subCategory,
+      imageUrl: payload.imageUrl,
+      NewArrivals: payload.NewArrivals || null,
+      color: payload.color || null,
+      size: payload.size || null,
+      highlights: payload.highlights || null,
+      reviews: payload.reviews || null,
     };
 
-    return this.update(productId, normalizedPayload);
+    return this.update(
+      { _id: productId, storeOwnerId: payload.storeOwnerId },
+      normalizedPayload,
+    );
   }
 
   async deleteProductById(productId, userId) {
