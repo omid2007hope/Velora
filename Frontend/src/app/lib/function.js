@@ -7,7 +7,7 @@ export function HandelApi() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-a
+    a;
     async function fetchAndLoad() {
       setLoading(true);
       setError("");
@@ -41,14 +41,14 @@ a
       ignore = true;
     };
   }, []);
-}
 
-return {
-  dataList,
-  loading,
-  error,
-  setDataList,
-};
+  return {
+    dataList,
+    loading,
+    error,
+    setDataList,
+  };
+}
 
 //! ignore === true means this function has not been called yet therefore call it
 //! ignore === false means this function has been called once therefore there is no need to be called again
