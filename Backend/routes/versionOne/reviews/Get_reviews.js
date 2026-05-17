@@ -1,5 +1,5 @@
 const express = require("express");
-const { listReviews } = require("../../../controller/ReviewController");
+const { listReviews } = require("../../../api/controller/ReviewController");
 const {
   validateReviewProductId,
 } = require("../../../middleware/validation/ReviewValidation");
@@ -13,3 +13,4 @@ router.get(
 );
 
 module.exports = router;
+

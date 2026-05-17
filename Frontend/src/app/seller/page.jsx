@@ -6,20 +6,13 @@ import SellerProductsOverview from "@/app/features/seller/components/product/Sel
 import SellerStoreOverview from "@/app/features/seller/components/store/SellerStoreOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
 import { getSellerStore } from "@/api/seller/Seller_API";
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useHandleApi } from "@/app/lib/function";
 
 export default function SellerPage() {
-  const [store, setStore] = useState([]);
+  const apiFn = useCallback(() => getSellerStore(), []);
+  const { dataList: store } = useHandleApi(apiFn);
   const { storeOwner } = useSellerSession();
-
-  useEffect(() => {
-    async function getStoreData() {
-      const storeData = await getSellerStore();
-      setStore(storeData);
-    }
-
-    getStoreData();
-  }, []);
 
   return (
     <div className="space-y-6">

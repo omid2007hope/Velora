@@ -8,7 +8,7 @@ const {
   confirmStoreOwnerEmailVerification,
   requestStoreOwnerPasswordReset,
   confirmStoreOwnerPasswordReset,
-} = require("../../../controller/StoreOwnerController");
+} = require("../../../api/controller/StoreOwnerController");
 const {
   validateCreateStoreOwner,
   validateStoreOwnerLogin,
@@ -55,3 +55,4 @@ router.post(
 );
 
 module.exports = router;
+

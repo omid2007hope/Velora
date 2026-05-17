@@ -4,10 +4,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { addItem } from "@/app/redux/slice/BasketSlice";
 import { fetchProducts } from "@/app/features/catalog/services/catalog-service";
+import { useHandleApi } from "@/app/lib/function";
 
 function normalizeProduct(item) {
   return {
@@ -22,20 +23,9 @@ function normalizeProduct(item) {
 export default function DealsPreview() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [preview, setPreview] = useState([]);
-
-  useEffect(() => {
-    async function loadDeals() {
-      try {
-        const data = await fetchProducts({ isNew: true });
-        setPreview((data ?? []).slice(0, 8));
-      } catch {
-        setPreview([]);
-      }
-    }
-
-    loadDeals();
-  }, []);
+  const apiFn = useCallback(() => fetchProducts({ isNew: true }), []);
+  const { dataList } = useHandleApi(apiFn);
+  const preview = useMemo(() => dataList.slice(0, 8), [dataList]);
 
   const shopNow = useCallback(
     (item) => {

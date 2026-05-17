@@ -3,7 +3,7 @@ const {
   listProducts,
   listSellerProducts,
   getProductById,
-} = require("../../../controller/ProductController");
+} = require("../../../api/controller/ProductController");
 const { requireSeller } = require("../../../middleware/auth/authenticate");
 const {
   validateProductId,
@@ -16,3 +16,4 @@ router.get("/seller/products", requireSeller, listSellerProducts);
 router.get("/products/:id", validateProductId, getProductById);
 
 module.exports = router;
+

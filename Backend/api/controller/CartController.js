@@ -1,6 +1,6 @@
-const asyncHandler = require("../utils/asyncHandler");
-const cartService = require("../services/CartService");
-const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
+const asyncHandler = require("../../utils/asyncHandler");
+const cartService = require("../../services/CartService");
+const getAuthorizedUserId = require("../../utils/getAuthorizedUserId");
 
 const getCart = asyncHandler(async (req, res) => {
   const cart = await cartService.getCartByUser(getAuthorizedUserId(req));
@@ -47,3 +47,4 @@ module.exports = {
   deleteCartItem,
   clearCart,
 };
+

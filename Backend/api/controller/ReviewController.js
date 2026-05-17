@@ -1,6 +1,6 @@
-const asyncHandler = require("../utils/asyncHandler");
-const reviewService = require("../services/ReviewService");
-const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
+const asyncHandler = require("../../utils/asyncHandler");
+const reviewService = require("../../services/ReviewService");
+const getAuthorizedUserId = require("../../utils/getAuthorizedUserId");
 
 const listReviews = asyncHandler(async (req, res) => {
   const reviews = await reviewService.listReviewsByProduct(
@@ -25,3 +25,4 @@ module.exports = {
   listReviews,
   createReview,
 };
+

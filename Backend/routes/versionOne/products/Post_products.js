@@ -2,7 +2,7 @@ const express = require("express");
 const {
   createProduct,
   createSellerProduct,
-} = require("../../../controller/ProductController");
+} = require("../../../api/controller/ProductController");
 const { requireSeller } = require("../../../middleware/auth/authenticate");
 const {
   validateCreateProduct,
@@ -19,3 +19,4 @@ router.post(
 );
 
 module.exports = router;
+

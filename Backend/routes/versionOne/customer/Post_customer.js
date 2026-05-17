@@ -8,7 +8,7 @@ const {
   confirmCustomerEmailVerification,
   requestCustomerPasswordReset,
   confirmCustomerPasswordReset,
-} = require("../../../controller/CustomerController");
+} = require("../../../api/controller/CustomerController");
 const {
   validateCreateCustomer,
   validateCustomerLogin,
@@ -55,3 +55,4 @@ router.post(
 );
 
 module.exports = router;
+

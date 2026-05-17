@@ -1,6 +1,6 @@
-const asyncHandler = require("../utils/asyncHandler");
-const accountService = require("../services/AccountService");
-const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
+const asyncHandler = require("../../utils/asyncHandler");
+const accountService = require("../../services/AccountService");
+const getAuthorizedUserId = require("../../utils/getAuthorizedUserId");
 
 const createAccountProfile = asyncHandler(async (req, res) => {
   const result = await accountService.upsertAccountProfile({
@@ -19,3 +19,4 @@ const createAccountProfile = asyncHandler(async (req, res) => {
 module.exports = {
   createAccountProfile,
 };
+

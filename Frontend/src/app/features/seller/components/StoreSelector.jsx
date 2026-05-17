@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Store, ChevronDown, Check, AlertCircle } from "lucide-react";
 import { listSellerStore } from "@/app/features/seller/services/seller-store-service";
+import { useHandleApi } from "@/app/lib/function";
 
 export default function StoreSelector({ selectedStoreId, onSelect }) {
-  const [stores, setStores] = useState([]);
+  const apiFn = useCallback(() => listSellerStore(), []);
+  const { dataList: stores, loading } = useHandleApi(apiFn);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    listSellerStore().then((data) => {
-      setStores(data);
-      // Auto-select the first store if nothing is selected yet
-      if (data.length > 0 && !selectedStoreId) {
-        onSelect(data[0]._id, data[0]);
-      }
-      setLoading(false);
-    });
-  }, []);
+    if (stores.length > 0 && !selectedStoreId) {
+      onSelect(stores[0]._id, stores[0]);
+    }
+  }, [stores, selectedStoreId, onSelect]);
 
   // Close on outside click
   useEffect(() => {

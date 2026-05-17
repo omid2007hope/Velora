@@ -2,7 +2,7 @@ const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
 const {
   updateCartItemQuantity,
-} = require("../../../controller/CartController");
+} = require("../../../api/controller/CartController");
 const {
   validateUpdateCartItemQuantity,
 } = require("../../../middleware/validation/CartValidation");
@@ -17,3 +17,4 @@ router.patch(
 );
 
 module.exports = router;
+

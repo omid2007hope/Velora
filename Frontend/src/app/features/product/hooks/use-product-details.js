@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { fetchProductById } from "@/app/features/catalog/services/catalog-service";
 import {
   createReview,
   fetchReviews,
 } from "@/app/features/product/services/review-service";
+import { useHandleApi } from "@/app/lib/function";
 
 const initialReview = {
   name: "",
@@ -13,52 +14,38 @@ const initialReview = {
   comment: "",
 };
 
+const initialProductState = {
+  product: null,
+  reviews: [],
+};
+
 export function useProductDetails(productId) {
-  const [product, setProduct] = useState(null);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [reviewForm, setReviewForm] = useState(initialReview);
 
-  useEffect(() => {
-    if (!productId) {
-      return;
-    }
+  const apiFn = useCallback(async () => {
+    const [productData, reviewsData] = await Promise.all([
+      fetchProductById(productId),
+      fetchReviews(productId),
+    ]);
 
-    let active = true;
-
-    async function loadProductData() {
-      try {
-        setLoading(true);
-        const [productData, reviewsData] = await Promise.all([
-          fetchProductById(productId),
-          fetchReviews(productId),
-        ]);
-
-        if (!active) return;
-
-        setProduct(productData);
-        setReviews(reviewsData || []);
-        setError(null);
-      } catch {
-        if (!active) return;
-
-        setProduct(null);
-        setReviews([]);
-        setError("Product not found");
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadProductData();
-
-    return () => {
-      active = false;
+    return {
+      product: productData,
+      reviews: reviewsData,
     };
   }, [productId]);
+
+  const { data, loading, error, setData } = useHandleApi(apiFn, {
+    initialData: initialProductState,
+    enabled: Boolean(productId),
+    mapData: (payload) => ({
+      product: payload?.product || null,
+      reviews: Array.isArray(payload?.reviews) ? payload.reviews : [],
+    }),
+    fallbackError: "Product not found",
+  });
+
+  const product = data?.product || null;
+  const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
 
   const ratingCounts = useMemo(() => {
     return reviews.reduce((accumulator, review) => {
@@ -88,7 +75,9 @@ export function useProductDetails(productId) {
     };
 
     if (!review.name.trim() || !review.comment.trim()) {
-      throw new Error("Please add your name and comment before submitting a review.");
+      throw new Error(
+        "Please add your name and comment before submitting a review.",
+      );
     }
 
     try {
@@ -97,7 +86,10 @@ export function useProductDetails(productId) {
       // Keep the optimistic review locally so the UI stays responsive.
     }
 
-    setReviews((previousReviews) => [...previousReviews, review]);
+    setData((previousData) => ({
+      ...previousData,
+      reviews: [...(previousData?.reviews || []), review],
+    }));
     setReviewForm(initialReview);
   }
 
@@ -105,7 +97,7 @@ export function useProductDetails(productId) {
     product,
     reviews,
     loading,
-    error,
+    error: error || null,
     reviewForm,
     setReviewForm,
     ratingCounts,

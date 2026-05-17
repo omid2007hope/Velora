@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
-const { createOrder } = require("../../../controller/OrderController");
+const { createOrder } = require("../../../api/controller/OrderController");
 const {
   validateCreateOrder,
 } = require("../../../middleware/validation/OrderValidation");
@@ -15,3 +15,4 @@ router.post(
 );
 
 module.exports = router;
+

@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
-const { createPaymentMethod } = require("../../../controller/PaymentController");
+const { createPaymentMethod } = require("../../../api/controller/PaymentController");
 const {
   validateCreatePaymentMethod,
 } = require("../../../middleware/validation/PaymentValidation");
@@ -15,3 +15,4 @@ router.post(
 );
 
 module.exports = router;
+

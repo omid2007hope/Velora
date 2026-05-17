@@ -1,6 +1,6 @@
-const asyncHandler = require("../utils/asyncHandler");
-const { createHttpError } = require("../utils/httpError");
-const productService = require("../services/ProductService");
+const asyncHandler = require("../../utils/asyncHandler");
+const { createHttpError } = require("../../utils/httpError");
+const productService = require("../../services/ProductService");
 
 const listProducts = asyncHandler(async (req, res) => {
   const { category, subCategory, new: isNew, search } = req.query;
@@ -68,3 +68,4 @@ module.exports = {
   patchProductByid,
   deleteProductById,
 };
+

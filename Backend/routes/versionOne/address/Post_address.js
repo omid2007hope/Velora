@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
-const { createAddress } = require("../../../controller/AddressController");
+const { createAddress } = require("../../../api/controller/AddressController");
 const {
   validateCreateAddress,
 } = require("../../../middleware/validation/AddressValidation");
@@ -15,3 +15,4 @@ router.post(
 );
 
 module.exports = router;
+

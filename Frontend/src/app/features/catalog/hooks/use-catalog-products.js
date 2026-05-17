@@ -1,49 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { fetchProducts } from "@/app/features/catalog/services/catalog-service";
+import { useHandleApi } from "@/app/lib/function";
 
 export function useCatalogProducts(filters) {
   const { category, subCategory, isNew, search } = filters;
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const apiFn = useCallback(
+    () =>
+      fetchProducts({
+        category,
+        subCategory,
+        isNew,
+        search,
+      }),
+    [category, subCategory, isNew, search],
+  );
+  const { dataList: products, loading, error } = useHandleApi(apiFn);
 
-  useEffect(() => {
-    let active = true;
-
-    async function loadProducts() {
-      try {
-        setLoading(true);
-        const data = await fetchProducts({
-          category,
-          subCategory,
-          isNew,
-          search,
-        });
-
-        if (!active) return;
-
-        setProducts(data || []);
-        setError(null);
-      } catch {
-        if (!active) return;
-
-        setProducts([]);
-        setError("We couldn't load the catalog right now.");
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadProducts();
-
-    return () => {
-      active = false;
-    };
-  }, [category, subCategory, isNew, search]);
-
-  return { products, loading, error };
+  return {
+    products,
+    loading,
+    error: error || null,
+  };
 }

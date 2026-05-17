@@ -1,5 +1,5 @@
-const storeService = require("../services/StoreService");
-const asyncHandler = require("../utils/asyncHandler");
+const storeService = require("../../services/StoreService");
+const asyncHandler = require("../../utils/asyncHandler");
 
 const createStore = asyncHandler(async (req, res) => {
   const result = await storeService.createAnStore({
@@ -36,3 +36,4 @@ module.exports = {
   deleteStore,
   getStoreData,
 };
+

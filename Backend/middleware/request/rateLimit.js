@@ -1,13 +1,14 @@
 const rateLimit = require("express-rate-limit");
 
-const isTest = process.env.NODE_ENV === "test";
+const skipRateLimit = () =>
+  process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development";
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: () => isTest,
+  skip: skipRateLimit,
 });
 
 const authLimiter = rateLimit({
@@ -15,7 +16,7 @@ const authLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: () => isTest,
+  skip: skipRateLimit,
   message: {
     error: "Too many requests. Please wait a few minutes and try again.",
   },

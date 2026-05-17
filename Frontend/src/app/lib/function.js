@@ -1,29 +1,60 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export function useHandleApi(apiFn) {
-  const [dataList, setDataList] = useState([]);
+const DEFAULT_INITIAL_DATA = [];
+const DEFAULT_MAP_DATA = (value) => (Array.isArray(value) ? value : []);
+
+export function useHandleApi(apiFn, options = {}) {
+  const {
+    initialData = DEFAULT_INITIAL_DATA,
+    enabled = true,
+    mapData = DEFAULT_MAP_DATA,
+    fallbackError = "Could not load any data.",
+  } = options;
+
+  const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refetchCount, setRefetchCount] = useState(0);
+
+  const mapDataRef = useRef(mapData);
+  const fallbackErrorRef = useRef(fallbackError);
+
+  mapDataRef.current = mapData;
+  fallbackErrorRef.current = fallbackError;
+
+  useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      setError("");
+      setData(initialData);
+    }
+  }, [enabled, initialData]);
 
   useEffect(() => {
     let ignore = false;
+
+    if (!enabled) {
+      return () => {
+        ignore = true;
+      };
+    }
 
     async function fetchAndLoad() {
       setLoading(true);
       setError("");
 
       try {
-        const data = await apiFn();
+        const result = await apiFn();
 
         if (!ignore) {
-          setDataList(Array.isArray(data) ? data : []);
+          setData(mapDataRef.current(result));
         }
       } catch (reqError) {
         if (!ignore) {
           setError(
             reqError?.response?.data?.error ||
               reqError?.message ||
-              "Could not load any data.",
+              fallbackErrorRef.current,
           );
         }
       } finally {
@@ -38,12 +69,14 @@ export function useHandleApi(apiFn) {
     return () => {
       ignore = true;
     };
-  }, [apiFn]);
+  }, [apiFn, enabled]);
 
   return {
-    dataList,
+    data,
+    dataList: data,
     loading,
     error,
-    setDataList,
+    setData,
+    setDataList: setData,
   };
 }
