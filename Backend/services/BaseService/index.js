@@ -94,7 +94,7 @@ class BaseService {
     );
 
     if (!parent) {
-      throw new Error("Resource not found");
+      throw createHttpError(404 ,"Resource not found");
     }
 
     const getChildren = async (parentId) => {

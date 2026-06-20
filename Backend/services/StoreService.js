@@ -1,4 +1,5 @@
 const Store = require("../model/Store");
+const {createHttpError} = require("../utils/httpError")
 const BaseService = require("./BaseService");
 
 module.exports = new (class StoreService extends BaseService {
@@ -17,13 +18,11 @@ module.exports = new (class StoreService extends BaseService {
     });
 
     if (ownerAlreadyHasThisStore) {
-      throw new Error(
-        "You already have a store with this name in your country",
-      );
+      throw createHttpError(409, "You already have a store...")
     }
 
     if (storeNameWasPickedBySomeoneElse) {
-      throw new Error("This store already exist in your country");
+      throw createHttpError(409, "This store already exist in your country");
     }
 
     const normalizedStoreData = {
@@ -60,13 +59,13 @@ module.exports = new (class StoreService extends BaseService {
       });
 
       if (ownerAlreadyHasThisStore) {
-        throw new Error(
-          "You already have a store with this name in your country",
+        throw createHttpError(
+        409 , "You already have a store with this name in your country",
         );
       }
 
       if (storeNameWasPickedBySomeoneElse) {
-        throw new Error("This store already exist in your country");
+       throw createHttpError(409, "This store already exist in your country");
       }
     }
 

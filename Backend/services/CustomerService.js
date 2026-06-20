@@ -5,6 +5,7 @@ const Customer = require("../model/Customer");
 const BaseService = require("./BaseService");
 const { sendEmail } = require("../utils/mailer");
 const { getEnvConfig } = require("../config/env");
+const { createHttpError } = require("../utils/httpError");
 const SALT_ROUNDS = 12;
 module.exports = new (class CustomerService extends BaseService {
   _generateToken(hoursValid = 24) {
@@ -91,7 +92,7 @@ module.exports = new (class CustomerService extends BaseService {
       return { authenticated: false };
     }
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not set");
+      throw createHttpError(500, "JWT_SECRET is not set");
     }
     const tokenPayload = {
       sub: customer._id.toString(),
@@ -122,13 +123,13 @@ module.exports = new (class CustomerService extends BaseService {
   }
   async refreshAccessToken(refreshToken) {
     if (!process.env.JWT_REFRESH_SECRET) {
-      throw new Error("JWT_REFRESH_SECRET is not set");
+      throw createHttpError(500 ,"JWT_REFRESH_SECRET is not set");
     }
 
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     if (payload.tokenType !== "refresh") {
-      throw new Error("Invalid token type");
+      throw createHttpError(500 ,"Invalid token type");
     }
 
     return jwt.sign(
