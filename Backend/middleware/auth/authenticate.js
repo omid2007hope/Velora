@@ -17,13 +17,13 @@ function extractToken(req) {
 
 function verifyAccessToken(token) {
   if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not set");
+    throw createHttpError(500, "JWT_SECRET is not set");
   }
 
   const payload = jwt.verify(token, process.env.JWT_SECRET);
 
   if (payload.tokenType && payload.tokenType !== "access") {
-    throw new Error("Invalid token type");
+    throw createHttpError(401, "Invalid token type");
   }
 
   return payload;
@@ -31,13 +31,13 @@ function verifyAccessToken(token) {
 
 function verifyRefreshToken(token) {
   if (!process.env.JWT_REFRESH_SECRET) {
-    throw new Error("JWT_REFRESH_SECRET is not set");
+    throw createHttpError(500, "JWT_REFRESH_SECRET is not set");
   }
 
   const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
   if (payload.tokenType !== "refresh") {
-    throw new Error("Invalid token type");
+    throw createHttpError(401, "Invalid token type");
   }
 
   return payload;
