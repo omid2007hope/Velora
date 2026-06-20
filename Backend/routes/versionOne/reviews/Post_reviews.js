@@ -1,5 +1,5 @@
 const express = require("express");
-const { createReview } = require("../../../api/controller/ReviewController");
+const { createReview } = require("../../../controller/ReviewController");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
 const {
   validateReviewProductId,

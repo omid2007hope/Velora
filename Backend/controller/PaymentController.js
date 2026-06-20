@@ -1,6 +1,6 @@
-const asyncHandler = require("../../utils/asyncHandler");
-const paymentService = require("../../services/PaymentService");
-const getAuthorizedUserId = require("../../utils/getAuthorizedUserId");
+const asyncHandler = require("../utils/asyncHandler");
+const paymentService = require("../services/PaymentService");
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createPaymentMethod = asyncHandler(async (req, res) => {
   const result = await paymentService.savePaymentMethod({

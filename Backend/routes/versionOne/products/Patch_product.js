@@ -5,7 +5,7 @@ const { requireSeller } = require("../../../middleware/auth/authenticate");
 const {
   validatePatchProduct,
 } = require("../../../middleware/validation/ProductValidation");
-const { patchProductByid } = require("../../../api/controller/ProductController");
+const { patchProductByid } = require("../../../controller/ProductController");
 
 router.patch(
   "/seller/products/:id",

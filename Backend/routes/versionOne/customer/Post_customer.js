@@ -8,7 +8,7 @@ const {
   confirmCustomerEmailVerification,
   requestCustomerPasswordReset,
   confirmCustomerPasswordReset,
-} = require("../../../api/controller/CustomerController");
+} = require("../../../controller/CustomerController");
 const {
   validateCreateCustomer,
   validateCustomerLogin,

@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireSeller } = require("../../../middleware/auth/authenticate");
-const { deleteStore } = require("../../../api/controller/StoreController");
+const { deleteStore } = require("../../../controller/StoreController");
 
 const router = express.Router();
 

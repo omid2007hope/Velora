@@ -1,5 +1,5 @@
 const express = require("express");
-const { handleStripeWebhook } = require("../../../api/controller/WebhookController");
+const { handleStripeWebhook } = require("../../../controller/WebhookController");
 
 const router = express.Router();
 

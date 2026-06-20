@@ -2,7 +2,7 @@ const express = require("express");
 const {
   createProduct,
   createSellerProduct,
-} = require("../../../api/controller/ProductController");
+} = require("../../../controller/ProductController");
 const { requireSeller } = require("../../../middleware/auth/authenticate");
 const {
   validateCreateProduct,

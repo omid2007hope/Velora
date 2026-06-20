@@ -2,7 +2,7 @@ const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
 const {
   updateCartItemQuantity,
-} = require("../../../api/controller/CartController");
+} = require("../../../controller/CartController");
 const {
   validateUpdateCartItemQuantity,
 } = require("../../../middleware/validation/CartValidation");

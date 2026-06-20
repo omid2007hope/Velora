@@ -8,7 +8,7 @@ const {
   confirmStoreOwnerEmailVerification,
   requestStoreOwnerPasswordReset,
   confirmStoreOwnerPasswordReset,
-} = require("../../../api/controller/StoreOwnerController");
+} = require("../../../controller/StoreOwnerController");
 const {
   validateCreateStoreOwner,
   validateStoreOwnerLogin,

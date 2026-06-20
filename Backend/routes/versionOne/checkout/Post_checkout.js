@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../../../middleware/auth/authenticate");
-const { createOrder } = require("../../../api/controller/OrderController");
+const { createOrder } = require("../../../controller/OrderController");
 const {
   validateCreateOrder,
 } = require("../../../middleware/validation/OrderValidation");
