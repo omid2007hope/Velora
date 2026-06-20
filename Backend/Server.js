@@ -15,6 +15,11 @@ const app = express();
 const { port, allowedOrigins } = getEnvConfig();
 const localhostPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
 
+const dns = require('node:dns');
+const dnsAddress = ["1.1.1.1", "8.8.8.8"];
+dns.setServers(dnsAddress);
+
+
 app.use(helmet());
 app.use(
   cors({
