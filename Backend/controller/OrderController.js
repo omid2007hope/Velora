@@ -1,8 +1,8 @@
-const asyncHandler = require("../../utils/asyncHandler");
-const { createHttpError } = require("../../utils/httpError");
-const orderService = require("../../services/OrderService");
-const paymentIntentService = require("../../services/PaymentIntentService");
-const getAuthorizedUserId = require("../../utils/getAuthorizedUserId");
+const asyncHandler = require("../utils/asyncHandler");
+const { createHttpError } = require("../utils/httpError");
+const orderService = require("../services/OrderService");
+const paymentIntentService = require("../services/PaymentIntentService");
+const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createOrder = asyncHandler(async (req, res) => {
   const order = await orderService.createOrder({

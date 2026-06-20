@@ -1,6 +1,6 @@
-const asyncHandler = require("../../utils/asyncHandler");
-const { createHttpError } = require("../../utils/httpError");
-const storeOwnerService = require("../../services/StoreOwnerService");
+const asyncHandler = require("../utils/asyncHandler");
+const { createHttpError } = require("../utils/httpError");
+const storeOwnerService = require("../services/StoreOwnerService");
 
 const createStoreOwner = asyncHandler(async (req, res) => {
   const result = await storeOwnerService.registerStoreOwner(req.body);

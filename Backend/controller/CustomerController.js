@@ -1,6 +1,6 @@
-const asyncHandler = require("../../utils/asyncHandler");
-const { createHttpError } = require("../../utils/httpError");
-const customerService = require("../../services/CustomerService");
+const asyncHandler = require("../utils/asyncHandler");
+const { createHttpError } = require("../utils/httpError");
+const customerService = require("../services/CustomerService");
 
 const createCustomer = asyncHandler(async (req, res) => {
   const result = await customerService.registerCustomer(req.body);

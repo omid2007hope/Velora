@@ -1,8 +1,8 @@
-const asyncHandler = require("../../utils/asyncHandler");
-const stripe = require("../../utils/stripeClient");
-const paymentIntentService = require("../../services/PaymentIntentService");
-const orderService = require("../../services/OrderService");
-const { createHttpError } = require("../../utils/httpError");
+const asyncHandler = require("../utils/asyncHandler");
+const stripe = require("../utils/stripeClient");
+const paymentIntentService = require("../services/PaymentIntentService");
+const orderService = require("../services/OrderService");
+const { createHttpError } = require("../utils/httpError");
 
 const handleStripeWebhook = asyncHandler(async (req, res) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
