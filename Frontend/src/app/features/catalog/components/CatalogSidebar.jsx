@@ -33,8 +33,8 @@ export default function CatalogSidebar({
   }
 
   return (
-    <aside className="hidden min-h-[calc(100vh-96px)] w-1/4 flex-col border-r-2 border-amber-900 bg-orange-100 shadow-lg md:flex lg:w-1/6">
-      <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 p-4 pt-7 shadow-md">
+    <aside className="hidden min-h-[calc(100vh-96px)] w-1/4 md:w-2/6 flex-col border-r-2 border-amber-900 bg-orange-100 shadow-lg md:flex lg:w-1/6">
+      <div className="flex flex-col items-center justify-center border-b-2 border-amber-900 py-4 pt-7 shadow-md">
         <ProductSearchBar
           value={searchText}
           onChange={onSearchChange}

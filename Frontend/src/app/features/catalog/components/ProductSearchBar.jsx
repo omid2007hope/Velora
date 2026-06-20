@@ -19,12 +19,12 @@ export default function ProductSearchBar({ value, onChange, onSubmit }) {
         placeholder="Search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="flex-1 rounded-l-lg border-2 border-amber-950 bg-orange-50 px-3 py-2 text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-700"
+        className="flex-1 rounded-l-lg border-2 border-amber-950 bg-orange-50 px-0.5 md:px-0.5 lg:px-1 py-2 md:py-2 lg:py-2 text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-700 mt-0 md:mt-4 lg:mt-0 ml-2"
       />
       <button
         type="submit"
         aria-label="Submit product search"
-        className="flex items-center justify-center rounded-r-lg border-2 border-amber-950 bg-amber-950 px-3 py-[0.625rem] text-orange-50 transition hover:bg-amber-800"
+        className="flex items-center justify-center rounded-r-lg border-2 border-amber-950 bg-amber-950 px-3 py-[0.625rem] text-orange-50 transition hover:bg-amber-800 mt-0 md:mt-4 lg:mt-0 mr-2"
       >
         <MagnifyingGlassIcon className="h-5 w-5" />
       </button>
