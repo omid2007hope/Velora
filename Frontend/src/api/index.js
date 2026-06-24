@@ -9,5 +9,5 @@
 export * from "./auth/Auth_API";
 export * from "./customer/Customer_API";
 export * from "./product/Product_API";
-export * from "./seller/Seller_API";
+export * from "./Store/Store_API";
 export * from "./order/Order_API";

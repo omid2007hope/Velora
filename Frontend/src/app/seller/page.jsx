@@ -5,7 +5,7 @@ import SectionCard from "@/app/components/ui/SectionCard";
 import SellerProductsOverview from "@/app/features/seller/components/product/SellerProductsOverview";
 import SellerStoreOverview from "@/app/features/seller/components/store/SellerStoreOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
-import { getSellerStore } from "@/api/seller/Seller_API";
+import { getSellerStore } from "@/api/Store/Store_API";
 import { useCallback } from "react";
 import { useHandleApi } from "@/app/lib/function";
 

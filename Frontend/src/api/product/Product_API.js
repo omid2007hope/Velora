@@ -25,7 +25,19 @@ export async function getProducts(params = {}) {
 export async function getProductById(id) {
   if (!id) throw new Error("Product id is required");
 
-  const response = await client.get(`/server/products/${id}`);
+  const response = await client.get(`/server/seller/products/${id}`);
+  return response.data?.data;
+}
+
+
+export async function createSellerProduct(payload) {
+  const response = await client.post("/server/seller/products", payload);
+  return response.data?.data;
+}
+
+export async function deleteProductById(id) {
+  if (!id) throw new Error("Product id is required");
+  const response = await client.delete(`/server/seller/products/${id}`);
   return response.data?.data;
 }
 

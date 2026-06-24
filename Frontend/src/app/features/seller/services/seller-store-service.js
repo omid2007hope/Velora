@@ -2,4 +2,4 @@
 export {
   getSellerStore as listSellerStore,
   createAnStore,
-} from "@/api/seller/Seller_API";
+} from "@/api/Store/Store_API";

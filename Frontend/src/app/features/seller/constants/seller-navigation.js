@@ -1,4 +1,4 @@
-import { getSellerStore } from "../../../../api/seller/Seller_API";
+import { getSellerStore } from "../../../../api/Store/Store_API";
 
 export const getSellerNavigation = async () => {
   const store = await getSellerStore();

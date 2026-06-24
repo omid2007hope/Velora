@@ -2,4 +2,4 @@
 export {
   getSellerProducts as listSellerProducts,
   createSellerProduct,
-} from "@/api/seller/Seller_API";
+} from "@/api/Store/Store_API";
