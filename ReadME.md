@@ -159,209 +159,429 @@ A seller can call `POST /seller/products` without having a store. `createSellerP
 - [ ] Apply `requireSellerHasStore` to the `POST /seller/products` route in `Backend/routes/versionOne/products/Post_products.js`.
 - [ ] In `createSellerProduct`, use `req.sellerStore._id` as the `storeId` for the new product (ties in with task 2.4).
 - [ ] **Frontend guard** — In `SellerPanelShell.jsx` / `SellerProductsOverview`, before showing "Add Product" CTA, check if the seller has a store. If not, redirect to `/seller/store/:id` with an informative message like _"Create your store first before listing products."_
+# Velora — Architecture Roadmap and Execution Guide
+
+> Last updated: 24 June 2026  
+> This document is the working plan for stabilizing the backend, unifying the product domain, and turning the seller/customer experience into a scalable platform.
 
 ---
 
-## 4. Backend — Validation, Auth & Token Audit
+## How To Use This Document
 
-### Tasks
+Work top to bottom. Each phase depends on the previous one.
 
-- [ ] **Read & fully understand** `Backend/middleware/auth/authenticate.js`:
-  - `requireAuth` — checks Bearer token, sets `req.user = { id, email, role }`
-  - `optionalAuth` — same but doesn't block on missing token
-  - `requireSeller` — calls `requireAuth` then checks `req.user.role === "seller"` (verify this logic is complete in the full file)
-- [ ] Verify `JWT_SECRET` is always set in `config/env.js` and that an error is thrown at startup if it is missing.
-- [ ] Audit every route file — confirm the correct middleware (`requireAuth` vs `requireSeller` vs `optionalAuth` vs none) is applied:
-  - Public routes (product list, product detail, store list): **no auth**
-  - Customer routes (cart, order, payment, review, address, account): **`requireAuth`** + confirm `role === "customer"` where needed
-  - Seller routes (store CRUD, product create): **`requireSeller`**
-- [ ] Check all validation middleware files in `Backend/middleware/validation/` — ensure every required field is validated before it reaches the controller, and that validation errors return `400` with a clear message.
-- [ ] Confirm `StoreValidation.js` exists and covers all required fields (`storeName`, `storeDescription`, `countryStoreLocatedIn`, `cityStoreLocatedIn`, `storeAddress`, `storeZipcode`).
-- [ ] Run existing tests (`npm test` in Backend) — fix any failing tests and add tests for the new store routes.
+1. Fix the critical backend risks first.
+2. Unify the product domain into one canonical model and one write path.
+3. Harden auth, ownership, webhook, and order flows.
+4. Upgrade the frontend to match the canonical backend behavior.
+5. Add tests and rollout safeguards before removing deprecated routes.
+
+If you are asking, "where do I change what?" use the file references in each phase. If you want line-accurate anchors, check the current source files first because line numbers shift as code changes.
 
 ---
 
-## 5. Frontend — Search Bar Fix
+## Current Direction
 
-### Current State
+Velora already has a good foundation:
 
-`Frontend/src/app/features/catalog/components/ProductSearchBar.jsx` works via **form submit** (user must press Enter or click the search button). The search in `CatalogPage.jsx` only triggers `updateQuery` on `onSubmit`.
+- backend layers are mostly separated into routes, controllers, services, middleware, models, and utils
+- `BaseService` gives the project a consistent CRUD backbone
+- the frontend already centralizes Axios and auth refresh behavior
+- integration tests exist, so this can be improved safely instead of rewritten blindly
 
-### Task
+The main problem is product-domain split and a few correctness gaps:
 
-- [ ] Change the search to trigger **on every keystroke** (`onChange`) instead of requiring a submit.
-- [ ] In `CatalogPage.jsx`, wire `onSearchChange` so it calls `updateQuery` with the new text directly:
-  ```jsx
-  // In CatalogSidebar and inline search bar props:
-  onChange={(text) => {
-    setSearchText(text);
-    updateQuery(routeState.category, text, routeState.isNew, routeState.subCategory);
-  }}
-  ```
-- [ ] Consider **debouncing** the query update (e.g. 300 ms) to avoid firing an API call on every single character. Use a `useDebounce` custom hook or `lodash.debounce`.
-- [ ] Remove the `onSubmit` prop from `ProductSearchBar` and delete the `<button type="submit">` (or keep it as an accessibility-friendly visible affordance but make search reactive regardless).
-- [ ] Apply the same fix in both the desktop sidebar (`CatalogSidebar.jsx`) and the mobile inline search bar inside `CatalogPage.jsx`.
+- public catalog products and seller-owned products are both treated as separate concepts even though they should be one product domain
+- product delete is destructive
+- seller-facing frontend API wiring has at least two broken URLs
+- review storage is duplicated between `Product` and `Review`
+- order and webhook flows need stronger invariants
 
 ---
 
-## 6. Frontend — Product Card: Show Store Name
+## Step-By-Step Plan
 
-### Current State
+### Phase 1: Stabilize the critical paths
 
-`ProductCard.jsx` and `ProductDetailPage.jsx` do not display the store name. The `Product` model currently stores `storeOwnerId` but not a populated store name.
+#### 1.1 Fix product write-path ambiguity
 
-### Tasks
+- File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
+- File: [Backend/controller/ProductController.js](Backend/controller/ProductController.js#L32-L44)
 
-- [ ] **Backend prerequisite**: Complete task 2.4 (add `storeId` to Product + populate store name in `getProductById` and `listProducts`).
-- [ ] In `ProductDetailPage.jsx`, read `product.storeId?.storeName` (or however the API returns it after population) and render it prominently — e.g. below the product name:
-  ```jsx
-  {
-    product.storeName && (
-      <p className="text-sm text-amber-800">
-        Sold by <strong>{product.storeName}</strong>
-      </p>
-    );
-  }
-  ```
-- [ ] In `ProductCard.jsx`, optionally show the store name as a subtitle below the product name.
-- [ ] Make the store name a clickable link to the store's public page once store pages exist.
+What to do:
 
----
+1. Keep only one canonical create path for seller inventory.
+2. Treat `POST /seller/products` as the real seller write endpoint.
+3. Deprecate `POST /products` or convert it to a legacy alias that forwards to the same service path.
+4. Remove any logic that allows product creation without seller ownership context.
 
-## 7. Frontend — Add-to-Basket Popup
+How:
 
-### Current State
+- route layer should only attach auth + validation
+- controller should inject `req.user.id` and resolved store context
+- service should persist `storeOwnerId` and `storeId` only after ownership is verified
 
-In `ProductDetailPage.jsx`, `addToBasket()` dispatches to Redux but shows no visual feedback.
+#### 1.2 Stop hard deleting products
 
-### Tasks
+- File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L85-L85)
+- File: [Backend/services/BaseService/index.js](Backend/services/BaseService/index.js#L62-L126)
 
-- [ ] Create a reusable `ToastNotification` or `BasketPopup` component in `Frontend/src/app/components/ui/`.
-- [ ] The popup should show:
-  - Product thumbnail
-  - Product name
-  - Confirmation message: _"Added to your basket!"_
-  - A CTA button: _"View Basket"_ → navigates to `/order`
-  - Auto-dismiss after ~3 seconds
-- [ ] Trigger it inside `addToBasket()` in `ProductDetailPage.jsx` (or via a Redux side-effect / middleware listener on the `addItem` action).
-- [ ] Position it as a **toast** (top-right or bottom-center) using a portal (`createPortal`) so it floats above all page content.
-- [ ] Ensure it is accessible (role="alert", aria-live="polite").
+What to do:
 
----
+1. Change product deletion to soft delete.
+2. Keep deleted products out of public lists.
+3. Preserve order history, cart references, and review traceability.
 
-## 8. Frontend — Mandatory Auth Popup (Cart & Buy)
+How:
 
-### Current State
+- replace `hardDelete` with `softDelete`
+- keep `deletedBy` set to the seller id
+- ensure `find*` methods naturally exclude deleted docs via `BaseService._active`
 
-`addToBasket()` and `buyNow()` in `ProductDetailPage.jsx` execute without checking if the user is logged in. Unauthenticated users can add items to the local Redux basket without any account.
+#### 1.3 Fix the frontend seller API breakage
 
-### Tasks
+- File: [Frontend/src/api/seller/Seller_API.js](Frontend/src/api/seller/Seller_API.js#L38-L44)
 
-- [ ] Create a reusable `AuthRequiredModal` component:
-  - Heading: _"Sign in to continue"_
-  - Message: _"You need an account to add items to your basket or place an order."_
-  - Two buttons: **Log In** and **Sign Up** — both navigate to the auth page (or open an auth drawer)
-  - Close/dismiss button (optional — but user should still be able to browse without logging in)
-- [ ] In `ProductDetailPage.jsx`:
-  - Before dispatching `addItem` or calling `buyNow`, check if a valid auth token / user session exists.
-  - If not authenticated → show `AuthRequiredModal` and abort the basket action.
-- [ ] Determine the auth state source:
-  - Check if a Redux auth slice exists (`Frontend/src/app/redux/`) or if auth state comes from `localStorage` (as seen in `SellerPanelShell.jsx` for seller session).
-  - Create or reuse a `useCustomerSession` hook analogous to `useSellerSession`.
-- [ ] Apply the same guard to the **checkout / order flow** (`/order` page).
+What to do:
 
----
+1. Fix the missing slash in the store patch route.
+2. Fix `deleteAnStore` to accept an `id` parameter and use `DELETE`.
+3. Keep product routes and store routes clearly separated.
 
-## 9. Frontend — Seller Panel Full Redesign
+How:
 
-### Current State
+- `patchAnStore(id, payload)` should call `/server/seller/store/${id}`
+- `deleteAnStore(id)` should call `client.delete(...)`
 
-The seller panel (`/seller`) has a basic working layout (`SellerPanelShell.jsx`) with a sidebar and dashboard page, but only covers product publishing. It needs a full professional redesign and expanded functionality.
+#### 1.4 Fix the BaseService import bug
 
-### Design & UX Tasks
+- File: [Backend/services/BaseService/index.js](Backend/services/BaseService/index.js#L89-L100)
 
-- [ ] Define a design system / colour tokens specifically for the seller panel (already uses amber/orange — formalise into Tailwind config variables).
-- [ ] **Sidebar**:
-  - Add more navigation items as features are built: Dashboard, Store, Products, Orders, Analytics, Settings
-  - Show active store name (not just owner name) once store exists
-  - Collapse to icon-only sidebar on smaller screens
-- [ ] **Dashboard page** (`/seller`):
-  - Add stat cards: Total Products, Total Orders (future), Revenue (future)
-  - Add a prominent _"Create Store"_ banner/CTA if the seller has no store yet (connects to task 3)
-  - Clean up the placeholder text ("Start with product creation now. Store setup... can plug in later") — replace with real live data
-- [ ] **Store management page** (`/seller/store/:id`):
-  - `SellerStoreForm.jsx` — review and redesign form layout
-  - `SellerStoreOverview.jsx` — review and redesign overview/display
-  - Add Edit (PATCH) and Delete (soft) actions once backend endpoints are ready (tasks 1.3 & 1.4)
-- [ ] **Products page** (`/seller/products`):
-  - List all seller products in a data table with columns: Image, Name, Price, Category, Status
-  - Add Edit and Delete (soft delete) actions per product
-  - Add pagination or infinite scroll for large catalogs
-- [ ] **Add Product page** (`/seller/products/new`):
-  - If seller has no store → block the form and show _"You must create a store first"_ with a link (task 3 frontend guard)
-  - Improve the product form layout — group fields by section (Basic Info, Pricing, Images, Variants, SEO)
-- [ ] **Responsive**: All seller panel pages must work on tablet and mobile.
+What to do:
+
+1. Import `createHttpError` where `softDeleteRecursive` uses it.
+2. Keep the shared service layer runnable in all branches, including error paths.
+
+How:
+
+- add the missing require from `utils/httpError`
+- validate with tests after the change
 
 ---
 
-## 10. Frontend — Better Customer Account Page
+### Phase 2: Unify the product domain safely
 
-### Current State
+#### 2.1 Make one canonical product model
 
-The account feature exists at `Frontend/src/app/features/account/` but needs a redesign.
+- File: [Backend/model/Product.js](Backend/model/Product.js#L1-L128)
+- File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L1-L86)
 
-### Tasks
+Target state:
 
-- [ ] Audit existing components in `Frontend/src/app/features/account/components/`
-- [ ] Redesign the account page layout to include clear sections:
-  - **Profile** — Full name, email, change password
-  - **Personal Details** — Gender, date of birth, phone number (maps to `CustomerDetails` / `Account` model)
-  - **Addresses** — List saved addresses, add new, edit, delete (maps to `Address` model)
-  - **Payment Methods** — List saved cards (maps to `Payment` model)
-  - **Order History** — List past orders with status (maps to `Order` model)
-- [ ] Add proper loading skeletons and empty states for each section.
-- [ ] Add inline edit capability (click to edit, save, cancel) rather than navigating away.
-- [ ] Ensure all API calls go through the existing service files in `Frontend/src/app/features/account/services/`.
+- one `Product` collection
+- one canonical seller-owned write flow
+- one public read flow for the catalog
+- one ownership model: seller owns store, store owns products
+
+What to do:
+
+1. Keep `storeOwnerId` only if you need a direct ownership shortcut.
+2. Add or enforce `storeId` as the real product-to-store link.
+3. Populate store information in product reads so the frontend can display seller identity cleanly.
+4. Remove duplicated meaning from route names and controller methods.
+
+How:
+
+- `createSellerProduct` should resolve the seller’s store first
+- `createProduct` should not stay as a separate competing write path
+- `listProducts` should return catalog-safe data only
+- `listSellerProducts` should return owner-scoped data only
+
+#### 2.2 Remove review duplication
+
+- File: [Backend/model/Product.js](Backend/model/Product.js#L111-L128)
+- File: [Backend/model/Review.js](Backend/model/Review.js#L1-L42)
+- File: [Backend/services/ReviewService.js](Backend/services/ReviewService.js#L1-L17)
+
+What to do:
+
+1. Use `Review` as the source of truth for reviews.
+2. Keep only summary fields on `Product` if needed, such as `reviewCount` and `ratingAverage`.
+3. Stop embedding full review documents inside `Product`.
+
+How:
+
+- migrate existing embedded reviews into the `Review` collection
+- compute aggregates from `Review` after save/delete
+- update reads to join or aggregate reviews, not duplicate them
+
+#### 2.3 Enforce seller store ownership
+
+- File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
+- File: [Backend/routes/versionOne/products/Patch_product.js](Backend/routes/versionOne/products/Patch_product.js#L8-L14)
+- File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L44-L86)
+
+What to do:
+
+1. Require a store before creating a product.
+2. Verify that the store belongs to the authenticated seller.
+3. Reject updates when the product does not belong to the seller or the resolved store.
+
+How:
+
+- create a `requireSellerHasStore` guard
+- resolve store in controller or middleware, not inside the client
+- keep ownership verification in the service as the final gate
 
 ---
 
-## 11. Frontend — Optional Login Popup on Site Open
+### Phase 3: Harden auth, order, and webhook flows
 
-> **Skipped for now as of 27 April 2026.**  
-> Re-evaluate when auth popup component (task 8) is built — the same component can be repurposed here with minor changes.
+#### 3.1 Review auth middleware and route guards
 
-- [ ] _(Future)_ On first visit (no active session), show a dismissible login/signup modal after a short delay (e.g. 2–3 seconds).
-- [ ] Use `localStorage` flag `velora_login_prompt_shown` to show it only once per session.
+- File: [Backend/middleware/auth/authenticate.js](Backend/middleware/auth/authenticate.js#L1-L98)
+- File: [Backend/routes/index.js](Backend/routes/index.js#L1-L11)
+- File: [Backend/Server.js](Backend/Server.js#L1-L61)
+
+What to do:
+
+1. Keep `requireAuth` for authenticated customer flows.
+2. Keep `requireSeller` for seller-only flows.
+3. Audit every route file so the correct guard is attached consistently.
+4. Make startup fail loudly if JWT or Stripe secrets are missing.
+
+How:
+
+- public routes stay public only when they truly need to be
+- seller routes should never rely on frontend protection alone
+- webhook secrets should be validated at startup, not discovered at runtime
+
+#### 3.2 Make order creation and fulfillment stricter
+
+- File: [Backend/services/OrderService.js](Backend/services/OrderService.js#L1-L92)
+- File: [Backend/controller/OrderController.js](Backend/controller/OrderController.js#L1-L56)
+- File: [Backend/routes/versionOne/checkout/Post_checkout.js](Backend/routes/versionOne/checkout/Post_checkout.js#L1-L15)
+
+What to do:
+
+1. Validate each ordered product before order creation.
+2. Block deleted or unavailable products.
+3. Make ownership and item consistency explicit.
+4. Keep `updateOrderStatus` from becoming a weakly guarded write endpoint.
+
+How:
+
+- verify each product exists and is active
+- preserve a snapshot for orders so later product edits do not break history
+- apply separate customer vs seller fulfillment permissions if fulfillment is introduced
+
+#### 3.3 Harden Stripe webhook updates
+
+- File: [Backend/controller/WebhookController.js](Backend/controller/WebhookController.js#L1-L58)
+
+What to do:
+
+1. Keep signature verification.
+2. Verify that the referenced order and payment intent exist before updating status.
+3. Make webhook updates idempotent.
+
+How:
+
+- check order existence before writing
+- ignore repeated success/failure events safely
+- ensure payment amount and metadata match the stored order total
 
 ---
 
-## 12. Rebrand / Copyright
+### Phase 4: Improve product listing, search, and pagination
 
-> **To be done last, once all features are complete.**
+#### 4.1 Add pagination to product lists
 
-- [ ] Audit all text, logos, icons, and font choices for third-party copyright exposure.
-- [ ] Choose a new brand name, logo, and colour palette.
-- [ ] Replace all instances of the current brand name throughout:
-  - Frontend: page titles, `<title>` tags, `manifest.js`, `opengraph-image.js`, `twitter-image.js`, metadata in `layout.js`
-  - Backend: `package.json` name field, log messages, email templates in `utils/mailer.js`
-  - README files, Postman collection name
-- [ ] Update favicon and social-preview images.
-- [ ] Check that any third-party UI component libraries or icon packs (Heroicons, Lucide) are used within their licence terms (both are MIT — confirm nothing else is used).
+- File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L11-L43)
+
+What to do:
+
+1. Add page and limit support to public and seller product lists.
+2. Return metadata for total pages and current page.
+
+How:
+
+- use `findAllWithPagination` from `BaseService` where possible
+- expose page params in frontend API calls later
+
+#### 4.2 Improve search performance
+
+- File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L21-L27)
+
+What to do:
+
+1. Replace regex-only search with a more scalable strategy.
+2. Add indexes or text search where appropriate.
+
+How:
+
+- keep simple regex only as a fallback
+- prefer indexed search when the catalog grows
 
 ---
 
-## Quick Reference — Files Most Affected Per Task
+### Phase 5: Align the frontend with the canonical backend
 
-| Task             | Backend files                                                                                | Frontend files                                                                               |
-| ---------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 1 — Store API    | `StoreController.js`, `StoreService.js`, `routes/versionOne/store/*`, `StoreValidation.js`   | —                                                                                            |
-| 2 — DB Schema    | `model/Review.js`, `model/Cart.js`, `model/Order.js`, `model/Product.js`                     | Product services/hooks                                                                       |
-| 3 — Store Gate   | `middleware/requireSellerHasStore.js`, `routes/.../Post_products.js`, `ProductController.js` | `SellerPanelShell.jsx`, `seller/products/new` page                                           |
-| 4 — Auth Audit   | `middleware/auth/authenticate.js`, all route files, `middleware/validation/*`                | —                                                                                            |
-| 5 — Search Bar   | —                                                                                            | `ProductSearchBar.jsx`, `CatalogPage.jsx`, `CatalogSidebar.jsx`                              |
-| 6 — Store Name   | `ProductService.js` (populate), `ProductController.js`                                       | `ProductCard.jsx`, `ProductDetailPage.jsx`                                                   |
-| 7 — Basket Popup | —                                                                                            | New `ToastNotification.jsx`, `ProductDetailPage.jsx`                                         |
-| 8 — Auth Guard   | —                                                                                            | New `AuthRequiredModal.jsx`, `ProductDetailPage.jsx`, `/order` page, `useCustomerSession.js` |
-| 9 — Seller UI    | —                                                                                            | All files under `app/seller/` and `features/seller/`                                         |
-| 10 — Account UI  | —                                                                                            | All files under `app/account/` and `features/account/`                                       |
-| 12 — Rebrand     | `package.json`, `mailer.js`                                                                  | `layout.js`, `manifest.js`, all meta files                                                   |
+#### 5.1 Make product search reactive
+
+- File: [Frontend/src/api/product/Product_API.js](Frontend/src/api/product/Product_API.js#L1-L33)
+- File: `Frontend/src/app/features/catalog/components/ProductSearchBar.jsx`
+- File: `Frontend/src/app/features/catalog/CatalogPage.jsx`
+- File: `Frontend/src/app/features/catalog/CatalogSidebar.jsx`
+
+What to do:
+
+1. Make search update as the user types.
+2. Debounce requests so the UI stays responsive.
+3. Keep desktop and mobile search behavior identical.
+
+#### 5.2 Display the seller/store identity on product pages
+
+- File: `Frontend/src/app/features/catalog/components/ProductCard.jsx`
+- File: `Frontend/src/app/features/catalog/ProductDetailPage.jsx`
+
+What to do:
+
+1. Show store name or seller identity on product cards and detail pages.
+2. Link the store name to the store page when that page is ready.
+
+How:
+
+- consume populated `storeId` or a flattened `storeName` field from the backend
+- keep the UI wording consistent: "Sold by"
+
+#### 5.3 Add basket confirmation and auth gating
+
+- File: `Frontend/src/app/features/order/ProductDetailPage.jsx`
+- File: `Frontend/src/app/components/ui/`
+
+What to do:
+
+1. Show a toast when an item is added to basket.
+2. Block add-to-basket and buy-now actions when no customer session exists.
+3. Reuse one auth modal instead of scattered prompts.
+
+How:
+
+- the toast should be lightweight and dismiss automatically
+- the auth modal should preserve browsing but stop checkout actions
+
+#### 5.4 Redesign seller panel into a real dashboard
+
+- File: `Frontend/src/app/features/seller/`
+- File: `Frontend/src/app/seller/`
+
+What to do:
+
+1. Turn the seller panel into a multi-section dashboard.
+2. Add Store, Products, Orders, Analytics, and Settings sections.
+3. Show live store state and product state, not placeholder text.
+
+How:
+
+- keep the seller sidebar navigation consistent
+- add cards, empty states, and responsive layouts
+- block the product creation screen until store setup is complete
+
+#### 5.5 Redesign the customer account area
+
+- File: `Frontend/src/app/features/account/`
+
+What to do:
+
+1. Make the account page a real hub for profile, addresses, payment methods, and order history.
+2. Keep inline edits and loading states clean.
+
+---
+
+### Phase 6: Testing and rollout safety
+
+#### 6.1 Expand backend tests
+
+- File: [Backend/tests/app.test.js](Backend/tests/app.test.js#L1-L320)
+
+What to do:
+
+1. Add tests for seller product ownership.
+2. Add tests for soft delete behavior.
+3. Add tests for webhook order updates.
+4. Add tests for order creation with invalid products.
+
+#### 6.2 Add migration safety checks
+
+What to do:
+
+1. Run a dry-run migration first.
+2. Compare legacy and canonical reads before cutover.
+3. Keep a rollback path for write-path changes.
+
+How:
+
+- feature flags for canonical product writes
+- migration logs with checkpoints
+- staging rehearsal before production data changes
+
+---
+
+## Concrete File Map
+
+### Backend files to touch first
+
+- [Backend/controller/ProductController.js](Backend/controller/ProductController.js)
+- [Backend/services/ProductService.js](Backend/services/ProductService.js)
+- [Backend/model/Product.js](Backend/model/Product.js)
+- [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js)
+- [Backend/routes/versionOne/products/Patch_product.js](Backend/routes/versionOne/products/Patch_product.js)
+- [Backend/routes/versionOne/products/Delete_product.js](Backend/routes/versionOne/products/Delete_product.js)
+- [Backend/middleware/auth/authenticate.js](Backend/middleware/auth/authenticate.js)
+- [Backend/controller/WebhookController.js](Backend/controller/WebhookController.js)
+- [Backend/services/OrderService.js](Backend/services/OrderService.js)
+- [Backend/services/BaseService/index.js](Backend/services/BaseService/index.js)
+
+### Frontend files to touch first
+
+- [Frontend/src/api/seller/Seller_API.js](Frontend/src/api/seller/Seller_API.js)
+- [Frontend/src/api/product/Product_API.js](Frontend/src/api/product/Product_API.js)
+- `Frontend/src/app/features/catalog/components/ProductSearchBar.jsx`
+- `Frontend/src/app/features/catalog/CatalogPage.jsx`
+- `Frontend/src/app/features/catalog/CatalogSidebar.jsx`
+- `Frontend/src/app/features/catalog/components/ProductCard.jsx`
+- `Frontend/src/app/features/catalog/ProductDetailPage.jsx`
+- `Frontend/src/app/features/seller/`
+- `Frontend/src/app/features/account/`
+
+---
+
+## Recommended Build Order
+
+1. Fix the broken seller API URLs and BaseService import bug.
+2. Convert product delete to soft delete.
+3. Decide the canonical product write path and enforce seller store ownership.
+4. Remove review duplication by making Review the source of truth.
+5. Harden order and webhook updates.
+6. Add pagination and better search.
+7. Update the frontend to reflect the canonical backend model.
+8. Expand tests.
+9. Remove deprecated product write aliases once the new path is stable.
+
+---
+
+## Final Vision
+
+The target state is simple:
+
+- one product domain
+- one seller store ownership model
+- one canonical write path for sellers
+- one public catalog path for shoppers
+- one review source of truth
+- soft deletes everywhere important
+- tests that protect ownership and payment integrity
+- a frontend that feels like a real marketplace, not two partial apps stitched together
+
+That is the version worth building toward.
