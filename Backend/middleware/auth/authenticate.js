@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { createHttpError } = require("../../utils/httpError");
+const storeService = require("../../services/StoreService");
 
 function extractToken(req) {
   const header = (req.headers?.authorization || "").trim();
@@ -87,8 +88,8 @@ function optionalAuth(req, _res, next) {
   return next();
 }
 
-function requireSeller(req, _res, next) {
-  return requireAuth(req, _res, (error) => {
+function requireSellerHasStore(req, _res, next) {
+  return requireAuth(req, _res, async (error) => {
     if (error) {
       return next(error);
     }
@@ -97,13 +98,26 @@ function requireSeller(req, _res, next) {
       return next(createHttpError(403, "Seller access required"));
     }
 
-    return next();
+    try {
+      const store = await storeService.findOneByCondition({
+        ownerOfStore: req.user.id,
+      });
+
+      if (!store) {
+        return next(createHttpError(403, "You must create a store before adding products."));
+      }
+
+      req.sellerStore = store;
+      return next();
+    } catch (storeError) {
+      return next(storeError);
+    }
   });
 }
 
 module.exports = {
   requireAuth,
   optionalAuth,
-  requireSeller,
+  requireSellerHasStore,
   verifyRefreshToken,
 };
