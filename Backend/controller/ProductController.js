@@ -4,13 +4,13 @@ const productService = require("../services/ProductService");
 
 const listProducts = asyncHandler(async (req, res) => {
   const { category, subCategory, new: isNew, search } = req.query;
-  const storeOwnerId = req.user.id;
+  const storeIdConstant = req.body.storeId;
   const products = await productService.listProducts({
     category,
     subCategory,
     isNew: String(isNew).toLowerCase() === "true" || isNew === "1",
     search,
-    storeOwnerId,
+    storeIdConstant,
   });
 
   return res.status(200).json({ data: products });
@@ -49,10 +49,8 @@ const deleteProductById = asyncHandler(async (req, res) => {
 
 module.exports = {
   listProducts,
-  listSellerProducts,
   getProductById,
   createProduct,
-  createSellerProduct,
   patchProductByid,
   deleteProductById,
 };

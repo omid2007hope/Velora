@@ -7,8 +7,8 @@ function escapeRegex(value) {
 }
 
 module.exports = new (class ProductService extends BaseService {
-  async listProducts({ category, subCategory, isNew, search, storeOwnerId }) {
-    const filter = { isDeleted: { $ne: true }, storeOwnerId };
+  async listProducts({ category, subCategory, isNew, search, storeId }) {
+    const filter = { isDeleted: { $ne: true }, storeId };
 
     if (category) {
       filter.category = category;
@@ -32,12 +32,6 @@ module.exports = new (class ProductService extends BaseService {
 
     return this.model.find(filter).sort({ createdAt: -1 });
   }
-
-  // async listSellerProducts(storeOwnerId) {
-  //   return this.model
-  //     .find({ storeOwnerId, isDeleted: { $ne: true } })
-  //     .sort({ createdAt: -1 });
-  // }
 
   async getProductById(id) {
     return this.findById(id);

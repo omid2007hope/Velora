@@ -4,12 +4,6 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    storeOwnerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Seller",
-      index: true,
-    },
-
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
@@ -132,7 +126,7 @@ const ProductSchema = new mongoose.Schema(
       },
     ],
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model("Product", ProductSchema);
