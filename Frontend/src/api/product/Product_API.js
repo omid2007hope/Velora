@@ -15,8 +15,8 @@ export async function getProducts(params = {}) {
   if (search) query.set("search", search);
 
   const path = query.size
-    ? `/server/products?${query.toString()}`
-    : "/server/products";
+    ? `/server/seller/products?${query.toString()}`
+    : "/server/seller/products";
 
   const response = await client.get(path);
   return response.data?.data || [];
@@ -28,7 +28,6 @@ export async function getProductById(id) {
   const response = await client.get(`/server/seller/products/${id}`);
   return response.data?.data;
 }
-
 
 export async function createSellerProduct(payload) {
   const response = await client.post("/server/seller/products", payload);
@@ -53,9 +52,6 @@ export async function getReviews(productId) {
 export async function createReview(productId, payload) {
   if (!productId) throw new Error("productId is required");
 
-  const response = await client.post(
-    `/server/products/${productId}/reviews`,
-    payload,
-  );
+  const response = await client.post(`/server/products/${productId}/reviews`, payload);
   return response.data?.data;
 }
