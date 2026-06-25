@@ -73,10 +73,10 @@ class BaseService {
 
   hardDelete = async (condition) => this.model.findOneAndDelete(condition);
 
-  softDelete = async (condition, byWho) =>
+  softDelete = async (condition, user, store) =>
     this.model.findOneAndUpdate(
       condition,
-      { isDeleted: true, deletedBy: byWho, deletedAt: new Date() },
+      { isDeleted: true, deletedBy: user, deletedFrom: store, deletedAt: new Date() },
       { returnDocument: "after" }
     );
 
