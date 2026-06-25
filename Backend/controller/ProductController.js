@@ -43,7 +43,7 @@ const patchProductByid = asyncHandler(async (req, res) => {
 });
 
 const deleteProductById = asyncHandler(async (req, res) => {
-  const result = await productService.deleteProductById(req.params.id, req.user.id);
+  const result = await productService.deleteProductById(req.params.id, req.body.storeId);
   return res.status(200).json({ data: result });
 });
 

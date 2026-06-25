@@ -102,6 +102,22 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
     },
 
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+
+    deletedBy: {
+      type: String,
+      index: true,
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+
     reviews: [
       {
         name: {

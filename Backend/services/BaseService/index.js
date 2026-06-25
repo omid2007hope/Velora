@@ -8,17 +8,13 @@ class BaseService {
   _buildTree = async (nodes, parentField) =>
     Promise.all(
       nodes.map(async (node) => {
-        const children = await this.model.find(
-          this._active({ [parentField]: node._id }),
-        );
+        const children = await this.model.find(this._active({ [parentField]: node._id }));
 
         return {
           ...node.toObject(),
-          child: children.length
-            ? await this._buildTree(children, parentField)
-            : [],
+          child: children.length ? await this._buildTree(children, parentField) : [],
         };
-      }),
+      })
     );
 
   findAll = async (condition = {}) => this.model.find(this._active(condition));
@@ -68,33 +64,31 @@ class BaseService {
 
   findById = async (id) => this.model.findOne(this._active({ _id: id }));
 
-  findByIdPopulate = async (id, populate) =>
-    this.model.findById(id).populate(populate);
+  findByIdPopulate = async (id, populate) => this.model.findById(id).populate(populate);
 
-  findOneByCondition = async (condition) =>
-    this.model.findOne(this._active(condition));
+  findOneByCondition = async (condition) => this.model.findOne(this._active(condition));
 
   findOneByConditionAndPopulate = async (condition, populate) =>
     this.model.findOne(this._active(condition)).populate(populate);
 
   hardDelete = async (condition) => this.model.findOneAndDelete(condition);
 
-  softDelete = async (condition, user) =>
+  softDelete = async (condition, byWho) =>
     this.model.findOneAndUpdate(
       condition,
-      { isDeleted: true, deletedBy: user },
-      { returnDocument: "after" },
+      { isDeleted: true, deletedBy: byWho, deletedAt: new Date() },
+      { returnDocument: "after" }
     );
 
   softDeleteRecursive = async (parentField, condition, user) => {
     const parent = await this.model.findOneAndUpdate(
       condition,
       { isDeleted: true, deletedBy: user },
-      { returnDocument: "after" },
+      { returnDocument: "after" }
     );
 
     if (!parent) {
-      throw createHttpError(404 ,"Resource not found");
+      throw createHttpError(404, "Resource not found");
     }
 
     const getChildren = async (parentId) => {
@@ -110,7 +104,7 @@ class BaseService {
             ...child.toObject(),
             child: await getChildren(child._id),
           };
-        }),
+        })
       );
     };
 
@@ -138,7 +132,7 @@ class BaseService {
     this.model.findOneAndUpdate(
       condition,
       { isDeleted: false, deletedBy: "" },
-      { returnDocument: "after" },
+      { returnDocument: "after" }
     );
 
   createObject = async (data) => {
