@@ -10,6 +10,22 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
+    storeOwnerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      index: true,
+    },
+
+    deletedBy: {
+      type: String,
+      index: true,
+    },
+
+    deletedFrom: {
+      type: String,
+      index: true,
+    },
+
     name: {
       type: String,
       required: true,
@@ -105,11 +121,6 @@ const ProductSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: false,
-      index: true,
-    },
-
-    deletedBy: {
-      type: String,
       index: true,
     },
 
