@@ -72,7 +72,7 @@ module.exports = new (class ProductService extends BaseService {
     return this.update({ _id: productId, storeOwnerId: payload.storeOwnerId }, normalizedPayload);
   }
 
-  async deleteProductById(productId, userId) {
-    return this.softDelete({ _id: productId, deletedBy: userId });
+  async deleteProductById(productId, userId, idOfTheStore) {
+    return this.softDelete({ _id: productId, storeOwnerId: userId, storeId: idOfTheStore });
   }
 })(Product);
