@@ -103,12 +103,16 @@ function requireSellerHasStore(req, _res, next) {
         ownerOfStore: req.user.id,
       });
 
-      const store = await productService.findOneByCondition({
-        storeId: req.body.id,
-      });
-
       if (!sellerHasStore) {
         return next(createHttpError(403, "You must create a store before adding products."));
+      }
+
+      const store = await storeService.findOneByCondition({
+        _id: req.body.id,
+      });
+
+      if (!store) {
+        return next(createHttpError(404, "Store not found."));
       }
 
       req.storeOwner = sellerHasStore;
