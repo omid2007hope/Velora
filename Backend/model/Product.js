@@ -124,6 +124,11 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+
     reviews: [
       {
         name: {

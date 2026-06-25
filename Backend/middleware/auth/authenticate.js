@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { createHttpError } = require("../../utils/httpError");
 const storeService = require("../../services/StoreService");
-const productService = require("../../services/ProductService");
 function extractToken(req) {
   const header = (req.headers?.authorization || "").trim();
 
@@ -99,23 +98,15 @@ function requireSellerHasStore(req, _res, next) {
     }
 
     try {
-      const sellerHasStore = await storeService.findOneByCondition({
+      const store = await storeService.findOneByCondition({
+        _id: req.body.storeId,
         ownerOfStore: req.user.id,
       });
 
-      if (!sellerHasStore) {
-        return next(createHttpError(403, "You must create a store before adding products."));
-      }
-
-      const store = await storeService.findOneByCondition({
-        _id: req.body.id,
-      });
-
       if (!store) {
-        return next(createHttpError(404, "Store not found."));
+        return next(createHttpError(403, "Store not found or you do not have access to it."));
       }
 
-      req.storeOwner = sellerHasStore;
       req.store = store;
       return next();
     } catch (storeError) {
