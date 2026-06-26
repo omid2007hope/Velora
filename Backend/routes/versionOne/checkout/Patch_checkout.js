@@ -1,5 +1,6 @@
 const express = require("express");
-const { requireAuth } = require("../../../middleware/auth/authenticate");
+const requireAuth = require("../../../middleware/auth/token/authorization/Mandatory");
+
 const { updateOrderStatus } = require("../../../controller/OrderController");
 const {
   validateUpdateOrderStatus,
@@ -13,8 +14,7 @@ router.patch(
   requireAuth,
   validateOrderId,
   validateUpdateOrderStatus,
-  updateOrderStatus,
+  updateOrderStatus
 );
 
 module.exports = router;
-

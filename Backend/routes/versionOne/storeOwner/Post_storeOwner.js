@@ -1,5 +1,6 @@
 const express = require("express");
-const { authLimiter } = require("../../../middleware/request/rateLimit");
+const requireAuth = require("../../../middleware/auth/token/authorization/Mandatory");
+
 const {
   createStoreOwner,
   loginStoreOwner,
@@ -23,36 +24,30 @@ const router = express.Router();
 
 router.post("/", authLimiter, validateCreateStoreOwner, createStoreOwner);
 router.post("/login", authLimiter, validateStoreOwnerLogin, loginStoreOwner);
-router.post(
-  "/token/refresh",
-  authLimiter,
-  validateRefreshStoreOwnerToken,
-  refreshStoreOwnerToken,
-);
+router.post("/token/refresh", authLimiter, validateRefreshStoreOwnerToken, refreshStoreOwnerToken);
 router.post(
   "/email/verify",
   authLimiter,
   validateRequestStoreOwnerEmailVerification,
-  requestStoreOwnerEmailVerification,
+  requestStoreOwnerEmailVerification
 );
 router.post(
   "/email/verify/confirm",
   authLimiter,
   validateConfirmStoreOwnerEmailVerification,
-  confirmStoreOwnerEmailVerification,
+  confirmStoreOwnerEmailVerification
 );
 router.post(
   "/password-reset",
   authLimiter,
   validateRequestStoreOwnerPasswordReset,
-  requestStoreOwnerPasswordReset,
+  requestStoreOwnerPasswordReset
 );
 router.post(
   "/password-reset/confirm",
   authLimiter,
   validateConfirmStoreOwnerPasswordReset,
-  confirmStoreOwnerPasswordReset,
+  confirmStoreOwnerPasswordReset
 );
 
 module.exports = router;
-

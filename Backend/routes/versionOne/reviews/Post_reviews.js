@@ -1,6 +1,7 @@
 const express = require("express");
 const { createReview } = require("../../../controller/ReviewController");
-const { requireAuth } = require("../../../middleware/auth/authenticate");
+const requireAuth = require("../../../middleware/auth/token/authorization/Mandatory");
+
 const {
   validateReviewProductId,
   validateCreateReview,
@@ -13,8 +14,7 @@ router.post(
   requireAuth,
   validateReviewProductId,
   validateCreateReview,
-  createReview,
+  createReview
 );
 
 module.exports = router;
-
