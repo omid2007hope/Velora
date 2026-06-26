@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { createHttpError } = require("../../utils/httpError");
+const { createHttpError } = require("../../../../utils/httpError");
 
 function verifyAccessToken(token) {
   if (!process.env.JWT_SECRET) {

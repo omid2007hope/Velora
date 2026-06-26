@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { createHttpError } = require("../../utils/httpError");
+const { createHttpError } = require("../../../../utils/httpError");
 
 function verifyRefreshToken(token) {
   if (!process.env.JWT_REFRESH_SECRET) {
