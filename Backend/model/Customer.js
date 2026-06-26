@@ -4,6 +4,13 @@ const mongoose = require("mongoose");
 
 const CustomerSchema = new mongoose.Schema(
   {
+    // customerId: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    //   index: true,
+    // },
+
     fullName: {
       type: String,
       required: true,
@@ -58,7 +65,7 @@ const CustomerSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model("Customer", CustomerSchema);

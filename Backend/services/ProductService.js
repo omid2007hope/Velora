@@ -41,19 +41,31 @@ module.exports = new (class ProductService extends BaseService {
     return this.findById(id);
   }
 
-  async createProduct(payload, options = {}) {
-    if (!options.storeId) {
+  async createProduct(payload, storeId) {
+    if (storeId) {
       throw createHttpError(400, "Store ID is required");
     }
 
     const normalizedPayload = {
-      ...payload,
-      storeOwnerId: options.storeOwnerId,
-      storeId: options.storeId,
+      storeId: storeId,
+      name: payload.name,
+      description: payload.description,
+      price: payload.price,
+      oldPrice: payload.oldPrice || null,
+      newPrice: payload.newPrice || null,
+      discount: payload.discount || null,
+      category: payload.category,
       subCategory:
         typeof payload.subCategory === "string" && payload.subCategory.trim()
           ? payload.subCategory.trim()
           : String(payload.category).trim(),
+      imageUrl: payload.imageUrl || null,
+      image: payload.image || null,
+      NewArrivals: payload.NewArrivals,
+      color: payload.color,
+      size: payload.size,
+      highlights: payload.highlights,
+      details: payload.details,
     };
 
     return this.createObject(normalizedPayload);

@@ -4,12 +4,12 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    storeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Store",
-      required: true,
-      index: true,
-    },
+    // productId: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    //   index: true,
+    // },
 
     storeOwnerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,16 +17,18 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
+    storeId: {
+      type: String,
+      required: true,
+      index: true,
+      trim: true,
+    },
+
     deletedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",
       index: true,
-    },
-
-    deletedFrom: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Store",
-      index: true,
+      default: null,
     },
 
     name: {

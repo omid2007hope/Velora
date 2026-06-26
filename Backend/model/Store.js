@@ -4,6 +4,13 @@ const mongoose = require("mongoose");
 
 const StoreSchema = new mongoose.Schema(
   {
+    // storeId: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    //   index: true,
+    // },
+
     ownerOfStore: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",
@@ -52,7 +59,7 @@ const StoreSchema = new mongoose.Schema(
       index: true,
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model("Store", StoreSchema);
