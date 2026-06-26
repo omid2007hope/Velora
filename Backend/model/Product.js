@@ -17,13 +17,6 @@ const ProductSchema = new mongoose.Schema(
       index: true,
     },
 
-    storeId: {
-      type: String,
-      required: true,
-      index: true,
-      trim: true,
-    },
-
     deletedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",
