@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { requireSellerHasStore } = require("../../../middleware/auth/authenticate");
+const requireSellerHasStore = require("../../../middleware/auth/system/StoreOwner");
 
 const { deleteProductById } = require("../../../controller/ProductController");
 

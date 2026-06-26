@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const { requireSellerHasStore } = require("../../../middleware/auth/authenticate");
+const requireSellerHasStore = require("../../../middleware/auth/system/StoreOwner");
+
 const { validatePatchProduct } = require("../../../middleware/validation/ProductValidation");
 const { patchProductByid } = require("../../../controller/ProductController");
 
