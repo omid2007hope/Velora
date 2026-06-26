@@ -1,11 +1,18 @@
 const rateLimit = require("express-rate-limit");
 
-const skipRateLimit = () =>
-  process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development";
+function isRateLimitEnabled() {
+  if (process.env.RATE_LIMIT_ENABLED !== undefined) {
+    return String(process.env.RATE_LIMIT_ENABLED).toLowerCase() === "true";
+  }
+
+  return process.env.NODE_ENV === "production";
+}
+
+const skipRateLimit = () => !isRateLimitEnabled();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: Number(process.env.API_RATE_LIMIT_MAX) || 200,
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipRateLimit,
@@ -13,7 +20,7 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: Number(process.env.AUTH_RATE_LIMIT_MAX) || 10,
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipRateLimit,

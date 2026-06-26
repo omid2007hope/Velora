@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const requireSellerHasStore = require("../../../middleware/auth/system/StoreOwner");
+const requireSeller = require("../../../middleware/auth/system/Seller");
 
 const { deleteProductById } = require("../../../controller/ProductController");
 
-router.delete("/seller/products/:id", requireSellerHasStore, deleteProductById);
+router.delete("/seller/products/:id", requireSeller, deleteProductById);
 
 module.exports = router;

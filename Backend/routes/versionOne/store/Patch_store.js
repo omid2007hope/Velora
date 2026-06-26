@@ -1,11 +1,11 @@
 const express = require("express");
-const requireSellerHasStore = require("../../../middleware/auth/system/StoreOwner");
+const requireSeller = require("../../../middleware/auth/system/Seller");
 
 const { patchStoreData } = require("../../../controller/StoreController");
 const { validatePatchStore } = require("../../../middleware/validation/StoreValidation");
 
 const router = express.Router();
 
-router.patch("/:id", requireSellerHasStore, validatePatchStore, patchStoreData);
+router.patch("/:id", requireSeller, validatePatchStore, patchStoreData);
 
 module.exports = router;
