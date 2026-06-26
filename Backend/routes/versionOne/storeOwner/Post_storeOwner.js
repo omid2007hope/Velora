@@ -1,5 +1,6 @@
 const express = require("express");
 const requireAuth = require("../../../middleware/auth/token/authorization/Mandatory");
+const { authLimiter } = require("../../../middleware/request/rateLimit");
 
 const {
   createStoreOwner,
