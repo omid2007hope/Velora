@@ -7,6 +7,7 @@ const ProductSchema = new mongoose.Schema(
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
+      required: true,
       index: true,
     },
 
@@ -17,12 +18,14 @@ const ProductSchema = new mongoose.Schema(
     },
 
     deletedBy: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       index: true,
     },
 
     deletedFrom: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
       index: true,
     },
 

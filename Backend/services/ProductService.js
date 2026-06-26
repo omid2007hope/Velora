@@ -1,5 +1,6 @@
 const Product = require("../model/Product");
 const Review = require("../model/Review");
+const { createHttpError } = require("../utils/httpError");
 const BaseService = require("./BaseService");
 
 function escapeRegex(value) {
@@ -8,7 +9,11 @@ function escapeRegex(value) {
 
 module.exports = new (class ProductService extends BaseService {
   async listProducts({ category, subCategory, isNew, search, storeId }) {
-    const filter = { isDeleted: { $ne: true }, storeId };
+    const filter = { isDeleted: { $ne: true } };
+
+    if (storeId) {
+      filter.storeId = storeId;
+    }
 
     if (category) {
       filter.category = category;
@@ -38,6 +43,10 @@ module.exports = new (class ProductService extends BaseService {
   }
 
   async createProduct(payload, options = {}) {
+    if (!options.storeId) {
+      throw createHttpError(400, "Store ID is required");
+    }
+
     const normalizedPayload = {
       ...payload,
       storeOwnerId: options.storeOwnerId,
@@ -69,10 +78,32 @@ module.exports = new (class ProductService extends BaseService {
       reviews: payload.reviews || null,
     };
 
-    return this.update({ _id: productId, storeOwnerId: payload.storeOwnerId }, normalizedPayload);
+    const updated = await this.update(
+      { _id: productId, storeOwnerId: payload.storeOwnerId },
+      normalizedPayload
+    );
+
+    if (!updated) {
+      throw createHttpError(404, "Product not found");
+    }
+
+    return updated;
   }
 
-  async deleteProductById(productId, userId, storeId) {
-    return this.softDelete({ _id: productId, storeOwnerId: userId }, userId, storeId);
+  async deleteProductById(productId, userId) {
+    const existingProduct = await this.findOneByCondition({
+      _id: productId,
+      storeOwnerId: userId,
+    });
+
+    if (!existingProduct) {
+      throw createHttpError(404, "Product not found");
+    }
+
+    return this.softDelete(
+      { _id: productId, storeOwnerId: userId },
+      userId,
+      existingProduct.storeId
+    );
   }
 })(Product);

@@ -33,10 +33,7 @@ const storeOwnerUser = {
 };
 
 async function registerAndLoginStoreOwner() {
-  await request(app)
-    .post(apiPath("/store-owner"))
-    .send(storeOwnerUser)
-    .expect(201);
+  await request(app).post(apiPath("/store-owner")).send(storeOwnerUser).expect(201);
 
   const loginRes = await request(app)
     .post(apiPath("/store-owner/login"))
@@ -52,6 +49,24 @@ async function registerAndLoginStoreOwner() {
   };
 }
 
+async function createStoreForSeller(token) {
+  const createStoreRes = await request(app)
+    .post(apiPath("/seller/store"))
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      storeName: "Seller Product Store",
+      storeDescription: "Store for product integration tests",
+      countryStoreLocatedIn: "United States",
+      stateOrProvinceStoreLocatedIn: "California",
+      cityStoreLocatedIn: "Los Angeles",
+      storeAddress: "123 Product St",
+      storeZipcode: "90001",
+    })
+    .expect(201);
+
+  return createStoreRes.body?.data?._id;
+}
+
 describe("Auth and protected routes", () => {
   test("api prefix serves the same health route", async () => {
     await request(app).get(apiPath("")).expect(200, "server is running");
@@ -59,14 +74,8 @@ describe("Auth and protected routes", () => {
   });
 
   test("registration stays idempotent for an existing email", async () => {
-    const first = await request(app)
-      .post(apiPath("/customer"))
-      .send(user)
-      .expect(201);
-    const second = await request(app)
-      .post(apiPath("/customer"))
-      .send(user)
-      .expect(201);
+    const first = await request(app).post(apiPath("/customer")).send(user).expect(201);
+    const second = await request(app).post(apiPath("/customer")).send(user).expect(201);
 
     expect(first.body._id).toBeTruthy();
     expect(second.body._id).toBe(first.body._id);
@@ -81,10 +90,7 @@ describe("Auth and protected routes", () => {
   test("accepts lowercase bearer auth prefix", async () => {
     const { token } = await registerAndLogin();
 
-    await request(app)
-      .get(apiPath("/cart"))
-      .set("Authorization", `bearer ${token}`)
-      .expect(200);
+    await request(app).get(apiPath("/cart")).set("Authorization", `bearer ${token}`).expect(200);
   });
 
   test("rejects invalid product payloads before controller logic", async () => {
@@ -136,9 +142,7 @@ describe("Auth and protected routes", () => {
       .send(storeOwnerUser)
       .expect(201);
 
-    expect(createRes.body.data.storeOwnerEmailAddress).toBe(
-      storeOwnerUser.storeOwnerEmailAddress,
-    );
+    expect(createRes.body.data.storeOwnerEmailAddress).toBe(storeOwnerUser.storeOwnerEmailAddress);
 
     const { refreshToken } = await registerAndLoginStoreOwner();
     const refreshRes = await request(app)
@@ -151,11 +155,13 @@ describe("Auth and protected routes", () => {
 
   test("seller can create and list seller-owned products from the panel routes", async () => {
     const { token } = await registerAndLoginStoreOwner();
+    const storeId = await createStoreForSeller(token);
 
     const createRes = await request(app)
       .post(apiPath("/seller/products"))
       .set("Authorization", `Bearer ${token}`)
       .send({
+        storeId,
         name: "Seller Panel Product",
         description: "Created from seller panel",
         price: 60,
@@ -173,11 +179,53 @@ describe("Auth and protected routes", () => {
       .expect(200);
 
     expect(Array.isArray(listRes.body?.data)).toBe(true);
-    expect(
-      listRes.body.data.some(
-        (product) => product.name === "Seller Panel Product",
-      ),
-    ).toBe(true);
+    expect(listRes.body.data.some((product) => product.name === "Seller Panel Product")).toBe(true);
+  });
+
+  test("seller can soft-delete own product and receives 404 for missing product", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+    const storeId = await createStoreForSeller(token);
+
+    const createRes = await request(app)
+      .post(apiPath("/seller/products"))
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        storeId,
+        name: "Delete Candidate Product",
+        description: "Product to delete",
+        price: 30,
+        category: "Accessories",
+        subCategory: "Belts",
+        imageUrl: "https://example.com/delete-candidate.jpg",
+      })
+      .expect(201);
+
+    const productId = createRes.body?.data?._id;
+    expect(productId).toBeTruthy();
+
+    const deleteRes = await request(app)
+      .delete(apiPath(`/seller/products/${productId}`))
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+
+    expect(deleteRes.body?.data?._id).toBe(productId);
+    expect(deleteRes.body?.data?.isDeleted).toBe(true);
+
+    await request(app)
+      .delete(apiPath(`/seller/products/${productId}`))
+      .set("Authorization", `Bearer ${token}`)
+      .expect(404);
+  });
+
+  test("delete product rejects invalid id format", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+
+    const res = await request(app)
+      .delete(apiPath("/seller/products/not-an-object-id"))
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
+
+    expect(res.body.error).toBe("Validation failed");
   });
 
   test("seller can create and list seller-owned stores", async () => {
@@ -205,11 +253,7 @@ describe("Auth and protected routes", () => {
       .expect(200);
 
     expect(Array.isArray(listRes.body?.data)).toBe(true);
-    expect(
-      listRes.body.data.some(
-        (store) => store.storeName === "Seller Test Store",
-      ),
-    ).toBe(true);
+    expect(listRes.body.data.some((store) => store.storeName === "Seller Test Store")).toBe(true);
   });
 
   test("seller-only store endpoints reject customer token", async () => {
@@ -278,11 +322,13 @@ describe("Auth and protected routes", () => {
   test("reviews flow creates and lists product reviews", async () => {
     const seller = await registerAndLoginStoreOwner();
     const customer = await registerAndLogin();
+    const storeId = await createStoreForSeller(seller.token);
 
     const productRes = await request(app)
       .post(apiPath("/seller/products"))
       .set("Authorization", `Bearer ${seller.token}`)
       .send({
+        storeId,
         name: "Reviewed Product",
         description: "Product for review flow",
         price: 50,

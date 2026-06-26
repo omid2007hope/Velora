@@ -3,14 +3,13 @@ const { createHttpError } = require("../utils/httpError");
 const productService = require("../services/ProductService");
 
 const listProducts = asyncHandler(async (req, res) => {
-  const { category, subCategory, new: isNew, search } = req.query;
-  const storeIdConstant = req.body.storeId;
+  const { category, subCategory, new: isNew, search, storeId } = req.query;
   const products = await productService.listProducts({
     category,
     subCategory,
     isNew: String(isNew).toLowerCase() === "true" || isNew === "1",
     search,
-    storeIdConstant,
+    storeId,
   });
 
   return res.status(200).json({ data: products });
@@ -29,7 +28,7 @@ const getProductById = asyncHandler(async (req, res) => {
 const createProduct = asyncHandler(async (req, res) => {
   const createdProduct = await productService.createProduct(req.body, {
     storeOwnerId: req.user.id,
-    storeId: req.body.storeId,
+    storeId: req.store._id,
   });
   return res.status(201).json({ data: createdProduct });
 });
@@ -39,11 +38,21 @@ const patchProductByid = asyncHandler(async (req, res) => {
     ...req.body,
     storeOwnerId: req.user.id,
   });
+
+  if (!result) {
+    throw createHttpError(404, "Product not found");
+  }
+
   return res.status(200).json({ data: result });
 });
 
 const deleteProductById = asyncHandler(async (req, res) => {
-  const result = await productService.deleteProductById(req.params.id, req.user.id, req.store._id);
+  const result = await productService.deleteProductById(req.params.id, req.user.id);
+
+  if (!result) {
+    throw createHttpError(404, "Product not found");
+  }
+
   return res.status(200).json({ data: result });
 });
 

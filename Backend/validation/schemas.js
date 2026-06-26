@@ -4,11 +4,9 @@ const { z } = require("zod");
 const mongoose = require("mongoose");
 const { createHttpError } = require("../utils/httpError");
 
-const objectId = z
-  .string()
-  .refine((val) => mongoose.Types.ObjectId.isValid(val), {
-    message: "Invalid ObjectId",
-  });
+const objectId = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+  message: "Invalid ObjectId",
+});
 
 const authViewSchema = z.enum(["customer", "seller"]).optional();
 
@@ -100,7 +98,7 @@ const orderSchema = z.object({
         quantity: z.number().int().positive().default(1),
         selectedColor: z.string().optional(),
         selectedSize: z.string().optional(),
-      }),
+      })
     )
     .min(1, "Order items are required"),
   currency: z
@@ -152,6 +150,7 @@ const emailOnlySchema = z.object({
 });
 
 const productCreateSchema = z.object({
+  storeId: objectId,
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().nonnegative(),
@@ -186,9 +185,7 @@ const reviewCreateSchema = z.object({
 
 const orderStatusSchema = z
   .object({
-    orderStatus: z
-      .enum(["pending", "processing", "shipped", "delivered", "cancelled"])
-      .optional(),
+    orderStatus: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"]).optional(),
   })
   .refine((value) => value.orderStatus, {
     message: "orderStatus must be provided",
