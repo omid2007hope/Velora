@@ -12,7 +12,7 @@ const ReviewSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Customer",
       default: null,
       index: true,
     },
@@ -36,9 +36,7 @@ const ReviewSchema = new mongoose.Schema(
       maxlength: 1000,
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model("Review", ReviewSchema);
-
-

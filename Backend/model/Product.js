@@ -13,13 +13,13 @@ const ProductSchema = new mongoose.Schema(
 
     storeOwnerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Seller",
       index: true,
     },
 
     deletedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Seller",
       index: true,
     },
 
@@ -131,30 +131,6 @@ const ProductSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-
-    reviews: [
-      {
-        name: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        rating: {
-          type: Number,
-          required: true,
-          min: 1,
-          max: 5,
-        },
-        comment: {
-          type: String,
-          trim: true,
-        },
-        createdAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
   },
   { versionKey: false, timestamps: true }
 );
