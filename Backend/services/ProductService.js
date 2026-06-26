@@ -1,5 +1,4 @@
 const Product = require("../model/Product");
-const Review = require("../model/Review");
 const { createHttpError } = require("../utils/httpError");
 const BaseService = require("./BaseService");
 

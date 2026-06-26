@@ -18,6 +18,7 @@
     { "key": "customerRefreshToken", "value": "" },
     { "key": "sellerAccessToken", "value": "" },
     { "key": "sellerRefreshToken", "value": "" },
+    { "key": "sellerStoreId", "value": "" },
     { "key": "emailVerificationToken", "value": "" },
     { "key": "passwordResetToken", "value": "" },
     { "key": "productId", "value": "" },
@@ -72,9 +73,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"{{customerFullName}}\",\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\",\n  \"authView\": \"customer\"\n}",
@@ -102,9 +101,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}",
@@ -129,9 +126,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"refreshToken\": \"{{customerRefreshToken}}\"\n}",
@@ -144,9 +139,7 @@
           "name": "Request Customer Email Verification",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"authView\": \"customer\"\n}",
@@ -159,9 +152,7 @@
           "name": "Confirm Customer Email Verification",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"{{emailVerificationToken}}\"\n}",
@@ -189,9 +180,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"authView\": \"customer\"\n}",
@@ -204,9 +193,7 @@
           "name": "Confirm Customer Password Reset",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"{{passwordResetToken}}\",\n  \"newPassword\": \"Password123!\"\n}",
@@ -239,9 +226,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"storeOwnerName\": \"{{sellerName}}\",\n  \"storeOwnerEmailAddress\": \"{{sellerEmail}}\",\n  \"storeOwnerPassword\": \"{{sellerPassword}}\"\n}",
@@ -269,9 +254,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"storeOwnerEmailAddress\": \"{{sellerEmail}}\",\n  \"storeOwnerPassword\": \"{{sellerPassword}}\"\n}",
@@ -296,9 +279,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"refreshToken\": \"{{sellerRefreshToken}}\"\n}",
@@ -311,9 +292,7 @@
           "name": "Request Seller Email Verification",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{sellerEmail}}\",\n  \"authView\": \"seller\"\n}",
@@ -326,9 +305,7 @@
           "name": "Confirm Seller Email Verification",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"{{emailVerificationToken}}\"\n}",
@@ -355,9 +332,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{sellerEmail}}\",\n  \"authView\": \"seller\"\n}",
@@ -370,9 +345,7 @@
           "name": "Confirm Seller Password Reset",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"{{passwordResetToken}}\",\n  \"newPassword\": \"Password123!\"\n}",
@@ -388,17 +361,28 @@
       "item": [
         {
           "name": "Create Store",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "const storeId = json.data && json.data._id ? json.data._id : '';",
+                  "pm.collectionVariables.set('sellerStoreId', storeId);",
+                  "if (pm.environment) { pm.environment.set('sellerStoreId', storeId); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"storeName\": \"Velora Seller Store\",\n  \"storeDescription\": \"Flagship store for local seller testing\",\n  \"countryStoreLocatedIn\": \"United States\",\n  \"stateOrProvinceStoreLocatedIn\": \"California\",\n  \"cityStoreLocatedIn\": \"Los Angeles\",\n  \"storeAddress\": \"123 Commerce Street\",\n  \"storeZipcode\": \"90001\"\n}",
@@ -412,9 +396,7 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }]
             },
             "method": "GET",
             "header": [],
@@ -454,17 +436,13 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Velora Demo Product\",\n  \"description\": \"Product created from Postman collection\",\n  \"price\": 129.99,\n  \"newPrice\": 99.99,\n  \"oldPrice\": 129.99,\n  \"discount\": \"23%\",\n  \"category\": \"electronics\",\n  \"subCategory\": \"audio\",\n  \"imageUrl\": \"https://images.augustman.com/wp-content/uploads/sites/6/2024/02/15151515/Apple-Vision-Pro-Review-Augustman-Singapore-12.jpg\"\n}",
+              "raw": "{\n  \"storeId\": \"{{sellerStoreId}}\",\n  \"name\": \"Velora Demo Product\",\n  \"description\": \"Product created from Postman collection\",\n  \"price\": 129.99,\n  \"newPrice\": 99.99,\n  \"oldPrice\": 129.99,\n  \"discount\": \"23%\",\n  \"category\": \"electronics\",\n  \"subCategory\": \"audio\",\n  \"imageUrl\": \"https://images.augustman.com/wp-content/uploads/sites/6/2024/02/15151515/Apple-Vision-Pro-Review-Augustman-Singapore-12.jpg\"}",
               "options": { "raw": { "language": "json" } }
             },
             "url": "{{baseUrl}}/server/seller/products"
@@ -475,9 +453,7 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }]
             },
             "method": "GET",
             "header": [],
@@ -490,6 +466,18 @@
             "method": "GET",
             "header": [],
             "url": "{{baseUrl}}/server/products/{{productId}}"
+          }
+        },
+        {
+          "name": "Delete Seller Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{sellerAccessToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/server/seller/products/{{productId}}"
           }
         }
       ]
@@ -510,14 +498,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"{{customerFullName}}\",\n  \"rating\": 5,\n  \"comment\": \"Excellent product from Postman test flow.\"\n}",
@@ -536,14 +520,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"phoneNumber\": \"+12025550123\",\n  \"dateOfBirth\": \"1998-05-21\",\n  \"gender\": \"female\"\n}",
@@ -557,14 +537,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"country\": \"United States\",\n  \"city\": \"Austin\",\n  \"street\": \"500 Market Street\",\n  \"postalCode\": \"73301\"\n}",
@@ -578,14 +554,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"paymentMethodId\": \"{{paymentMethodId}}\",\n  \"billingName\": \"{{customerFullName}}\"\n}",
@@ -604,9 +576,7 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "GET",
             "header": [],
@@ -632,14 +602,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1,\n  \"variant\": {\n    \"selectedColor\": \"Black\",\n    \"selectedSize\": \"M\"\n  }\n}",
@@ -653,14 +619,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"itemId\": \"{{cartItemId}}\",\n  \"quantity\": 2\n}",
@@ -674,14 +636,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "DELETE",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"itemId\": \"{{cartItemId}}\"\n}",
@@ -695,9 +653,7 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "DELETE",
             "header": [],
@@ -714,9 +670,7 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "GET",
             "header": [],
@@ -742,14 +696,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"selectedColor\": \"Black\",\n      \"selectedSize\": \"M\"\n    }\n  ],\n  \"currency\": \"USD\",\n  \"addressSnapshot\": {\n    \"street\": \"500 Market Street\",\n    \"country\": \"United States\",\n    \"city\": \"Austin\",\n    \"postalCode\": \"73301\"\n  }\n}",
@@ -764,14 +714,10 @@
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                { "key": "token", "value": "{{customerAccessToken}}", "type": "string" }
-              ]
+              "bearer": [{ "key": "token", "value": "{{customerAccessToken}}", "type": "string" }]
             },
             "method": "PATCH",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"orderStatus\": \"processing\"\n}",
