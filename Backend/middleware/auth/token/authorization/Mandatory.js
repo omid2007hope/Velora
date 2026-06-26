@@ -1,5 +1,6 @@
 const extractToken = require("../Extraction");
 const verifyAccessToken = require("../verification/Access");
+const { createHttpError } = require("../../../../utils/httpError");
 
 function requireAuth(req, _res, next) {
   const token = extractToken(req);

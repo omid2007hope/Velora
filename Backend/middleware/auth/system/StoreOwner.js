@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const { createHttpError } = require("../../../utils/httpError");
 const storeService = require("../../../services/StoreService");
 
@@ -15,8 +14,14 @@ function requireSellerHasStore(req, _res, next) {
     }
 
     try {
+      const storeId = req.params?.id || req.body?.storeId;
+
+      if (!storeId) {
+        return next(createHttpError(400, "Store ID is required"));
+      }
+
       const store = await storeService.findOneByCondition({
-        _id: req.body.storeId,
+        _id: storeId,
         ownerOfStore: req.user.id,
       });
 
