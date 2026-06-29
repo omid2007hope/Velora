@@ -43,6 +43,7 @@ module.exports = new (class ProductService extends BaseService {
 
   async createProduct(payload) {
     const normalizedPayload = {
+      storeId: payload.storeId,
       name: payload.name,
       description: payload.description,
       price: payload.price,

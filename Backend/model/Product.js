@@ -8,6 +8,7 @@ const ProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
       index: true,
+      required: true,
     },
 
     name: {
