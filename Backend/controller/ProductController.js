@@ -54,7 +54,6 @@ const deleteProductById = asyncHandler(async (req, res) => {
 module.exports = {
   listProductsByStoreId,
   listProducts,
-  getProductById,
   createProduct,
   patchProductByid,
   deleteProductById,
