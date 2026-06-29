@@ -38,7 +38,7 @@ module.exports = new (class ProductService extends BaseService {
   }
 
   async listProductsByStoreId(storeId) {
-    return this.findAllByThisId(storeId);
+    return this.findAllByThisId(storeId, "storeId");
   }
 
   async createProduct(payload) {

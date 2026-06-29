@@ -150,7 +150,7 @@ const emailOnlySchema = z.object({
 });
 
 const productCreateSchema = z.object({
-  // storeId: objectId,
+  storeId: objectId,
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().nonnegative(),
