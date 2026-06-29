@@ -42,6 +42,10 @@ module.exports = new (class ProductService extends BaseService {
   }
 
   async createProduct(payload) {
+    if (!payload.storeId) {
+      throw createHttpError(400, "StoreId is required");
+    }
+
     const normalizedPayload = {
       storeId: payload.storeId,
       name: payload.name,
