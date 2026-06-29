@@ -10,7 +10,7 @@ const router = express.Router();
 router.use("/server/seller/store", postStoreRoutes);
 router.use("/server/seller/store", patchStoreRoutes);
 router.use("/server/seller/store", getStoreRoutes);
-router.use(`/server/seller/store/${id}`, getStoreByOwnerRoutes);
+router.use(`/server/seller/store/:id`, getStoreByOwnerRoutes);
 router.use("/server/seller/store", deleteStoreRoutes);
 
 module.exports = router;
