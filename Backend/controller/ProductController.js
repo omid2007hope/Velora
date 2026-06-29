@@ -22,16 +22,6 @@ const listProductsByStoreId = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
-const getProductById = asyncHandler(async (req, res) => {
-  const product = await productService.getProductById(req.params.id);
-
-  if (!product) {
-    throw createHttpError(404, "Product not found");
-  }
-
-  return res.status(200).json({ data: product });
-});
-
 const createProduct = asyncHandler(async (req, res) => {
   const data = req.body;
   const createdProduct = await productService.createProduct(data);
