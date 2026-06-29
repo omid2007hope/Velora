@@ -15,6 +15,13 @@ const listProducts = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: products });
 });
 
+const listProductsByStoreId = asyncHandler(async (req, res) => {
+  const storeId = req.params.id;
+
+  const result = await productService.listProductsByStoreId(storeId);
+  return res.status(200).json({ data: result });
+});
+
 const getProductById = asyncHandler(async (req, res) => {
   const product = await productService.getProductById(req.params.id);
 
@@ -55,6 +62,7 @@ const deleteProductById = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  listProductsByStoreId,
   listProducts,
   getProductById,
   createProduct,
