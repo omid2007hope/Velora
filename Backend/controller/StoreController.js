@@ -30,11 +30,11 @@ const getStoreData = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
-const listStoreByOwnerId = async (req, res) => {
+const listStoreByOwnerId = asyncHandler(async (req, res) => {
   const ownerId = req.params.id;
   const result = await storeService.listStoreByOwnerId(ownerId);
   return res.status(200).json({ data: result });
-};
+});
 
 module.exports = {
   listStoreByOwnerId,
