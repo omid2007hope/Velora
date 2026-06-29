@@ -37,6 +37,8 @@ module.exports = new (class ProductService extends BaseService {
     return this.model.find(filter).sort({ createdAt: -1 });
   }
 
+  async listProductsByStoreId(storeId) {}
+
   async getProductById(id) {
     return this.findById(id);
   }

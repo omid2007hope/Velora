@@ -19,6 +19,8 @@ class BaseService {
 
   findAll = async (condition = {}) => this.model.find(this._active(condition));
 
+  findAllByThisId = async (id, field = "id") => this.model.find(this._active({ [field]: id }));
+
   findAllWithSort = async (condition = {}, sort = {}) =>
     this.model.find(this._active(condition)).sort(sort);
 

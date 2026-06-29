@@ -1,5 +1,5 @@
 const Store = require("../model/Store");
-const {createHttpError} = require("../utils/httpError")
+const { createHttpError } = require("../utils/httpError");
 const BaseService = require("./BaseService");
 
 module.exports = new (class StoreService extends BaseService {
@@ -18,7 +18,7 @@ module.exports = new (class StoreService extends BaseService {
     });
 
     if (ownerAlreadyHasThisStore) {
-      throw createHttpError(409, "You already have a store...")
+      throw createHttpError(409, "You already have a store...");
     }
 
     if (storeNameWasPickedBySomeoneElse) {
@@ -30,9 +30,7 @@ module.exports = new (class StoreService extends BaseService {
       storeName: this._safeTrim(storeData.storeName),
       storeDescription: this._safeTrim(storeData.storeDescription),
       countryStoreLocatedIn: this._safeTrim(storeData.countryStoreLocatedIn),
-      stateOrProvinceStoreLocatedIn: this._safeTrim(
-        storeData.stateOrProvinceStoreLocatedIn,
-      ),
+      stateOrProvinceStoreLocatedIn: this._safeTrim(storeData.stateOrProvinceStoreLocatedIn),
       cityStoreLocatedIn: this._safeTrim(storeData.cityStoreLocatedIn),
       storeAddress: this._safeTrim(storeData.storeAddress),
       storeZipcode: this._safeTrim(storeData.storeZipcode),
@@ -59,13 +57,11 @@ module.exports = new (class StoreService extends BaseService {
       });
 
       if (ownerAlreadyHasThisStore) {
-        throw createHttpError(
-        409 , "You already have a store with this name in your country",
-        );
+        throw createHttpError(409, "You already have a store with this name in your country");
       }
 
       if (storeNameWasPickedBySomeoneElse) {
-       throw createHttpError(409, "This store already exist in your country");
+        throw createHttpError(409, "This store already exist in your country");
       }
     }
 
@@ -73,30 +69,21 @@ module.exports = new (class StoreService extends BaseService {
     if (storeData.storeName !== undefined)
       normalizedStoreData.storeName = this._safeTrim(storeData.storeName);
     if (storeData.storeDescription !== undefined)
-      normalizedStoreData.storeDescription = this._safeTrim(
-        storeData.storeDescription,
-      );
+      normalizedStoreData.storeDescription = this._safeTrim(storeData.storeDescription);
     if (storeData.countryStoreLocatedIn !== undefined)
-      normalizedStoreData.countryStoreLocatedIn = this._safeTrim(
-        storeData.countryStoreLocatedIn,
-      );
+      normalizedStoreData.countryStoreLocatedIn = this._safeTrim(storeData.countryStoreLocatedIn);
     if (storeData.stateOrProvinceStoreLocatedIn !== undefined)
       normalizedStoreData.stateOrProvinceStoreLocatedIn = this._safeTrim(
-        storeData.stateOrProvinceStoreLocatedIn,
+        storeData.stateOrProvinceStoreLocatedIn
       );
     if (storeData.cityStoreLocatedIn !== undefined)
-      normalizedStoreData.cityStoreLocatedIn = this._safeTrim(
-        storeData.cityStoreLocatedIn,
-      );
+      normalizedStoreData.cityStoreLocatedIn = this._safeTrim(storeData.cityStoreLocatedIn);
     if (storeData.storeAddress !== undefined)
       normalizedStoreData.storeAddress = this._safeTrim(storeData.storeAddress);
     if (storeData.storeZipcode !== undefined)
       normalizedStoreData.storeZipcode = this._safeTrim(storeData.storeZipcode);
 
-    return this.update(
-      { _id: storeId, ownerOfStore: storeData.ownerOfStore },
-      normalizedStoreData,
-    );
+    return this.update({ _id: storeId, ownerOfStore: storeData.ownerOfStore }, normalizedStoreData);
   }
 
   async deleteStore(storeId, ownerId) {
@@ -105,5 +92,9 @@ module.exports = new (class StoreService extends BaseService {
 
   async getStoreData(ownerId) {
     return this.findAll({ ownerOfStore: ownerId });
+  }
+
+  async listStoreByOwnerId(ownerId) {
+    return this.findAllByThisId({ ownerOfStore: ownerId });
   }
 })(Store);
