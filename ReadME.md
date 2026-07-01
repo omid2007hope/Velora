@@ -149,16 +149,13 @@ A seller can call `POST /seller/products` without having a store. `createSellerP
   ```js
   // Pseudocode
   const store = await storeService.getStoreData(req.user.id);
-  if (!store)
-    throw createHttpError(
-      403,
-      "You must create a store before adding products.",
-    );
+  if (!store) throw createHttpError(403, "You must create a store before adding products.");
   req.sellerStore = store; // pass store downstream
   ```
 - [ ] Apply `requireSellerHasStore` to the `POST /seller/products` route in `Backend/routes/versionOne/products/Post_products.js`.
 - [ ] In `createSellerProduct`, use `req.sellerStore._id` as the `storeId` for the new product (ties in with task 2.4).
 - [ ] **Frontend guard** — In `SellerPanelShell.jsx` / `SellerProductsOverview`, before showing "Add Product" CTA, check if the seller has a store. If not, redirect to `/seller/store/:id` with an informative message like _"Create your store first before listing products."_
+
 # Velora — Architecture Roadmap and Execution Guide
 
 > Last updated: 24 June 2026  
@@ -235,7 +232,7 @@ What to do:
 How:
 
 - replace `hardDelete` with `softDelete`
-- keep `deletedBy` set to the seller id
+- keep `deletedBy` set to the Store id
 - ensure `find*` methods naturally exclude deleted docs via `BaseService._active`
 
 #### 1.3 Fix the frontend seller API breakage
