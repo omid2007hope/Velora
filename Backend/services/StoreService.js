@@ -95,6 +95,10 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async listStoreByOwnerId(ownerId) {
+    if (!ownerId) {
+      throw createHttpError(400, "OwnerId is required");
+    }
+
     return this.findAllByThisId(ownerId, "ownerOfStore");
   }
 })(Store);
