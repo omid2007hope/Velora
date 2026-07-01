@@ -1,3 +1,4 @@
+const createHttpError = require("../../utils/httpError");
 class BaseService {
   constructor(model) {
     this.model = model;

@@ -235,7 +235,7 @@ How:
 - keep `deletedBy` set to the user id
 - ensure `find*` methods naturally exclude deleted docs via `BaseService._active`
 
-#### 1.3 Fix the frontend seller API breakage
+#### 1.3 Fix the frontend seller API breakage DONE
 
 - File: [Frontend/src/api/seller/Seller_API.js](Frontend/src/api/seller/Seller_API.js#L38-L44)
 
@@ -257,7 +257,7 @@ How:
 What to do:
 
 1. Import `createHttpError` where `softDeleteRecursive` uses it.
-2. Keep the shared service layer runnable in all branches, including error paths.
+2. Keep the shared service layer runnable in all branches, including error paths. DONE
 
 How:
 
