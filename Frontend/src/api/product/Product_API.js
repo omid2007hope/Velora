@@ -25,7 +25,7 @@ export async function getProducts(params = {}) {
 export async function getProductById(id) {
   if (!id) throw new Error("Product id is required");
 
-  const response = await client.get(`/server/seller/products/${id}`);
+  const response = await client.get(`/server/products/${id}`);
   return response.data?.data;
 }
 
