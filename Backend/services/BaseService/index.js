@@ -66,7 +66,8 @@ class BaseService {
 
   findById = async (id) => this.model.findOne(this._active({ _id: id }));
 
-  findByIdPopulate = async (id, populate) => this.model.findById(id).populate(populate);
+  findByIdPopulate = async (id, populate) =>
+    this.model.findOne(this._active({ _id: id })).populate(populate);
 
   findOneByCondition = async (condition) => this.model.findOne(this._active(condition));
 
