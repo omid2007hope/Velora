@@ -4,13 +4,6 @@ const mongoose = require("mongoose");
 
 const SellerSchema = new mongoose.Schema(
   {
-    // storeOwnerId: {
-    //   type: String,
-    //   required: true,
-    //   unique: true,
-    //   index: true,
-    // },
-
     storeOwnerName: {
       type: String,
       required: true,
