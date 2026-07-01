@@ -31,7 +31,7 @@ const getStoreData = asyncHandler(async (req, res) => {
 });
 
 const listStoreByOwnerId = asyncHandler(async (req, res) => {
-  const ownerId = req.params.id;
+  const ownerId = req.user.id;
   const result = await storeService.listStoreByOwnerId(ownerId);
   return res.status(200).json({ data: result });
 });
