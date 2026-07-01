@@ -41,6 +41,10 @@ module.exports = new (class ProductService extends BaseService {
     return this.findAllByThisId(storeId, "storeId");
   }
 
+  async getProductById(id) {
+    return this.findById(id);
+  }
+
   async createProduct(payload) {
     if (!payload.storeId) {
       throw createHttpError(400, "StoreId is required");
