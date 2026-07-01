@@ -42,7 +42,10 @@ const patchProductByid = asyncHandler(async (req, res) => {
 });
 
 const deleteProductById = asyncHandler(async (req, res) => {
-  const result = await productService.deleteProductById(req.params.id);
+  const productId = req.params.id;
+  const ownerId = req.user.id;
+
+  const result = await productService.deleteProductById(productId, ownerId);
 
   if (!result) {
     throw createHttpError(404, "Product not found");

@@ -101,7 +101,7 @@ module.exports = new (class ProductService extends BaseService {
     return updated;
   }
 
-  async deleteProductById(productId) {
+  async deleteProductById(productId, ownerId) {
     const existingProduct = await this.findOneByCondition({
       _id: productId,
     });
@@ -110,6 +110,6 @@ module.exports = new (class ProductService extends BaseService {
       throw createHttpError(404, "Product not found");
     }
 
-    return this.softDelete({ _id: productId });
+    return this.softDelete({ _id: productId }, ownerId);
   }
 })(Product);

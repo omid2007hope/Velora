@@ -232,7 +232,7 @@ What to do:
 How:
 
 - replace `hardDelete` with `softDelete`
-- keep `deletedBy` set to the Store id
+- keep `deletedBy` set to the user id
 - ensure `find*` methods naturally exclude deleted docs via `BaseService._active`
 
 #### 1.3 Fix the frontend seller API breakage

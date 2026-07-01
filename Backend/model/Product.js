@@ -15,7 +15,6 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
 
     description: {
@@ -28,7 +27,6 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
-      index: true,
     },
 
     oldPrice: {
@@ -106,6 +104,12 @@ const ProductSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: false,
+      index: true,
+    },
+
+    deletedBy: {
+      type: String,
+      default: null,
       index: true,
     },
 
