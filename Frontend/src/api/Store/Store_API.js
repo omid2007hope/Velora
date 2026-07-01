@@ -4,7 +4,6 @@
  */
 import client from "@/api/client";
 
-
 // Store
 
 export async function getSellerStore() {
@@ -19,11 +18,11 @@ export async function createAnStore(payload) {
 }
 
 export async function patchAnStore(id, payload) {
-  const response = await client.patch(`/server/seller/store${id}`, payload);
+  const response = await client.patch(`/server/seller/store/${id}`, payload);
   return response.data?.data;
 }
 
-export async function deleteAnStore() {
-  const response = await client.patch(`/server/seller/store${id}`);
+export async function deleteAnStore(id) {
+  const response = await client.delete(`/server/seller/store/${id}`);
   return response.data?.data;
 }

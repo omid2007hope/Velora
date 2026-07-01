@@ -200,7 +200,7 @@ The main problem is product-domain split and a few correctness gaps:
 
 ### Phase 1: Stabilize the critical paths
 
-#### 1.1 Fix product write-path ambiguity
+#### 1.1 Fix product write-path ambiguity DONE
 
 - File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
 - File: [Backend/controller/ProductController.js](Backend/controller/ProductController.js#L32-L44)
@@ -218,7 +218,7 @@ How:
 - controller should inject `req.user.id` and resolved store context
 - service should persist `storeOwnerId` and `storeId` only after ownership is verified
 
-#### 1.2 Stop hard deleting products
+#### 1.2 Stop hard deleting products DONE
 
 - File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L85-L85)
 - File: [Backend/services/BaseService/index.js](Backend/services/BaseService/index.js#L62-L126)
