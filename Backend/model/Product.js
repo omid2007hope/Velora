@@ -108,7 +108,8 @@ const ProductSchema = new mongoose.Schema(
     },
 
     deletedBy: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Seller",
       default: null,
       index: true,
     },
