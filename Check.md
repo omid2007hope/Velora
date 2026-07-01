@@ -6,5 +6,6 @@ Product Creation -- Checked
 List Product -- Checked
 List Product by StoreId -- Checked
 List Stores by OwnerId -- Checked
+Delete Product ById -- Checked
 
 Data Structure maintained
