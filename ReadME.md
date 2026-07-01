@@ -582,3 +582,51 @@ The target state is simple:
 - a frontend that feels like a real marketplace, not two partial apps stitched together
 
 That is the version worth building toward.
+
+## Recommended Product Data Structure
+
+{
+"id": ObjectId,
+"storeId": ObjectId,
+"sku": "P001-2026",
+"slug": "apple-vision-pro",
+"name": "Person Test Product...",
+"description": "...",
+"brand": "Apple",
+
+"basePrice": 129.99,
+"currentPrice": 99.99,
+"discountPercentage": 23,
+
+"category": "electronics",
+"subCategory": "audio",
+"tags": ["wireless", "premium"],
+
+"images": [
+{ "url": "...", "isMain": true },
+...
+],
+
+"variants": [ /* array of variant objects */ ],
+
+"stock": 150, // total or calculated from variants
+"lowStockThreshold": 20,
+
+"highlights": ["Feature 1", "Feature 2"],
+"specifications": { // flexible key-value
+"weight": "0.6kg",
+"battery": "18 hours"
+},
+
+"status": "published", // draft | published | archived
+"isFeatured": false,
+
+"createdAt": Date,
+"updatedAt": Date,
+"publishedAt": Date,
+
+// Soft delete
+"isDeleted": false,
+"deletedAt": null,
+"deletedBy": null
+}
