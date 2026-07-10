@@ -9,34 +9,50 @@ import CatalogSidebar from "@/app/features/catalog/components/CatalogSidebar";
 import ProductCard from "@/app/features/catalog/components/ProductCard";
 import ProductSearchBar from "@/app/features/catalog/components/ProductSearchBar";
 import { useCatalogProducts } from "@/app/features/catalog/hooks/use-catalog-products";
-import {
-  buildCatalogSeo,
-  getProductsRouteState,
-} from "@/app/features/catalog/utils/catalog-state";
+import { buildCatalogSeo, getProductsRouteState } from "@/app/features/catalog/utils/catalog-state";
 
 export default function CatalogPage({ initialState }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const routeState = useMemo(
-    () =>
-      initialState || getProductsRouteState(Object.fromEntries(searchParams.entries())),
-    [initialState, searchParams],
-  );
+
+  // .............
+  // ! Search
+  // .............
+
   const [searchText, setSearchText] = useState(routeState.search);
+
+  useEffect(() => {
+    setSearchText(routeState.search);
+  }, [routeState.search]);
+
+  // .............
+  // ! Category
+  // .............
+
+  const routeState = useMemo(
+    () => initialState || getProductsRouteState(Object.fromEntries(searchParams.entries())),
+    [initialState, searchParams]
+  );
+
   const { products, loading, error } = useCatalogProducts({
     category: routeState.category || undefined,
     subCategory: routeState.subCategory || undefined,
     isNew: routeState.isNew,
     search: routeState.search || undefined,
   });
+
+  // .............
+  // ! SEO
+  // .............
+
   const seo = useMemo(
     () => buildCatalogSeo(routeState, products.length),
-    [routeState, products.length],
+    [routeState, products.length]
   );
 
-  useEffect(() => {
-    setSearchText(routeState.search);
-  }, [routeState.search]);
+  // .............
+  // ! Update
+  // .............
 
   function updateQuery(nextCategory, nextSearch, nextIsNew, nextSubCategory) {
     const params = new URLSearchParams();
@@ -52,6 +68,10 @@ export default function CatalogPage({ initialState }) {
     router.push(query ? `/products?${query}` : "/products");
   }
 
+  // .............
+  // ! Render
+  // .............
+
   return (
     <SiteShell>
       <div className="flex min-h-screen w-full flex-col overflow-hidden bg-orange-50 pt-24 md:flex-row">
@@ -61,19 +81,14 @@ export default function CatalogPage({ initialState }) {
           searchText={searchText}
           onSearchChange={setSearchText}
           onSearchSubmit={(text) =>
-            updateQuery(
-              routeState.category,
-              text,
-              routeState.isNew,
-              routeState.subCategory,
-            )
+            updateQuery(routeState.category, text, routeState.isNew, routeState.subCategory)
           }
           onCategoryClick={(category) =>
             updateQuery(
               category === "Watch" || category === "Accessories" ? "" : category,
               routeState.search,
               false,
-              category === "Watch" || category === "Accessories" ? category : "",
+              category === "Watch" || category === "Accessories" ? category : ""
             )
           }
           onNewArrivalsClick={() => updateQuery("", routeState.search, true, "")}
@@ -93,12 +108,7 @@ export default function CatalogPage({ initialState }) {
                   value={searchText}
                   onChange={setSearchText}
                   onSubmit={(text) =>
-                    updateQuery(
-                      routeState.category,
-                      text,
-                      routeState.isNew,
-                      routeState.subCategory,
-                    )
+                    updateQuery(routeState.category, text, routeState.isNew, routeState.subCategory)
                   }
                 />
               </div>
@@ -108,12 +118,8 @@ export default function CatalogPage({ initialState }) {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-800">
                 Velora Catalog
               </p>
-              <h1 className="mt-2 text-3xl font-bold text-amber-950 sm:text-4xl">
-                {seo.heading}
-              </h1>
-              <p className="mt-3 text-base text-amber-900 sm:text-lg">
-                {seo.description}
-              </p>
+              <h1 className="mt-2 text-3xl font-bold text-amber-950 sm:text-4xl">{seo.heading}</h1>
+              <p className="mt-3 text-base text-amber-900 sm:text-lg">{seo.description}</p>
             </header>
 
             {loading ? (
