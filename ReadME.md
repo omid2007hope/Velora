@@ -250,14 +250,14 @@ How:
 - `patchAnStore(id, payload)` should call `/server/seller/store/${id}`
 - `deleteAnStore(id)` should call `client.delete(...)`
 
-#### 1.4 Fix the BaseService import bug
+#### 1.4 Fix the BaseService import bug DONE
 
 - File: [Backend/services/BaseService/index.js](Backend/services/BaseService/index.js#L89-L100)
 
 What to do:
 
 1. Import `createHttpError` where `softDeleteRecursive` uses it.
-2. Keep the shared service layer runnable in all branches, including error paths. DONE
+2. Keep the shared service layer runnable in all branches, including error paths.
 
 How:
 
@@ -268,7 +268,7 @@ How:
 
 ### Phase 2: Unify the product domain safely
 
-#### 2.1 Make one canonical product model
+#### 2.1 Make one canonical product model DONE
 
 - File: [Backend/model/Product.js](Backend/model/Product.js#L1-L128)
 - File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L1-L86)
@@ -294,7 +294,7 @@ How:
 - `listProducts` should return catalog-safe data only
 - `listSellerProducts` should return owner-scoped data only
 
-#### 2.2 Remove review duplication
+#### 2.2 Remove review duplication Half DONE
 
 - File: [Backend/model/Product.js](Backend/model/Product.js#L111-L128)
 - File: [Backend/model/Review.js](Backend/model/Review.js#L1-L42)
@@ -312,7 +312,7 @@ How:
 - compute aggregates from `Review` after save/delete
 - update reads to join or aggregate reviews, not duplicate them
 
-#### 2.3 Enforce seller store ownership
+#### 2.3 Enforce seller store ownership Chech it
 
 - File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
 - File: [Backend/routes/versionOne/products/Patch_product.js](Backend/routes/versionOne/products/Patch_product.js#L8-L14)

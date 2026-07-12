@@ -7,6 +7,7 @@ const {
   validatePatchProduct,
   validateProductId,
 } = require("../../../middleware/validation/ProductValidation");
+
 const { patchProductByid } = require("../../../controller/ProductController");
 
 router.patch(

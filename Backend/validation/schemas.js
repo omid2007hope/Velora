@@ -167,6 +167,10 @@ const productCreateSchema = z.object({
     }),
 });
 
+// ! ....
+// ! Patch Product Validation
+// ! ....
+
 const patchProductSchema = productCreateSchema.partial();
 
 const objectIdParamsSchema = z.object({

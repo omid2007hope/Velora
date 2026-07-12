@@ -35,10 +35,11 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const patchProductByid = asyncHandler(async (req, res) => {
-  const result = await productService.patchProductByid(req.params.id, {
-    ...req.body,
-    storeOwnerId: req.user.id,
-  });
+  const productId = req.params.id;
+  const ownerId = req.user.id;
+  const data = req.body;
+
+  const result = await productService.patchProductByid(productId, ownerId, data);
 
   if (!result) {
     throw createHttpError(404, "Product not found");

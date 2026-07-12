@@ -59,10 +59,7 @@ module.exports = new (class ProductService extends BaseService {
       newPrice: payload.newPrice || null,
       discount: payload.discount || null,
       category: payload.category,
-      subCategory:
-        typeof payload.subCategory === "string" && payload.subCategory.trim()
-          ? payload.subCategory.trim()
-          : String(payload.category).trim(),
+      subCategory: payload.subCategory.trim(),
       imageUrl: payload.imageUrl || null,
       image: payload.image || null,
       NewArrivals: payload.NewArrivals,
@@ -75,28 +72,34 @@ module.exports = new (class ProductService extends BaseService {
     return this.createObject(normalizedPayload);
   }
 
-  async patchProductByid(productId, payload) {
+  async patchProductByid(productId, ownerId, payload) {
+    if (!productId) {
+      throw createHttpError(400, "Product's ID is required");
+    }
+
+    if (!ownerId) {
+      throw createHttpError(400, "Owner's ID is required");
+    }
+
     const normalizedPayload = {
-      name: payload.name,
-      description: payload.description || "",
-      price: payload.price,
+      name: payload.name || null,
+      description: payload.description || null,
+      price: payload.price || null,
       oldPrice: payload.oldPrice || null,
       newPrice: payload.newPrice || null,
       discount: payload.discount || null,
-      category: payload.category,
-      subCategory: payload.subCategory,
-      imageUrl: payload.imageUrl,
+      category: payload.category || null,
+      subCategory: payload.subCategory.trim() || null,
+      imageUrl: payload.imageUrl || null,
+      image: payload.image || null,
       NewArrivals: payload.NewArrivals || null,
       color: payload.color || null,
       size: payload.size || null,
       highlights: payload.highlights || null,
-      reviews: payload.reviews || null,
+      details: payload.details || null,
     };
 
-    const updated = await this.update(
-      { _id: productId, storeOwnerId: payload.storeOwnerId },
-      normalizedPayload
-    );
+    const updated = await this.update({ _id: productId, storeOwnerId: ownerId }, normalizedPayload);
 
     if (!updated) {
       throw createHttpError(404, "Product not found");
