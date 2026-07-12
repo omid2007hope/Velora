@@ -34,6 +34,13 @@ export async function createSellerProduct(payload) {
   return response.data?.data;
 }
 
+export async function patchProduct(id) {
+  if (!id) throw new Error("Product id is required");
+
+  const response = await client.patch(`/server/seller/products/${id}`);
+  return response.data?.data;
+}
+
 export async function deleteProductById(id) {
   if (!id) throw new Error("Product id is required");
   const response = await client.delete(`/server/seller/products/${id}`);
