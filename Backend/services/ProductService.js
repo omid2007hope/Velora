@@ -77,10 +77,6 @@ module.exports = new (class ProductService extends BaseService {
       throw createHttpError(400, "Product's ID is required");
     }
 
-    if (!ownerId) {
-      throw createHttpError(400, "Owner's ID is required");
-    }
-
     const normalizedPayload = {
       name: payload.name || null,
       description: payload.description || null,
