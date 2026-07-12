@@ -59,7 +59,7 @@ module.exports = new (class ProductService extends BaseService {
       newPrice: payload.newPrice || null,
       discount: payload.discount || null,
       category: payload.category,
-      subCategory: payload.subCategory.trim(),
+      subCategory: payload.subCategory?.trim() || null,
       imageUrl: payload.imageUrl || null,
       image: payload.image || null,
       NewArrivals: payload.NewArrivals,
@@ -72,7 +72,7 @@ module.exports = new (class ProductService extends BaseService {
     return this.createObject(normalizedPayload);
   }
 
-  async patchProductByid(productId, ownerId, payload) {
+  async patchProductByid(productId, payload) {
     if (!productId) {
       throw createHttpError(400, "Product's ID is required");
     }
@@ -89,7 +89,7 @@ module.exports = new (class ProductService extends BaseService {
       newPrice: payload.newPrice || null,
       discount: payload.discount || null,
       category: payload.category || null,
-      subCategory: payload.subCategory.trim() || null,
+      subCategory: payload.subCategory?.trim() || null,
       imageUrl: payload.imageUrl || null,
       image: payload.image || null,
       NewArrivals: payload.NewArrivals || null,
@@ -99,7 +99,7 @@ module.exports = new (class ProductService extends BaseService {
       details: payload.details || null,
     };
 
-    const updated = await this.update({ _id: productId, storeOwnerId: ownerId }, normalizedPayload);
+    const updated = await this.update({ _id: productId }, normalizedPayload);
 
     if (!updated) {
       throw createHttpError(404, "Product not found");
