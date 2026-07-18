@@ -1,9 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 const apiProxyTarget =
-  process.env.API_PROXY_TARGET ||
-  process.env.BACKEND_URL ||
-  "http://localhost:4000";
+  process.env.API_PROXY_TARGET || process.env.BACKEND_URL || "http://localhost:4000";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -56,6 +54,10 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      {
+        source: "/server/:path*",
+        destination: `${apiProxyTarget}/api/server/:path*`,
+      },
       {
         source: "/api/:path*",
         destination: `${apiProxyTarget}/api/:path*`,

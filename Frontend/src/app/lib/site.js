@@ -38,7 +38,10 @@ export function getSiteUrl() {
 
 export function getApiBaseUrl() {
   const envValue = API_URL_KEYS.map((key) => process.env[key]).find(Boolean);
-  return normalizeUrl(envValue || `${getSiteUrl()}/api`);
+  const fallbackApiBase =
+    process.env.NODE_ENV === "production" ? `${getSiteUrl()}/api` : "http://localhost:3000";
+
+  return normalizeUrl(envValue || fallbackApiBase);
 }
 
 export function absoluteUrl(path = "/") {
