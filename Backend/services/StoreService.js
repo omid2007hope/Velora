@@ -91,7 +91,7 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async getAllStores() {
-    return this.findAllWithSort({ sort: { createdAt: -1 } });
+    return this.findAllWithSort({}, { createdAt: -1 });
   }
 
   async listStoreByOwnerId(ownerId) {
