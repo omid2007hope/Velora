@@ -95,7 +95,7 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async getStoreById(id) {
-    return this.findById(id);
+    return this.findById({ _id: id });
   }
 
   async listStoreByOwnerId(ownerId) {
