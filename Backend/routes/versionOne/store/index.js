@@ -10,8 +10,8 @@ const deleteStoreRoutes = require("./Delete_store");
 
 router.use("/server/seller/store", postStoreRoutes);
 router.use("/server/seller/store", patchStoreRoutes);
-router.use(`/server/seller/store/:id`, getStoreByOwnerRoutes);
-router.use(`/server/seller/store/:id`, getStoreById);
+router.use(`/server/seller/auth/store/:id`, getStoreByOwnerRoutes);
+router.use(`/server/seller/public/store/:id`, getStoreById);
 router.use(`/server/seller/store`, getAllStoreRoutes);
 router.use("/server/seller/store", deleteStoreRoutes);
 
