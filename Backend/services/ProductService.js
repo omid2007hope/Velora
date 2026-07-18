@@ -7,6 +7,9 @@ function escapeRegex(value) {
 }
 
 module.exports = new (class ProductService extends BaseService {
+  // ! Gets
+
+  // ! Ok
   async listProducts({ category, subCategory, isNew, search, storeId }) {
     const filter = { isDeleted: { $ne: true } };
 
@@ -37,13 +40,19 @@ module.exports = new (class ProductService extends BaseService {
     return this.model.find(filter).sort({ createdAt: -1 });
   }
 
+  // ! Ok
+
   async listProductsByStoreId(storeId) {
     return this.findAllByThisId(storeId, "storeId");
   }
 
+  // ! Ok
+
   async getProductById(id) {
     return this.findById(id);
   }
+
+  // ! post
 
   async createProduct(payload) {
     if (!payload.storeId) {
@@ -59,9 +68,9 @@ module.exports = new (class ProductService extends BaseService {
       newPrice: payload.newPrice || null,
       discount: payload.discount || null,
       category: payload.category,
-      subCategory: payload.subCategory?.trim() || null,
-      imageUrl: payload.imageUrl || null,
-      image: payload.image || null,
+      subCategory: payload.subCategory?.trim(),
+      imageUrl: payload.imageUrl,
+      image: payload.imageUrl ? payload.imageUrl : payload.image,
       NewArrivals: payload.NewArrivals,
       color: payload.color,
       size: payload.size,
@@ -87,7 +96,7 @@ module.exports = new (class ProductService extends BaseService {
       category: payload?.category,
       subCategory: payload?.subCategory?.trim(),
       imageUrl: payload?.imageUrl,
-      image: payload?.image,
+      image: payload?.imageUrl ? payload?.imageUrl : payload?.image,
       NewArrivals: payload?.NewArrivals,
       color: payload?.color,
       size: payload?.size,
