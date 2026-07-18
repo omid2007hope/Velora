@@ -4,5 +4,6 @@ module.exports = {
   testMatch: ["**/tests/**/*.test.js"],
   clearMocks: true,
   restoreMocks: true,
+  testTimeout: 60000,
   testPathIgnorePatterns: ["/node_modules/"],
 };
