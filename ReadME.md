@@ -39,11 +39,11 @@ Implemented seller store endpoints for `/store`:
 
 #### 1.1 `GET /stores` — Get All Stores (public)
 
-- [ ] Add `getAllStores` handler in `StoreController.js`
-- [ ] Add `getAllStores()` method in `StoreService.js` (use `this.model.find({}).sort({ createdAt: -1 })`)
-- [ ] Create route file `Backend/routes/versionOne/store/Get_all_stores.js`
+- [x] Add `getAllStores` handler in `StoreController.js`
+- [x] Add `getAllStores()` method in `StoreService.js` (use `this.model.find({}).sort({ createdAt: -1 })`)
+- [x] Create route file `Backend/routes/versionOne/store/Get_all_stores.js`
   - No auth required — public endpoint
-- [ ] Register the route in `Backend/routes/versionOne/store/index.js`
+- [x] Register the route in `Backend/routes/versionOne/store/index.js`
 
 #### 1.2 `GET /stores/:id` — Get Store By ID (public)
 
