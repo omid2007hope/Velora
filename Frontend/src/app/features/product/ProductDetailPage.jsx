@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import SiteShell from "@/app/components/layout/SiteShell";
 import { addItem } from "@/app/redux/slice/BasketSlice";
+import { resolveProductImageSrc } from "@/app/lib/product-image";
 import { useProductDetails } from "@/app/features/product/hooks/use-product-details";
 import {
   PRODUCT_COLORS,
@@ -34,7 +35,7 @@ export default function ProductDetailPage({ productId }) {
 
   const price = product?.newPrice ?? product?.price ?? 0;
   const oldPrice = product?.oldPrice ?? product?.price ?? price;
-  const imageSrc = product?.imageUrl || product?.image || "/placeholder.jpg";
+  const imageSrc = resolveProductImageSrc(product?.imageUrl, product?.image);
 
   function addToBasket(item) {
     if (!item) {
@@ -45,7 +46,7 @@ export default function ProductDetailPage({ productId }) {
       addItem({
         id: item._id,
         name: item.name,
-        image: item.imageUrl || item.image,
+        image: resolveProductImageSrc(item.imageUrl, item.image),
         newPrice: price,
         oldPrice,
         discount: item.discount || "",
@@ -113,7 +114,7 @@ export default function ProductDetailPage({ productId }) {
               width={600}
               height={600}
               unoptimized
-              className="w-full rounded-lg object-cover"
+              className="h-auto w-full rounded-lg object-cover"
             />
           </div>
 

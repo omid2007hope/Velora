@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Product placeholder</title>
+  <desc id="desc">Fallback image used when a product image is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fde6c8" />
+      <stop offset="100%" stop-color="#f5c88a" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="48" />
+  <rect x="120" y="120" width="560" height="560" rx="36" fill="#fff5e6" stroke="#6b3410" stroke-width="18" />
+  <path d="M250 510l95-110 85 78 85-122 115 154H250z" fill="#d97706" opacity="0.85" />
+  <circle cx="325" cy="295" r="48" fill="#f59e0b" opacity="0.9" />
+  <path d="M280 195h240" stroke="#6b3410" stroke-linecap="round" stroke-width="24" />
+  <path d="M280 245h180" stroke="#92400e" stroke-linecap="round" stroke-width="20" opacity="0.8" />
+  <text x="400" y="620" text-anchor="middle" fill="#6b3410" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700">
+    Velora
+  </text>
+</svg>

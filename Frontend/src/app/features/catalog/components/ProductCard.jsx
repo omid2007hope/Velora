@@ -1,25 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
+import { resolveProductImageSrc } from "@/app/lib/product-image";
 
 export default function ProductCard({ product }) {
   const productId = product._id || product.id;
-  const image = product.imageUrl || product.image;
+  const image = resolveProductImageSrc(product.imageUrl, product.image);
   const price = product.newPrice ?? product.price;
   const oldPrice = product.oldPrice ?? product.price;
 
   return (
     <div className="overflow-hidden rounded-xl border-2 border-amber-950 bg-orange-200 shadow-md transition duration-300 hover:scale-[1.02] hover:shadow-xl">
       <Link href={`/products/${productId}`}>
-        <div className="relative">
+        <div className="relative aspect-[5/3] w-full">
           <Image
             src={image}
             alt={product.name}
-            width={400}
-            height={240}
+            fill
             unoptimized
             loading="lazy"
             sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
-            className="h-48 w-full object-cover sm:h-56 md:h-60"
+            className="object-cover"
           />
           {product.discount ? (
             <span className="absolute left-3 top-3 rounded-md bg-amber-950 px-3 py-1 text-xs font-semibold text-white shadow-md sm:text-sm">

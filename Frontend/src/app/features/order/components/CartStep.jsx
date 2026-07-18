@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem, updateQuantity } from "@/app/redux/slice/BasketSlice";
+import { resolveProductImageSrc } from "@/app/lib/product-image";
 import CartSummary from "@/app/features/order/components/CartSummary";
 import { calculateOrderPricing } from "@/app/features/order/utils/order-pricing";
 
@@ -47,7 +48,7 @@ export default function CartStep({ onContinue }) {
           ) : (
             <ul className="space-y-5">
               {cartItems.map((item) => {
-                const imageSrc = item.image || "/placeholder-product.jpg";
+                const imageSrc = resolveProductImageSrc(item.image);
                 const key = `${item.id}-${item.selectedColor}-${item.selectedSize}`;
 
                 return (

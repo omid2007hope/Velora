@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { resolveProductImageSrc } from "@/app/lib/product-image";
 import CartSummary from "@/app/features/order/components/CartSummary";
 import { useCheckoutForm } from "@/app/features/order/hooks/use-checkout-form";
 
@@ -109,7 +110,7 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
             <ul className="divide-y divide-amber-900">
               {cartItems.map((item) => {
                 const key = `${item.id}-${item.selectedColor}-${item.selectedSize}`;
-                const imageSrc = item.image || "/placeholder-product.jpg";
+                const imageSrc = resolveProductImageSrc(item.image);
 
                 return (
                   <li key={key} className="flex py-4">
