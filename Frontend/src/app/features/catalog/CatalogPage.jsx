@@ -19,6 +19,11 @@ export default function CatalogPage({ initialState }) {
   // ! Search
   // .............
 
+  const routeState = useMemo(
+    () => initialState || getProductsRouteState(Object.fromEntries(searchParams.entries())),
+    [initialState, searchParams]
+  );
+
   const [searchText, setSearchText] = useState(routeState.search);
 
   useEffect(() => {
@@ -28,11 +33,6 @@ export default function CatalogPage({ initialState }) {
   // .............
   // ! Category
   // .............
-
-  const routeState = useMemo(
-    () => initialState || getProductsRouteState(Object.fromEntries(searchParams.entries())),
-    [initialState, searchParams]
-  );
 
   const { products, loading, error } = useCatalogProducts({
     category: routeState.category || undefined,
