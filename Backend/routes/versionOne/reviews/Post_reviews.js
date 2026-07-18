@@ -1,7 +1,7 @@
 const express = require("express");
 const { createReview } = require("../../../controller/ReviewController");
 const requireAuth = require("../../../middleware/auth/token/authorization/Mandatory");
-const requireCustomer = require("../../../middleware/auth/system/Customer");
+// const requireCustomer = require("../../../middleware/auth/system/Customer");
 
 const {
   validateReviewProductId,
@@ -13,7 +13,7 @@ const router = express.Router();
 router.post(
   "/products/:productId/reviews",
   requireAuth,
-  requireCustomer,
+  // requireCustomer,
   validateReviewProductId,
   validateCreateReview,
   createReview
