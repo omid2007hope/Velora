@@ -256,6 +256,18 @@ describe("Auth and protected routes", () => {
     expect(listRes.body.data.some((store) => store.storeName === "Seller Test Store")).toBe(true);
   });
 
+  test("public store-by-id route returns the created store", async () => {
+    const { token } = await registerAndLoginStoreOwner();
+    const storeId = await createStoreForSeller(token);
+
+    const res = await request(app)
+      .get(apiPath(`/seller/public/store/${storeId}`))
+      .expect(200);
+
+    expect(res.body?.data?._id).toBe(storeId);
+    expect(res.body?.data?.storeName).toBe("Seller Product Store");
+  });
+
   test("seller-only store endpoints reject customer token", async () => {
     const { token } = await registerAndLogin();
 

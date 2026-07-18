@@ -31,7 +31,7 @@ const getAllStore = asyncHandler(async (req, res) => {
 });
 
 const getStoreById = asyncHandler(async (req, res) => {
-  const storeId = req.params.storeId;
+  const storeId = req.params.id;
   const result = await storeService.getStoreById(storeId);
   return res.status(200).json({ data: result });
 });
