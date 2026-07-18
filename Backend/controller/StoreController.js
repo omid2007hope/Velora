@@ -30,6 +30,12 @@ const getAllStore = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
+const getStoreById = asyncHandler(async (req, res) => {
+  const storeId = req.params.storeId;
+  const result = await storeService.getStoreById(storeId);
+  return res.status(200).json({ data: result });
+});
+
 const listStoreByOwnerId = asyncHandler(async (req, res) => {
   const ownerId = req.user.id;
   const result = await storeService.listStoreByOwnerId(ownerId);
@@ -39,6 +45,7 @@ const listStoreByOwnerId = asyncHandler(async (req, res) => {
 module.exports = {
   listStoreByOwnerId,
   getAllStore,
+  getStoreById,
   createStore,
   patchStoreData,
   deleteStore,
