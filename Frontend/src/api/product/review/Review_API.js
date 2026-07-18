@@ -1,3 +1,5 @@
+import client from "@/api/client";
+
 // ─── Reviews ─────────────────────────────────────────────────────────────────
 
 export async function getReviews(productId) {

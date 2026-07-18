@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 
 const CustomerSchema = new mongoose.Schema(
   {
-    // customerId: {
-    //   type: String,
-    //   required: true,
-    //   unique: true,
-    //   index: true,
-    // },
+    customerId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      default: () => new mongoose.Types.ObjectId().toString(),
+    },
 
     fullName: {
       type: String,
