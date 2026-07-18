@@ -7,7 +7,7 @@ const {
   passwordResetConfirmSchema,
   tokenOnlySchema,
   emailOnlySchema,
-} = require("../../validation/schemas");
+} = require("../../validation");
 
 module.exports = {
   validateCreateCustomer: validateBody(registerSchema),
@@ -15,10 +15,6 @@ module.exports = {
   validateRefreshCustomerToken: validateBody(refreshSchema),
   validateRequestCustomerEmailVerification: validateBody(emailOnlySchema),
   validateConfirmCustomerEmailVerification: validateBody(tokenOnlySchema),
-  validateRequestCustomerPasswordReset: validateBody(
-    passwordResetRequestSchema,
-  ),
-  validateConfirmCustomerPasswordReset: validateBody(
-    passwordResetConfirmSchema,
-  ),
+  validateRequestCustomerPasswordReset: validateBody(passwordResetRequestSchema),
+  validateConfirmCustomerPasswordReset: validateBody(passwordResetConfirmSchema),
 };

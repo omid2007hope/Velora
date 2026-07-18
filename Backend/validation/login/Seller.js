@@ -1,8 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 const { z } = require("zod");
-const mongoose = require("mongoose");
-const { createHttpError } = require("../../utils/httpError");
+const { authViewSchema } = require("../general/AuthValidation");
 
 const storeOwnerLoginSchema = z.object({
   storeOwnerEmailAddress: z.string().email(),
@@ -25,3 +24,9 @@ const passwordResetConfirmSchema = z.object({
     .regex(/[0-9]/, "Must include a number")
     .regex(/[!@#$%^&*()[\]{};:'"\\|,.<>/?`~+\-=]/, "Must include a symbol"),
 });
+
+module.exports = {
+  storeOwnerLoginSchema,
+  passwordResetRequestSchema,
+  passwordResetConfirmSchema,
+};

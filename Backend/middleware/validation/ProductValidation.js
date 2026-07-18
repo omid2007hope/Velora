@@ -3,7 +3,7 @@ const {
   productCreateSchema,
   patchProductSchema,
   objectIdParamsSchema,
-} = require("../../validation/schemas");
+} = require("../../validation");
 
 module.exports = {
   validateCreateProduct: validateBody(productCreateSchema),

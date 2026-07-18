@@ -1,8 +1,7 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 const { z } = require("zod");
-const mongoose = require("mongoose");
-const { createHttpError } = require("../../utils/httpError");
+const { objectId } = require("../general/GeneralValidation");
 
 const objectId = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
   message: "Invalid ObjectId",
@@ -35,3 +34,10 @@ const productCreateSchema = z.object({
 // ! ....
 
 const patchProductSchema = productCreateSchema.partial();
+
+module.exports = {
+  objectId,
+  productIdParamsSchema,
+  productCreateSchema,
+  patchProductSchema,
+};

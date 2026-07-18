@@ -1,9 +1,5 @@
 const { validateBody } = require("./common");
-const {
-  cartItemSchema,
-  updateQuantitySchema,
-  removeItemSchema,
-} = require("../../validation/schemas");
+const { cartItemSchema, updateQuantitySchema, removeItemSchema } = require("../../validation");
 
 module.exports = {
   validateAddCartItem: validateBody(cartItemSchema),

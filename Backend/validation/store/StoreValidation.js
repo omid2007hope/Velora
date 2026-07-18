@@ -1,8 +1,6 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
 const { z } = require("zod");
-const mongoose = require("mongoose");
-const { createHttpError } = require("../../utils/httpError");
 
 const storeSchema = z.object({
   // ownerOfStore is injected server-side from the authenticated user (req.user.id)
@@ -17,3 +15,8 @@ const storeSchema = z.object({
 });
 
 const patchStoreSchema = storeSchema.partial();
+
+module.exports = {
+  storeSchema,
+  patchStoreSchema,
+};
