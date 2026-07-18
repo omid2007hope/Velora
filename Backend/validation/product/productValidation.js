@@ -3,10 +3,6 @@
 const { z } = require("zod");
 const { objectId } = require("../general/GeneralValidation");
 
-const objectId = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-  message: "Invalid ObjectId",
-});
-
 const productIdParamsSchema = z.object({
   productId: objectId,
 });
