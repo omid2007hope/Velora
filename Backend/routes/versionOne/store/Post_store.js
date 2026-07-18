@@ -6,6 +6,6 @@ const { validateCreateStore } = require("../../../middleware/validation/StoreVal
 
 const router = express.Router();
 
-router.post("/", requireSeller, validateCreateStore, createStore);
+router.post("/seller/store", requireSeller, validateCreateStore, createStore);
 
 module.exports = router;

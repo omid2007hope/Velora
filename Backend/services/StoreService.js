@@ -95,6 +95,10 @@ module.exports = new (class StoreService extends BaseService {
   }
 
   async getStoreById(id) {
+    if (!id) {
+      throw createHttpError(400, "Id is required");
+    }
+
     return this.findById(id);
   }
 

@@ -5,6 +5,6 @@ const { listStoreByOwnerId } = require("../../../controller/StoreController");
 
 const router = express.Router();
 
-router.get("/", requireSeller, listStoreByOwnerId);
+router.get("/seller/auth/store/:id", requireSeller, listStoreByOwnerId);
 
 module.exports = router;

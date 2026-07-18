@@ -6,6 +6,6 @@ const { validatePatchStore } = require("../../../middleware/validation/StoreVali
 
 const router = express.Router();
 
-router.patch("/:id", requireSeller, validatePatchStore, patchStoreData);
+router.patch("/seller/store/:id", requireSeller, validatePatchStore, patchStoreData);
 
 module.exports = router;

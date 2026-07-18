@@ -5,6 +5,6 @@ const { deleteStore } = require("../../../controller/StoreController");
 
 const router = express.Router();
 
-router.delete("/:id", requireSeller, deleteStore);
+router.delete("/seller/store/:id", requireSeller, deleteStore);
 
 module.exports = router;
