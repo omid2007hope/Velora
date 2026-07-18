@@ -18,16 +18,29 @@ function mapStoreOwner(storeOwner) {
   };
 }
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
+function mapCustomer(customer) {
+  if (!customer) return null;
+  return {
+    _id: customer._id,
+    fullName: customer.fullName,
+    email: customer.email,
+    isEmailVerified: !!customer.isEmailVerified,
+    role: "customer",
+  };
+}
+
 // ─── Customer ───────────────────────────────────────────────────────────────
 
 export async function loginCustomer(payload) {
   const response = await client.post("/server/customer/login", payload);
-  return response.data;
+  return { ...response.data, data: mapCustomer(response.data?.data) };
 }
 
 export async function registerCustomer(payload) {
   const response = await client.post("/server/customer", payload);
-  return response.data;
+  return { ...response.data, data: mapCustomer(response.data?.data) };
 }
 
 // ─── Store Owner (Seller) ────────────────────────────────────────────────────
@@ -53,9 +66,7 @@ export async function registerStoreOwner(payload) {
 
 export async function requestEmailVerification(email, authView) {
   const path =
-    authView === "seller"
-      ? "/server/store-owner/email/verify"
-      : "/server/customer/email/verify";
+    authView === "seller" ? "/server/store-owner/email/verify" : "/server/customer/email/verify";
 
   const response = await client.post(path, {
     email: email.trim().toLowerCase(),
