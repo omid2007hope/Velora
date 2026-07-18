@@ -78,21 +78,21 @@ module.exports = new (class ProductService extends BaseService {
     }
 
     const normalizedPayload = {
-      name: payload.name || null,
-      description: payload.description || null,
-      price: payload.price || null,
-      oldPrice: payload.oldPrice || null,
-      newPrice: payload.newPrice || null,
-      discount: payload.discount || null,
-      category: payload.category || null,
-      subCategory: payload.subCategory?.trim() || null,
-      imageUrl: payload.imageUrl || null,
-      image: payload.image || null,
-      NewArrivals: payload.NewArrivals || null,
-      color: payload.color || null,
-      size: payload.size || null,
-      highlights: payload.highlights || null,
-      details: payload.details || null,
+      name: payload?.name,
+      description: payload?.description,
+      price: payload?.price,
+      oldPrice: payload?.oldPrice,
+      newPrice: payload?.newPrice,
+      discount: payload?.discount,
+      category: payload?.category,
+      subCategory: payload?.subCategory?.trim(),
+      imageUrl: payload?.imageUrl,
+      image: payload?.image,
+      NewArrivals: payload?.NewArrivals,
+      color: payload?.color,
+      size: payload?.size,
+      highlights: payload?.highlights,
+      details: payload?.details,
     };
 
     const updated = await this.update({ _id: productId }, normalizedPayload);
