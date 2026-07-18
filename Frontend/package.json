@@ -2,11 +2,15 @@
   "name": "velora-frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.11.1 <21"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -25,6 +29,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
+    "eslint-plugin-react": "^7.37.5",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13"
   }

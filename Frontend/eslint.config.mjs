@@ -11,20 +11,21 @@ const config = [
   ...compat.extends("next/core-web-vitals"),
   {
     ignores: [
-      "node_modules/**",
-      "dist/**",
-      ".next/**",
-      "out/**",
-      "build/**",
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/out/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/coverage/**",
     ],
   },
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["**/*.{js,jsx,mjs,cjs}"],
     plugins: {
       react: reactPlugin,
     },
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: "latest",
       sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
@@ -43,6 +44,7 @@ const config = [
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
         },
       ],
       "react/jsx-uses-vars": "error",

@@ -1,6 +1,22 @@
 {
-  "watch": ["."],
+  "watch": [
+    "Server.js",
+    "api",
+    "config",
+    "controller",
+    "database",
+    "middleware",
+    "model",
+    "routes",
+    "services",
+    "utils",
+    "validation"
+  ],
   "ext": "js,json",
-  "ignore": ["node_modules", "*.log"],
+  "ignore": [
+    "node_modules/**",
+    "tests/**",
+    "*.log"
+  ],
   "exec": "node Server.js"
 }
