@@ -1,6 +1,6 @@
 # Velora — Project To-Do List
 
-> Last updated: **27 April 2026**  
+> Last updated: **18 July 2026**  
 > This document tracks every outstanding task across the Backend and Frontend.  
 > Work through each section top-to-bottom. Check items off as they are completed.
 
@@ -27,11 +27,13 @@
 
 ### Current State
 
-Only two endpoints exist for `/store`:
+Implemented seller store endpoints for `/store`:
 | Method | Route | Status |
 |--------|-------|--------|
 | `POST` | `/store` | ✅ Done |
 | `GET` | `/store` | ✅ Done — returns the **logged-in owner's own** store |
+| `PATCH` | `/store/:id` | ✅ Done (seller only) |
+| `DELETE` | `/store/:id` | ✅ Done (seller only) |
 
 ### Missing Endpoints to Implement
 
@@ -55,27 +57,27 @@ Only two endpoints exist for `/store`:
 
 #### 1.3 `PATCH /store/:id` — Patch Store By ID (seller only)
 
-- [ ] Add `patchStoreById` handler in `StoreController.js`
+- [ ] Add `patchStoreById` handler in `StoreController.js` (partial: implemented as `patchStoreData`, but explicit 403 ownership error is still missing)
   - Verify `req.user.id === store.ownerOfStore` — 403 if not the owner
   - Only update fields that are present in `req.body` (partial update)
-- [ ] Add `updateStore(id, patch)` method in `StoreService.js`
-- [ ] Create route `PATCH /store/:id` with `requireSeller` + `validatePatchStore` middleware
-- [ ] Add `validatePatchStore` middleware in `StoreValidation.js` (all fields optional, same rules as create)
+- [x] Add `updateStore(id, patch)` method in `StoreService.js` (implemented as `patchStoreData`)
+- [x] Create route `PATCH /store/:id` with `requireSeller` + `validatePatchStore` middleware
+- [x] Add `validatePatchStore` middleware in `StoreValidation.js` (all fields optional, same rules as create)
 
 #### 1.4 `DELETE /store/:id` — Delete Store By ID (seller only)
 
-- [ ] Add `deleteStoreById` handler in `StoreController.js`
+- [ ] Add `deleteStoreById` handler in `StoreController.js` (partial: implemented as `deleteStore`, but explicit 403 ownership error is still missing)
   - Verify `req.user.id === store.ownerOfStore` — 403 if not the owner
   - Decide: **hard delete** or **soft delete** (add `isDeleted` flag to `Store` schema). Soft delete is recommended.
   - If soft delete → add `isDeleted: { type: Boolean, default: false }` to `StoreSchema`
-- [ ] Add `deleteStore(id)` / `softDeleteStore(id)` method in `StoreService.js`
-- [ ] Create route `DELETE /store/:id` with `requireSeller`
+- [x] Add `deleteStore(id)` / `softDeleteStore(id)` method in `StoreService.js` (currently hard delete)
+- [x] Create route `DELETE /store/:id` with `requireSeller`
 - [ ] Consider cascading: when a store is deleted, should its products be soft-deleted too? Decision needed.
 
 #### 1.5 General Store Debugging
 
-- [ ] `StoreController.js` — `getStoreData` does **not** guard against `req.user` being undefined (no `requireSeller` check in the GET route, only `requireAuth`). Decide whether GET own-store should also verify role is `seller`.
-- [ ] `StoreService.js` — `getStoreData` calls `findOne({ ownerOfStore: ownerId })`. If no store exists yet it returns `null`. The controller returns `{ data: null }` — the frontend should handle this gracefully; add a proper 404 or empty-state response.
+- [x] `StoreController.js` — `getStoreData` does **not** guard against `req.user` being undefined (fixed: route now uses `requireSeller`).
+- [x] `StoreService.js` — `getStoreData` calls `findOne({ ownerOfStore: ownerId })`. If no store exists yet it returns `null`. The controller returns `{ data: null }` — the frontend should handle this gracefully; add a proper 404 or empty-state response. (updated to list-based empty-state behavior)
 - [ ] Test all four new endpoints with the Postman collection (`Velora.postman_collection.json`).
 
 ---
@@ -97,7 +99,7 @@ The intended relationship is:
 
 #### 2.1 Fix `Review` model (`Backend/model/Review.js`)
 
-- [ ] `userId` currently refs `"User"` → change ref to `"Customer"`
+- [x] `userId` currently refs `"User"` → change ref to `"Customer"`
   ```js
   // Before
   userId: { type: ObjectId, ref: "User" }
@@ -115,8 +117,8 @@ The intended relationship is:
 
 #### 2.4 Fix `Product` model (`Backend/model/Product.js`)
 
-- [ ] **`storeOwnerId` references `Seller` — this is wrong per the intended data model.**
-- [ ] Add a `storeId` field that references the `Store` model:
+- [x] **`storeOwnerId` references `Seller` — this is wrong per the intended data model.** (resolved by moving to `storeId` in schema)
+- [x] Add a `storeId` field that references the `Store` model:
   ```js
   storeId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -126,13 +128,13 @@ The intended relationship is:
   }
   ```
 - [ ] Keep `storeOwnerId` for ownership checks (or derive it via the Store document — decide which approach).
-- [ ] Update `ProductService.createProduct()` to accept and save `storeId`.
+- [x] Update `ProductService.createProduct()` to accept and save `storeId`.
 - [ ] Update `createSellerProduct` in `ProductController.js` to look up the seller's store, get its `_id`, and pass it as `storeId`.
 - [ ] Update `listProducts` and `getProductById` to populate `storeId` (store name at minimum) so the frontend can display it.
 
 #### 2.5 Consistency — `User` model audit
 
-- [ ] Check `Backend/model/User.js` — clarify whether this is a shared base model or a legacy artifact. If unused, remove it to avoid confusion.
+- [x] Check `Backend/model/User.js` — clarify whether this is a shared base model or a legacy artifact. If unused, remove it to avoid confusion. (no `User` model file exists)
 - [ ] Search entire codebase for `ref: "User"` and confirm each one is intentional or needs changing to `"Customer"`.
 
 ---
@@ -200,7 +202,7 @@ The main problem is product-domain split and a few correctness gaps:
 
 ### Phase 1: Stabilize the critical paths
 
-#### 1.1 Fix product write-path ambiguity DONE
+#### 1.1 Fix product write-path ambiguity PARTIAL
 
 - File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
 - File: [Backend/controller/ProductController.js](Backend/controller/ProductController.js#L32-L44)
@@ -237,7 +239,7 @@ How:
 
 #### 1.3 Fix the frontend seller API breakage DONE
 
-- File: [Frontend/src/api/seller/Seller_API.js](Frontend/src/api/seller/Seller_API.js#L38-L44)
+- File: [Frontend/src/api/Store/Store_API.js](Frontend/src/api/Store/Store_API.js#L1-L25)
 
 What to do:
 
@@ -268,7 +270,7 @@ How:
 
 ### Phase 2: Unify the product domain safely
 
-#### 2.1 Make one canonical product model DONE
+#### 2.1 Make one canonical product model PARTIAL
 
 - File: [Backend/model/Product.js](Backend/model/Product.js#L1-L128)
 - File: [Backend/services/ProductService.js](Backend/services/ProductService.js#L1-L86)
@@ -294,7 +296,7 @@ How:
 - `listProducts` should return catalog-safe data only
 - `listSellerProducts` should return owner-scoped data only
 
-#### 2.2 Remove review duplication Half DONE
+#### 2.2 Remove review duplication PARTIAL
 
 - File: [Backend/model/Product.js](Backend/model/Product.js#L111-L128)
 - File: [Backend/model/Review.js](Backend/model/Review.js#L1-L42)
@@ -312,7 +314,7 @@ How:
 - compute aggregates from `Review` after save/delete
 - update reads to join or aggregate reviews, not duplicate them
 
-#### 2.3 Enforce seller store ownership Chech it
+#### 2.3 Enforce seller store ownership PENDING
 
 - File: [Backend/routes/versionOne/products/Post_products.js](Backend/routes/versionOne/products/Post_products.js#L13-L18)
 - File: [Backend/routes/versionOne/products/Patch_product.js](Backend/routes/versionOne/products/Patch_product.js#L8-L14)
@@ -542,7 +544,7 @@ How:
 
 ### Frontend files to touch first
 
-- [Frontend/src/api/seller/Seller_API.js](Frontend/src/api/seller/Seller_API.js)
+- [Frontend/src/api/Store/Store_API.js](Frontend/src/api/Store/Store_API.js)
 - [Frontend/src/api/product/Product_API.js](Frontend/src/api/product/Product_API.js)
 - `Frontend/src/app/features/catalog/components/ProductSearchBar.jsx`
 - `Frontend/src/app/features/catalog/CatalogPage.jsx`
