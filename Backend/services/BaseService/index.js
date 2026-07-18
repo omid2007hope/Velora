@@ -4,7 +4,7 @@ class BaseService {
     this.model = model;
   }
 
-  _active = (condition = {}) => ({ ...condition, isDeleted: { $ne: true } });
+  _active = (data = {}) => ({ ...data, isDeleted: { $ne: true } });
 
   _buildTree = async (nodes, parentField) =>
     Promise.all(
@@ -18,21 +18,20 @@ class BaseService {
       })
     );
 
-  findAll = async (condition = {}) => this.model.find(this._active(condition));
+  findAll = async (data = {}) => this.model.find(this._active(data));
 
   findAllByThisId = async (id, field = "id") => this.model.find(this._active({ [field]: id }));
 
-  findAllWithSort = async (condition = {}, sort = {}) =>
-    this.model.find(this._active(condition)).sort(sort);
+  findAllWithSort = async (data = {}, sort = {}) => this.model.find(this._active(data)).sort(sort);
 
   findAllRecursive = async (parentField) => {
     const parent = await this.model.find(this._active({ [parentField]: null }));
     return this._buildTree(parent, parentField);
   };
 
-  findAllRecursiveByCondition = async (condition, parentField) => {
+  findAllRecursiveByCondition = async (data, parentField) => {
     try {
-      const parent = await this.model.find(this._active(condition));
+      const parent = await this.model.find(this._active(data));
       return this._buildTree(parent, parentField);
     } catch (err) {
       console.error(err);
@@ -42,10 +41,10 @@ class BaseService {
 
   findAllDeleted = async () => this.model.find({ isDeleted: true });
 
-  findAllWithPagination = async (condition, { page = 1, limit = 10, sort }) => {
+  findAllWithPagination = async (data, { page = 1, limit = 10, sort }) => {
     const currentPage = Math.max(1, Number(page) || 1);
     const pageSize = Math.max(1, Number(limit) || 10);
-    const filter = this._active(condition);
+    const filter = this._active(data);
     const [data, total] = await Promise.all([
       this.model
         .find(filter)
@@ -62,31 +61,31 @@ class BaseService {
     };
   };
 
-  findAllAndPopulate = async (condition, populate) =>
-    this.model.find(this._active(condition)).populate(populate);
+  findAllAndPopulate = async (data, populate) =>
+    this.model.find(this._active(data)).populate(populate);
 
   findById = async (id) => this.model.findOne(this._active({ _id: id }));
 
   findByIdPopulate = async (id, populate) =>
     this.model.findOne(this._active({ _id: id })).populate(populate);
 
-  findOneByCondition = async (condition) => this.model.findOne(this._active(condition));
+  findOneByCondition = async (data) => this.model.findOne(this._active(data));
 
-  findOneByConditionAndPopulate = async (condition, populate) =>
-    this.model.findOne(this._active(condition)).populate(populate);
+  findOneByConditionAndPopulate = async (data, populate) =>
+    this.model.findOne(this._active(data)).populate(populate);
 
-  hardDelete = async (condition) => this.model.findOneAndDelete(condition);
+  hardDelete = async (data) => this.model.findOneAndDelete(data);
 
-  softDelete = async (condition, user) =>
+  softDelete = async (data, user) =>
     this.model.findOneAndUpdate(
-      condition,
+      data,
       { isDeleted: true, deletedBy: user, deletedAt: new Date() },
       { returnDocument: "after" }
     );
 
-  softDeleteRecursive = async (parentField, condition, user) => {
+  softDeleteRecursive = async (parentField, data, user) => {
     const parent = await this.model.findOneAndUpdate(
-      condition,
+      data,
       { isDeleted: true, deletedBy: user },
       { returnDocument: "after" }
     );
@@ -115,26 +114,26 @@ class BaseService {
     return getChildren(parent._id);
   };
 
-  hardDeleteMany = async (condition) => this.model.deleteMany(condition);
+  hardDeleteMany = async (data) => this.model.deleteMany(data);
 
-  update = async (condition, data, returnNew = true) =>
-    this.model.findOneAndUpdate(condition, data, {
+  update = async (data, payload, returnNew = true) =>
+    this.model.findOneAndUpdate(data, payload, {
       returnDocument: returnNew ? "after" : "before",
     });
 
-  updateBySoftDelete = async (condition, data, deletedBy) => {
-    await this.model.findOneAndUpdate(condition, {
+  updateBySoftDelete = async (data, payload, deletedBy) => {
+    await this.model.findOneAndUpdate(data, {
       isDeleted: true,
       deletedBy,
     });
-    return this.createObject(data);
+    return this.createObject(payload);
   };
 
-  updateAll = async (condition, data) => this.model.updateMany(condition, data);
+  updateAll = async (data, payload) => this.model.updateMany(data, payload);
 
-  restoreSoftDelete = async (condition) =>
+  restoreSoftDelete = async (data) =>
     this.model.findOneAndUpdate(
-      condition,
+      data,
       { isDeleted: false, deletedBy: "" },
       { returnDocument: "after" }
     );
