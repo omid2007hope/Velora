@@ -25,8 +25,8 @@ const deleteStore = asyncHandler(async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
-const getStoreData = asyncHandler(async (req, res) => {
-  const result = await storeService.getStoreData(req.user.id);
+const getAllStore = asyncHandler(async (req, res) => {
+  const result = await storeService.getAllStores();
   return res.status(200).json({ data: result });
 });
 
@@ -38,8 +38,8 @@ const listStoreByOwnerId = asyncHandler(async (req, res) => {
 
 module.exports = {
   listStoreByOwnerId,
+  getAllStore,
   createStore,
   patchStoreData,
   deleteStore,
-  getStoreData,
 };

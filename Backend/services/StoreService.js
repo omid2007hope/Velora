@@ -90,8 +90,8 @@ module.exports = new (class StoreService extends BaseService {
     return this.hardDelete({ _id: storeId, ownerOfStore: ownerId });
   }
 
-  async getStoreData(ownerId) {
-    return this.findAll({ ownerOfStore: ownerId });
+  async getAllStores() {
+    return this.findAllWithSort({ sort: { createdAt: -1 } });
   }
 
   async listStoreByOwnerId(ownerId) {

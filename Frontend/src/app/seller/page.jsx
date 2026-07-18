@@ -5,12 +5,12 @@ import SectionCard from "@/app/components/ui/SectionCard";
 import SellerProductsOverview from "@/app/features/seller/components/product/SellerProductsOverview";
 import SellerStoreOverview from "@/app/features/seller/components/store/SellerStoreOverview";
 import { useSellerSession } from "@/app/features/seller/hooks/use-seller-session";
-import { getSellerStore } from "@/api/Store/Store_API";
+import { getAllStore } from "@/api/Store/Store_API";
 import { useCallback } from "react";
 import { useHandleApi } from "@/app/lib/function";
 
 export default function SellerPage() {
-  const apiFn = useCallback(() => getSellerStore(), []);
+  const apiFn = useCallback(() => getAllStore(), []);
   const { dataList: store } = useHandleApi(apiFn);
   const { storeOwner } = useSellerSession();
 
@@ -28,8 +28,8 @@ export default function SellerPage() {
                 {storeOwner?.fullName ? `, ${storeOwner.fullName}` : ""}.
               </h1>
               <p className="mt-3 max-w-2xl text-sm text-orange-100 md:text-base">
-                This is your base seller workspace for listing products and
-                growing the rest of the panel later.
+                This is your base seller workspace for listing products and growing the rest of the
+                panel later.
               </p>
             </div>
 
@@ -56,8 +56,8 @@ export default function SellerPage() {
               </p>
               <p className="mt-2 text-lg font-semibold">Product publishing</p>
               <p className="mt-2 text-sm text-orange-100">
-                Start with product creation now. Store setup, analytics, and
-                advanced tools can plug into this layout later.
+                Start with product creation now. Store setup, analytics, and advanced tools can plug
+                into this layout later.
               </p>
             </div>
 
@@ -66,13 +66,10 @@ export default function SellerPage() {
                 Seller status
               </p>
               <p className="mt-2 text-lg font-semibold">
-                {storeOwner?.isEmailVerified
-                  ? "Verified seller"
-                  : "Verification pending"}
+                {storeOwner?.isEmailVerified ? "Verified seller" : "Verification pending"}
               </p>
               <p className="mt-2 text-sm text-orange-100">
-                Use your seller account to manage products in one dedicated
-                area.
+                Use your seller account to manage products in one dedicated area.
               </p>
             </div>
           </div>

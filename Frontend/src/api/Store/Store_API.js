@@ -6,7 +6,7 @@ import client from "@/api/client";
 
 // Store
 
-export async function getSellerStore() {
+export async function getAllStore() {
   const response = await client.get("/server/seller/store");
   //! console.log("getSellerStore response:", response.data?.data); // Log the response
   return response.data?.data ?? [];

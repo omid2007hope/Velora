@@ -1,7 +1,7 @@
-import { getSellerStore } from "../../../../api/Store/Store_API";
+import { getAllStore } from "../../../../api/Store/Store_API";
 
 export const getSellerNavigation = async () => {
-  const store = await getSellerStore();
+  const store = await getAllStore();
 
   if (Array.isArray(store) && store.length > 0) {
     return [
