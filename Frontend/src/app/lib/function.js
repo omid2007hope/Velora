@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DEFAULT_INITIAL_DATA = [];
 const DEFAULT_MAP_DATA = (value) => (Array.isArray(value) ? value : []);
@@ -14,7 +14,6 @@ export function useHandleApi(apiFn, options = {}) {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [refetchCount, setRefetchCount] = useState(0);
 
   const mapDataRef = useRef(mapData);
   const fallbackErrorRef = useRef(fallbackError);
@@ -52,9 +51,7 @@ export function useHandleApi(apiFn, options = {}) {
       } catch (reqError) {
         if (!ignore) {
           setError(
-            reqError?.response?.data?.error ||
-              reqError?.message ||
-              fallbackErrorRef.current,
+            reqError?.response?.data?.error || reqError?.message || fallbackErrorRef.current
           );
         }
       } finally {

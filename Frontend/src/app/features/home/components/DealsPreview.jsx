@@ -2,6 +2,7 @@
 // Signature: OmidTeimory-2026
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -37,20 +38,18 @@ export default function DealsPreview() {
           ...product,
           selectedColor: "black",
           selectedSize: "M",
-        }),
+        })
       );
       router.push("/order");
     },
-    [dispatch, router],
+    [dispatch, router]
   );
 
   return (
     <section className="bg-orange-100 px-4 py-8 sm:px-6 lg:px-16">
       <div className="w-full">
         <div className="mb-6">
-          <h2 className="text-4xl font-bold text-amber-950 mb-2">
-            Exclusive Deals
-          </h2>
+          <h2 className="text-4xl font-bold text-amber-950 mb-2">Exclusive Deals</h2>
           <p className="text-lg text-amber-800">
             Discover our latest collection with unbeatable discounts
           </p>
@@ -66,16 +65,14 @@ export default function DealsPreview() {
               >
                 <Link href={`/products/${product.id}`}>
                   <div className="relative h-56 w-full">
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.name}
-                      width="400"
-                      height="224"
+                      fill
+                      unoptimized
                       loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
                       sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="h-full w-full object-cover"
+                      className="object-cover"
                     />
 
                     {product.discount ? (
@@ -87,17 +84,11 @@ export default function DealsPreview() {
                 </Link>
 
                 <div className="p-5">
-                  <h3 className="truncate text-lg font-semibold text-amber-950">
-                    {product.name}
-                  </h3>
+                  <h3 className="truncate text-lg font-semibold text-amber-950">{product.name}</h3>
 
                   <div className="mt-2 flex items-center space-x-3">
-                    <span className="text-lg font-bold text-amber-950">
-                      ${product.newPrice}
-                    </span>
-                    <span className="text-sm text-amber-800 line-through">
-                      ${product.oldPrice}
-                    </span>
+                    <span className="text-lg font-bold text-amber-950">${product.newPrice}</span>
+                    <span className="text-sm text-amber-800 line-through">${product.oldPrice}</span>
                   </div>
 
                   <button

@@ -45,7 +45,7 @@ export function useProductDetails(productId) {
   });
 
   const product = data?.product || null;
-  const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
+  const reviews = data?.reviews ?? initialProductState.reviews;
 
   const ratingCounts = useMemo(() => {
     return reviews.reduce((accumulator, review) => {

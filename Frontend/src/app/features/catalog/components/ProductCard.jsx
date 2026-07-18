@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function ProductCard({ product }) {
@@ -10,14 +11,13 @@ export default function ProductCard({ product }) {
     <div className="overflow-hidden rounded-xl border-2 border-amber-950 bg-orange-200 shadow-md transition duration-300 hover:scale-[1.02] hover:shadow-xl">
       <Link href={`/products/${productId}`}>
         <div className="relative">
-          <img
+          <Image
             src={image}
             alt={product.name}
-            width="400"
-            height="240"
+            width={400}
+            height={240}
+            unoptimized
             loading="lazy"
-            decoding="async"
-            fetchPriority="low"
             sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, 50vw"
             className="h-48 w-full object-cover sm:h-56 md:h-60"
           />
@@ -36,9 +36,7 @@ export default function ProductCard({ product }) {
 
         <div className="mt-2 flex items-center space-x-3">
           <span className="text-lg font-bold text-amber-950">${price}</span>
-          <span className="text-sm text-amber-800 line-through">
-            ${oldPrice}
-          </span>
+          <span className="text-sm text-amber-800 line-through">${oldPrice}</span>
         </div>
 
         <Link

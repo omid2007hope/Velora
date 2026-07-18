@@ -2,6 +2,7 @@
 // Signature: OmidTeimory-2026
 "use client";
 
+import Image from "next/image";
 import { Carousel } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import Accessories from "@/app/assets/image/Accessories.webp";
@@ -18,50 +19,43 @@ export default function PromoBanner() {
         className="overflow-hidden rounded-lg shadow-md"
         style={{ height: 440, background: "#f7f3ef" }}
       >
-        <img
-          src={Banner.src}
-          alt="Velora summer collection banner"
-          width="1234"
-          height="690"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          sizes="(min-width: 1024px) 640px, 100vw"
-          className="h-full w-full object-cover"
-        />
-        <img
-          src={Men.src}
-          alt="Men's collection preview"
-          width="1536"
-          height="1024"
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          sizes="(min-width: 1024px) 640px, 100vw"
-          className="h-full w-full object-cover"
-        />
-        <img
-          src={Accessories.src}
-          alt="Accessories collection preview"
-          width="1536"
-          height="1024"
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          sizes="(min-width: 1024px) 640px, 100vw"
-          className="h-full w-full object-cover"
-        />
-        <img
-          src={Watch.src}
-          alt="Watch collection preview"
-          width="1536"
-          height="1024"
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          sizes="(min-width: 1024px) 640px, 100vw"
-          className="h-full w-full object-cover"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src={Banner}
+            alt="Velora summer collection banner"
+            fill
+            priority
+            sizes="(min-width: 1024px) 640px, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative h-full w-full">
+          <Image
+            src={Men}
+            alt="Men's collection preview"
+            fill
+            sizes="(min-width: 1024px) 640px, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative h-full w-full">
+          <Image
+            src={Accessories}
+            alt="Accessories collection preview"
+            fill
+            sizes="(min-width: 1024px) 640px, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative h-full w-full">
+          <Image
+            src={Watch}
+            alt="Watch collection preview"
+            fill
+            sizes="(min-width: 1024px) 640px, 100vw"
+            className="object-cover"
+          />
+        </div>
       </Carousel>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Carousel } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
@@ -13,18 +14,17 @@ export default function CategoryCarousel({ images = [] }) {
         style={{ height: 400, background: "#f7f3ef" }}
       >
         {images.map((image) => (
-          <img
-            key={image.src}
-            src={image.src}
-            alt={image.alt}
-            width="1200"
-            height="400"
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            sizes="(min-width: 1024px) 640px, 100vw"
-            className="h-full w-full object-cover"
-          />
+          <div key={image.src} className="relative h-full w-full">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              unoptimized
+              loading="lazy"
+              sizes="(min-width: 1024px) 640px, 100vw"
+              className="object-cover"
+            />
+          </div>
         ))}
       </Carousel>
     </div>

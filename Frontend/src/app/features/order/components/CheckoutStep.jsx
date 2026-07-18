@@ -1,18 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import CartSummary from "@/app/features/order/components/CartSummary";
 import { useCheckoutForm } from "@/app/features/order/hooks/use-checkout-form";
 
 export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
-  const {
-    form,
-    updateField,
-    submitOrder,
-    pricing,
-    submitting,
-    submitError,
-    submitMessage,
-  } = useCheckoutForm(cartItems, onComplete);
+  const { form, updateField, submitOrder, pricing, submitting, submitError, submitMessage } =
+    useCheckoutForm(cartItems, onComplete);
 
   async function handlePay() {
     await submitOrder();
@@ -103,9 +97,7 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
               disabled={cartItems.length === 0 || submitting}
               className="w-full rounded-md bg-amber-950 py-3 text-white disabled:opacity-50"
             >
-              {submitting
-                ? "Processing..."
-                : `Pay $${pricing.total.toFixed(2)}`}
+              {submitting ? "Processing..." : `Pay $${pricing.total.toFixed(2)}`}
             </button>
           </div>
         </div>
@@ -121,21 +113,18 @@ export default function CheckoutStep({ cartItems = [], onBack, onComplete }) {
 
                 return (
                   <li key={key} className="flex py-4">
-                    <img
+                    <Image
                       src={imageSrc}
+                      width={64}
+                      height={64}
+                      unoptimized
                       loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
-                      width="64"
-                      height="64"
                       className="h-16 w-16 rounded-md border border-amber-950 object-cover"
                       alt={item.name}
                     />
 
                     <div className="ml-4 flex-1">
-                      <h3 className="text-sm font-semibold text-amber-950">
-                        {item.name}
-                      </h3>
+                      <h3 className="text-sm font-semibold text-amber-950">{item.name}</h3>
                       <p className="text-sm text-amber-900">
                         {item.selectedColor || "Selected color"} |{" "}
                         {item.selectedSize || "Selected size"}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +20,7 @@ export default function CartStep({ onContinue }) {
         selectedColor: item.selectedColor,
         selectedSize: item.selectedSize,
         quantity,
-      }),
+      })
     );
   }
 
@@ -29,7 +30,7 @@ export default function CartStep({ onContinue }) {
         id: item.id,
         selectedColor: item.selectedColor,
         selectedSize: item.selectedSize,
-      }),
+      })
     );
   }
 
@@ -54,31 +55,26 @@ export default function CartStep({ onContinue }) {
                     key={key}
                     className="flex items-center rounded-xl border border-amber-950 bg-orange-200 p-5 shadow-md"
                   >
-                    <img
+                    <Image
                       src={imageSrc}
                       alt={item.name}
-                      width="96"
-                      height="96"
+                      width={96}
+                      height={96}
+                      unoptimized
                       loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
                       className="h-24 w-24 rounded-lg border border-amber-900 object-cover"
                     />
 
                     <div className="ml-5 flex-1">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="text-lg font-semibold text-amber-950">
-                            {item.name}
-                          </h3>
+                          <h3 className="text-lg font-semibold text-amber-950">{item.name}</h3>
                           <p className="text-sm text-amber-900">
                             {item.selectedColor && item.selectedSize
                               ? `${item.selectedColor} | ${item.selectedSize}`
                               : "Selected options"}
                           </p>
-                          <p className="mt-2 text-xs text-green-700">
-                            In stock
-                          </p>
+                          <p className="mt-2 text-xs text-green-700">In stock</p>
                         </div>
 
                         <p className="text-sm font-bold text-amber-950">
@@ -87,20 +83,14 @@ export default function CartStep({ onContinue }) {
                       </div>
 
                       <div className="mt-3 flex items-center space-x-4">
-                        <label
-                          htmlFor={`quantity-${item.id}`}
-                          className="sr-only"
-                        >
+                        <label htmlFor={`quantity-${item.id}`} className="sr-only">
                           Quantity for {item.name}
                         </label>
                         <select
                           id={`quantity-${item.id}`}
                           value={item.quantity || 1}
                           onChange={(event) =>
-                            handleQuantityChange(
-                              item,
-                              Number(event.target.value),
-                            )
+                            handleQuantityChange(item, Number(event.target.value))
                           }
                           className="w-20 rounded-md border border-amber-950 bg-orange-50 text-amber-950 shadow-sm"
                         >

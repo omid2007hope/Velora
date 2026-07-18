@@ -1,8 +1,8 @@
-const { validateBody } = require("./common");
-const { storeSchema, patchStoreSchema } = require("../../validation");
+const { validateBody, validateParams } = require("./common");
+const { storeSchema, patchStoreSchema, objectIdParamsSchema } = require("../../validation");
 
 module.exports = {
   validateCreateStore: validateBody(storeSchema),
   validatePatchStore: validateBody(patchStoreSchema),
-  // validateOwnerId,
+  validateStoreId: validateParams(objectIdParamsSchema),
 };
