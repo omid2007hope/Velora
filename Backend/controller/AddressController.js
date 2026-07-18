@@ -1,10 +1,9 @@
 const asyncHandler = require("../utils/asyncHandler");
 const addressService = require("../services/AddressService");
-const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createAddress = asyncHandler(async (req, res) => {
   const result = await addressService.createAddress({
-    userId: getAuthorizedUserId(req),
+    userId: req.user.id,
     country: req.body.country,
     city: req.body.city,
     street: req.body.street,
@@ -20,4 +19,3 @@ const createAddress = asyncHandler(async (req, res) => {
 module.exports = {
   createAddress,
 };
-

@@ -2,11 +2,10 @@ const asyncHandler = require("../utils/asyncHandler");
 const { createHttpError } = require("../utils/httpError");
 const orderService = require("../services/OrderService");
 const paymentIntentService = require("../services/PaymentIntentService");
-const getAuthorizedUserId = require("../utils/getAuthorizedUserId");
 
 const createOrder = asyncHandler(async (req, res) => {
   const order = await orderService.createOrder({
-    userId: getAuthorizedUserId(req),
+    userId: req.user.id,
     items: req.body.items,
     currency: req.body.currency,
     addressSnapshot: req.body.addressSnapshot,
@@ -34,7 +33,7 @@ const createOrder = asyncHandler(async (req, res) => {
 
 const listOrders = asyncHandler(async (req, res) => {
   const orders = await orderService.listOrdersByUser({
-    userId: getAuthorizedUserId(req),
+    userId: req.user.id,
   });
 
   return res.status(200).json({ data: orders });
@@ -42,7 +41,7 @@ const listOrders = asyncHandler(async (req, res) => {
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const updatedOrder = await orderService.updateOrderStatus(req.params.id, {
-    userId: getAuthorizedUserId(req),
+    userId: req.user.id,
     orderStatus: req.body.orderStatus,
   });
 
@@ -58,4 +57,3 @@ module.exports = {
   listOrders,
   updateOrderStatus,
 };
-
