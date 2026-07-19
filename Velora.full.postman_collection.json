@@ -137,6 +137,20 @@
         },
         {
           "name": "Request Customer Email Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const token = json.token || '';",
+                  "if (token) { pm.collectionVariables.set('emailVerificationToken', token); }",
+                  "if (pm.environment && token) { pm.environment.set('emailVerificationToken', token); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -290,6 +304,20 @@
         },
         {
           "name": "Request Seller Email Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const token = json.token || '';",
+                  "if (token) { pm.collectionVariables.set('emailVerificationToken', token); }",
+                  "if (pm.environment && token) { pm.environment.set('emailVerificationToken', token); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],

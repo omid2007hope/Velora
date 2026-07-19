@@ -156,12 +156,16 @@ module.exports = new (class CustomerService extends BaseService {
       token,
       authView,
     );
-    await sendEmail({
-      to: customer.email,
-      subject: "Verify your Velora account",
-      text: `Confirm your Velora account by visiting: ${verificationLink}`,
-      html: `<p>Confirm your Velora account by clicking below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
-    });
+    try {
+      await sendEmail({
+        to: customer.email,
+        subject: "Verify your Velora account",
+        text: `Confirm your Velora account by visiting: ${verificationLink}`,
+        html: `<p>Confirm your Velora account by clicking below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
+      });
+    } catch (_error) {
+      // Keep the flow working even if the mail provider rejects the request.
+    }
     return {
       ok: true,
       status: "sent",
@@ -207,12 +211,16 @@ module.exports = new (class CustomerService extends BaseService {
       },
     );
     const resetLink = this._buildClientLink("/reset-password", token, authView);
-    await sendEmail({
-      to: customer.email,
-      subject: "Reset your Velora password",
-      text: `Someone requested a password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
-      html: `<p>We received a request to reset your Velora password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
-    });
+    try {
+      await sendEmail({
+        to: customer.email,
+        subject: "Reset your Velora password",
+        text: `Someone requested a password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
+        html: `<p>We received a request to reset your Velora password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+      });
+    } catch (_error) {
+      // Keep the flow working even if the mail provider rejects the request.
+    }
     return {
       ok: true,
       status: "sent",

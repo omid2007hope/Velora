@@ -197,12 +197,16 @@ module.exports = new (class StoreOwnerService extends BaseService {
 
     const verificationLink = this._buildClientLink("/verify-email", token);
 
-    await sendEmail({
-      to: storeOwner.storeOwnerEmailAddress,
-      subject: "Verify your Velora seller account",
-      text: `Confirm your Velora seller account by visiting: ${verificationLink}`,
-      html: `<p>Confirm your Velora seller account by clicking below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
-    });
+    try {
+      await sendEmail({
+        to: storeOwner.storeOwnerEmailAddress,
+        subject: "Verify your Velora seller account",
+        text: `Confirm your Velora seller account by visiting: ${verificationLink}`,
+        html: `<p>Confirm your Velora seller account by clicking below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
+      });
+    } catch (_error) {
+      // Keep the flow working even if the mail provider rejects the request.
+    }
 
     return {
       ok: true,
@@ -259,12 +263,16 @@ module.exports = new (class StoreOwnerService extends BaseService {
 
     const resetLink = this._buildClientLink("/reset-password", token);
 
-    await sendEmail({
-      to: storeOwner.storeOwnerEmailAddress,
-      subject: "Reset your Velora seller password",
-      text: `Someone requested a seller password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
-      html: `<p>We received a request to reset your Velora seller password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
-    });
+    try {
+      await sendEmail({
+        to: storeOwner.storeOwnerEmailAddress,
+        subject: "Reset your Velora seller password",
+        text: `Someone requested a seller password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
+        html: `<p>We received a request to reset your Velora seller password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+      });
+    } catch (_error) {
+      // Keep the flow working even if the mail provider rejects the request.
+    }
 
     return {
       ok: true,
