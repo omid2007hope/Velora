@@ -1,49 +1,30 @@
-const nodemailer = require("nodemailer");
+const emailjs = require("@emailjs/nodejs");
 const { getEnvConfig } = require("../config/env");
-const logger = require("./logger");
-
-const fallbackTransport = nodemailer.createTransport({
-  streamTransport: true,
-  newline: "unix",
-  buffer: true,
-});
-
-function getMailerConfig() {
-  const { smtp, isTest } = getEnvConfig();
-  const hasSmtpConfig = smtp.host && smtp.port && !isTest;
-  const transport = hasSmtpConfig
-    ? nodemailer.createTransport({
-        host: smtp.host,
-        port: Number(smtp.port),
-        secure: smtp.secure,
-        auth:
-          smtp.user && smtp.pass
-            ? {
-                user: smtp.user,
-                pass: smtp.pass,
-              }
-            : undefined,
-      })
-    : fallbackTransport;
-
-  return { smtp, hasSmtpConfig, transport };
-}
 
 async function sendEmail({ to, subject, text, html }) {
-  const { smtp, hasSmtpConfig, transport } = getMailerConfig();
-  const info = await transport.sendMail({
-    from: smtp.from,
-    to,
-    subject,
-    text,
-    html,
-  });
+  const { emailjs: emailConfig, isTest } = getEnvConfig();
 
-  if (!hasSmtpConfig) {
-    logger.info("[mail debug]", info.message?.toString?.() || info);
+  if (!emailConfig.serviceId || !emailConfig.templateId || !emailConfig.publicKey) {
+    throw new Error("EmailJS is not configured");
   }
 
-  return info;
+  return emailjs.send(
+    emailConfig.serviceId,
+    emailConfig.templateId,
+    {
+      to_email: to,
+      subject,
+      text,
+      html,
+      from_name: emailConfig.fromName,
+      reply_to: emailConfig.replyTo,
+      is_test: isTest,
+    },
+    {
+      publicKey: emailConfig.publicKey,
+      privateKey: emailConfig.privateKey,
+    }
+  );
 }
 
 module.exports = {

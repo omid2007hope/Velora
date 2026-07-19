@@ -13,23 +13,25 @@ module.exports = new (class CustomerService extends BaseService {
     const expires = new Date(Date.now() + hoursValid * 60 * 60 * 1000);
     return { token, expires };
   }
+
   _normalizeAuthView(authView) {
     return authView === "seller" ? "seller" : "customer";
   }
+
   _buildClientLink(pathname, token, authView) {
     const { primaryClientUrl } = getEnvConfig();
     const normalizedAuthView = this._normalizeAuthView(authView);
     return `${primaryClientUrl.replace(/\/$/, "")}${pathname}?token=${token}&authView=${normalizedAuthView}`;
   }
+
   async registerCustomer({ email, fullName, password, authView }) {
     const normalizedCustomer = {
       email: email.trim().toLowerCase(),
       fullName: fullName.trim(),
       password: await bcrypt.hash(password, SALT_ROUNDS),
     };
-    const existingCustomer = await this.model
-      .findOne({ email: normalizedCustomer.email })
-      .lean();
+
+    const existingCustomer = await this.model.findOne({ email: normalizedCustomer.email }).lean();
     if (existingCustomer) {
       return {
         source: "database",
@@ -42,27 +44,23 @@ module.exports = new (class CustomerService extends BaseService {
         },
       };
     }
+
     const savedCustomer = await this.createObject(normalizedCustomer);
     let emailVerificationToken;
     try {
       const { token, expires } = this._generateToken(24);
       await this.update(
         { _id: savedCustomer._id },
-        { emailVerificationToken: token, emailVerificationExpires: expires },
+        { emailVerificationToken: token, emailVerificationExpires: expires }
       );
-      const verificationLink = this._buildClientLink(
-        "/verify-email",
-        token,
-        authView,
-      );
+      const verificationLink = this._buildClientLink("/verify-email", token, authView);
       await sendEmail({
         to: savedCustomer.email,
         subject: "Verify your Velora account",
         text: `Welcome to Velora! Confirm your email by visiting: ${verificationLink}`,
         html: `<p>Welcome to Velora!</p><p>Please confirm your email by clicking the link below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
       });
-      emailVerificationToken =
-        process.env.NODE_ENV === "production" ? undefined : token;
+      emailVerificationToken = process.env.NODE_ENV === "production" ? undefined : token;
     } catch (_error) {
       emailVerificationToken = undefined;
     }

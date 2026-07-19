@@ -42,17 +42,16 @@ function getEnvConfig() {
     port: Number(process.env.PORT) || 3000,
     mongoUrl: process.env.MONGO_URL,
     allowedOrigins: parseOrigins(
-      process.env.CLIENT_URL ||
-        "http://localhost:3000,http://localhost:3001,http://localhost:5173",
+      process.env.CLIENT_URL || "http://localhost:3000,http://localhost:3001,http://localhost:5173"
     ),
     primaryClientUrl: getPrimaryClientUrl(),
-    smtp: {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-      from: process.env.SMTP_FROM || "no-reply@velora.local",
-      secure: process.env.SMTP_SECURE === "true",
+    emailjs: {
+      serviceId: process.env.EMAILJS_SERVICE_ID,
+      templateId: process.env.EMAILJS_TEMPLATE_ID,
+      publicKey: process.env.EMAILJS_PUBLIC_KEY,
+      privateKey: process.env.EMAILJS_PRIVATE_KEY,
+      fromName: process.env.EMAILJS_FROM_NAME || "Velora",
+      replyTo: process.env.EMAILJS_REPLY_TO || "no-reply@velora.local",
     },
   };
 }
