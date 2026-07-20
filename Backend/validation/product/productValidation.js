@@ -32,7 +32,6 @@ const productCreateSchema = z.object({
 const patchProductSchema = productCreateSchema.partial();
 
 module.exports = {
-  objectId,
   productIdParamsSchema,
   productCreateSchema,
   patchProductSchema,
