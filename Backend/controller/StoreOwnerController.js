@@ -38,9 +38,7 @@ const refreshStoreOwnerToken = asyncHandler(async (req, res) => {
 });
 
 const requestStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.requestEmailVerification(
-    req.body.email,
-  );
+  const result = await storeOwnerService.requestEmailVerification(req.body.email);
 
   if (result.status === "already-verified") {
     return res.status(200).json({
@@ -49,16 +47,14 @@ const requestStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
   }
 
   return res.status(200).json({
-    message:
-      "If an account exists for this email, a verification link has been sent.",
+    message: "If an account exists for this email, a verification link has been sent.",
     token: result.token,
+    emailSent: result.emailSent,
   });
 });
 
 const confirmStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.confirmEmailVerification(
-    req.body.token,
-  );
+  const result = await storeOwnerService.confirmEmailVerification(req.body.token);
 
   if (!result.ok) {
     throw createHttpError(400, "Invalid or expired token");
@@ -74,9 +70,9 @@ const requestStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
   const result = await storeOwnerService.requestPasswordReset(req.body.email);
 
   return res.status(200).json({
-    message:
-      "If an account exists for this email, a password reset link has been sent.",
+    message: "If an account exists for this email, a password reset link has been sent.",
     token: result.token,
+    emailSent: result.emailSent,
   });
 });
 

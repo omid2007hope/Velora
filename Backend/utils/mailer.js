@@ -13,7 +13,7 @@ async function sendEmail({ to, subject, text, html }) {
     emailConfig.templateId,
     {
       to_email: to,
-      subject,
+      subject,z
       text,
       html,
       from_name: emailConfig.fromName,

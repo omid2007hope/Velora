@@ -6,6 +6,7 @@ const BaseService = require("./BaseService");
 const { sendEmail } = require("../utils/mailer");
 const { getEnvConfig } = require("../config/env");
 const { createHttpError } = require("../utils/httpError");
+const logger = require("../utils/logger");
 const SALT_ROUNDS = 12;
 module.exports = new (class CustomerService extends BaseService {
   _generateToken(hoursValid = 24) {
@@ -115,25 +116,25 @@ module.exports = new (class CustomerService extends BaseService {
           tokenType: "refresh",
         },
         process.env.JWT_REFRESH_SECRET,
-        { expiresIn: "7d" },
+        { expiresIn: "7d" }
       ),
     };
   }
   async refreshAccessToken(refreshToken) {
     if (!process.env.JWT_REFRESH_SECRET) {
-      throw createHttpError(500 ,"JWT_REFRESH_SECRET is not set");
+      throw createHttpError(500, "JWT_REFRESH_SECRET is not set");
     }
 
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     if (payload.tokenType !== "refresh") {
-      throw createHttpError(500 ,"Invalid token type");
+      throw createHttpError(500, "Invalid token type");
     }
 
     return jwt.sign(
       { sub: payload.sub, email: payload.email, tokenType: "access" },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "15m" }
     );
   }
   async requestEmailVerification(email, authView) {
@@ -149,13 +150,10 @@ module.exports = new (class CustomerService extends BaseService {
     const { token, expires } = this._generateToken(24);
     await this.update(
       { _id: customer._id },
-      { emailVerificationToken: token, emailVerificationExpires: expires },
+      { emailVerificationToken: token, emailVerificationExpires: expires }
     );
-    const verificationLink = this._buildClientLink(
-      "/verify-email",
-      token,
-      authView,
-    );
+    const verificationLink = this._buildClientLink("/verify-email", token, authView);
+    let emailSent = false;
     try {
       await sendEmail({
         to: customer.email,
@@ -163,12 +161,14 @@ module.exports = new (class CustomerService extends BaseService {
         text: `Confirm your Velora account by visiting: ${verificationLink}`,
         html: `<p>Confirm your Velora account by clicking below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
       });
+      emailSent = true;
     } catch (_error) {
-      // Keep the flow working even if the mail provider rejects the request.
+      logger.error("Customer verification email failed to send", _error);
     }
     return {
       ok: true,
       status: "sent",
+      emailSent,
       email: customer.email,
       token: process.env.NODE_ENV === "production" ? undefined : token,
     };
@@ -190,7 +190,7 @@ module.exports = new (class CustomerService extends BaseService {
         isEmailVerified: true,
         emailVerificationToken: null,
         emailVerificationExpires: null,
-      },
+      }
     );
     return { ok: true, email: customer.email };
   }
@@ -208,9 +208,10 @@ module.exports = new (class CustomerService extends BaseService {
       {
         passwordResetToken: token,
         passwordResetExpires: expires,
-      },
+      }
     );
     const resetLink = this._buildClientLink("/reset-password", token, authView);
+    let emailSent = false;
     try {
       await sendEmail({
         to: customer.email,
@@ -218,12 +219,14 @@ module.exports = new (class CustomerService extends BaseService {
         text: `Someone requested a password reset. Open: ${resetLink} (expires in 1 hour). If you did not request this, ignore the email.`,
         html: `<p>We received a request to reset your Velora password.</p><p>Click the button below within 1 hour to choose a new password:</p><p><a href="${resetLink}">Reset password</a></p><p>If you didn't request this, you can ignore this email.</p>`,
       });
+      emailSent = true;
     } catch (_error) {
-      // Keep the flow working even if the mail provider rejects the request.
+      logger.error("Customer password reset email failed to send", _error);
     }
     return {
       ok: true,
       status: "sent",
+      emailSent,
       token: process.env.NODE_ENV === "production" ? undefined : token,
     };
   }
@@ -232,11 +235,10 @@ module.exports = new (class CustomerService extends BaseService {
       return { ok: false, reason: "missing-token" };
     }
 
-    const customer = await this.model
-      .findOne({
-        passwordResetToken: token,
-        passwordResetExpires: { $gt: new Date() },
-      });
+    const customer = await this.model.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() },
+    });
 
     if (!customer || !newPassword) {
       return { ok: false, reason: "invalid-or-expired" };
@@ -251,7 +253,7 @@ module.exports = new (class CustomerService extends BaseService {
         pendingPasswordHash: null,
         passwordResetToken: null,
         passwordResetExpires: null,
-      },
+      }
     );
     return { ok: true, email: customer.email };
   }
