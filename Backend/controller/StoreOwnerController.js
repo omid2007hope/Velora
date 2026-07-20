@@ -67,7 +67,10 @@ const confirmStoreOwnerEmailVerification = asyncHandler(async (req, res) => {
 });
 
 const requestStoreOwnerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await storeOwnerService.requestPasswordReset(req.body.email);
+  const result = await storeOwnerService.requestPasswordReset(
+    req.body.email,
+    req.body.newPassword,
+  );
 
   return res.status(200).json({
     message: "If an account exists for this email, a password reset link has been sent.",

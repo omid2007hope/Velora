@@ -194,7 +194,7 @@ module.exports = new (class CustomerService extends BaseService {
     );
     return { ok: true, email: customer.email };
   }
-  async requestPasswordReset(email, authView) {
+  async requestPasswordReset(email, newPassword, authView) {
     const customer = await this.model.findOne({
       email: email.trim().toLowerCase(),
     });
@@ -203,13 +203,16 @@ module.exports = new (class CustomerService extends BaseService {
     }
 
     const { token, expires } = this._generateToken(1);
-    await this.update(
-      { _id: customer._id },
-      {
-        passwordResetToken: token,
-        passwordResetExpires: expires,
-      }
-    );
+    const updates = {
+      passwordResetToken: token,
+      passwordResetExpires: expires,
+    };
+
+    if (newPassword) {
+      updates.pendingPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    await this.update({ _id: customer._id }, updates);
     const resetLink = this._buildClientLink("/reset-password", token, authView);
     let emailSent = false;
     try {
@@ -238,18 +241,26 @@ module.exports = new (class CustomerService extends BaseService {
     const customer = await this.model.findOne({
       passwordResetToken: token,
       passwordResetExpires: { $gt: new Date() },
-    });
+    }).select("+pendingPasswordHash");
 
-    if (!customer || !newPassword) {
+    if (!customer) {
       return { ok: false, reason: "invalid-or-expired" };
     }
 
-    const password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    let passwordHash = customer.pendingPasswordHash;
+
+    if (newPassword) {
+      passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    if (!passwordHash) {
+      return { ok: false, reason: "invalid-or-expired" };
+    }
 
     await this.update(
       { _id: customer._id },
       {
-        password,
+        password: passwordHash,
         pendingPasswordHash: null,
         passwordResetToken: null,
         passwordResetExpires: null,

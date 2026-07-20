@@ -238,7 +238,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
     return { ok: true, email: storeOwner.storeOwnerEmailAddress };
   }
 
-  async requestPasswordReset(storeOwnerEmailAddress) {
+  async requestPasswordReset(storeOwnerEmailAddress, newPassword) {
     const storeOwner = await this.model.findOne({
       storeOwnerEmailAddress: storeOwnerEmailAddress.trim().toLowerCase(),
     });
@@ -249,13 +249,16 @@ module.exports = new (class StoreOwnerService extends BaseService {
 
     const { token, expires } = this._generateToken(1);
 
-    await this.update(
-      { _id: storeOwner._id },
-      {
-        passwordResetToken: token,
-        passwordResetExpires: expires,
-      }
-    );
+    const updates = {
+      passwordResetToken: token,
+      passwordResetExpires: expires,
+    };
+
+    if (newPassword) {
+      updates.pendingPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    await this.update({ _id: storeOwner._id }, updates);
 
     const resetLink = this._buildClientLink("/reset-password", token);
 
@@ -288,18 +291,26 @@ module.exports = new (class StoreOwnerService extends BaseService {
     const storeOwner = await this.model.findOne({
       passwordResetToken: token,
       passwordResetExpires: { $gt: new Date() },
-    });
+    }).select("+pendingPasswordHash");
 
-    if (!storeOwner || !newPassword) {
+    if (!storeOwner) {
       return { ok: false, reason: "invalid-or-expired" };
     }
 
-    const storeOwnerPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    let passwordHash = storeOwner.pendingPasswordHash;
+
+    if (newPassword) {
+      passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    if (!passwordHash) {
+      return { ok: false, reason: "invalid-or-expired" };
+    }
 
     await this.update(
       { _id: storeOwner._id },
       {
-        storeOwnerPasswordHash,
+        storeOwnerPasswordHash: passwordHash,
         pendingPasswordHash: null,
         passwordResetToken: null,
         passwordResetExpires: null,

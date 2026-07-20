@@ -67,7 +67,11 @@ const confirmCustomerEmailVerification = asyncHandler(async (req, res) => {
 });
 
 const requestCustomerPasswordReset = asyncHandler(async (req, res) => {
-  const result = await customerService.requestPasswordReset(req.body.email, req.body.authView);
+  const result = await customerService.requestPasswordReset(
+    req.body.email,
+    req.body.newPassword,
+    req.body.authView,
+  );
 
   return res.status(200).json({
     message: "If an account exists for this email, a password reset link has been sent.",
