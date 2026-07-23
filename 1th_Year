@@ -1,0 +1,99 @@
+**After a year of development: Personal Project — Velora (E-Commerce)**
+
+I can say with certainty and confidence:  
+Today’s Velora consists of **296 files**, **115 folders**, and approximately **12,000–14,000 lines of hand-written code** (scaling to 35,000+ lines including package configurations and dependency lockfiles).
+
+### What I Have Achieved in a Year
+
+- Architected a modular Next.js frontend using a feature-based folder structure (`features/` containing localized hooks, services, and components), streamlining code maintenance and scalability across 7 core domains.
+- Designed a MongoDB/Mongoose database layer with a reusable BaseService query abstraction, eliminating redundant query code across 12 distinct backend services.
+- Implemented secure role-based access control (RBAC) on the backend via custom JWT extraction and authorization middleware, protecting sensitive endpoints for both Customers and Sellers.
+- Developed a dual-role workflow featuring a customer-facing marketplace (cart, checkout, product review system) and a dedicated Seller Panel (`app/seller`) with store onboarding and product management dashboards.
+- Integrated Stripe payments and automated webhook processing in the Express backend, ensuring secure checkout flows and real-time database state synchronization.
+- Optimized SEO indexability and metadata across the Next.js App Router, utilizing dynamic OpenGraph (`opengraph-image.js`), Twitter cards, robots, and automated sitemaps.
+- Created a centralized validation middleware architecture using schema-based validations across 10+ core models, preventing corrupt or malformed inputs from reaching the database.
+- Managed global client state (Auth, Basket, and User profile) using Redux Toolkit slices, ensuring predictable state transitions and eliminating prop-drilling across the Next.js App Router.
+- Engineered a custom API client wrapper with interceptors for header injection and token refreshing, facilitating clean, authenticated backend communication for the frontend app.
+- Established an automated testing suite using Jest, covering crucial integration scenarios such as auth, controller actions, mailer behaviors, and database connection setups.
+
+### A Demonstration of Velora’s Architecture
+
+Velora uses a clean, decoupled monorepo architecture separating a high-performance Next.js App Router Frontend from a robust Node.js/Express REST API Backend.
+
+**High-Level System Design**
+
+```mermaid
+graph TD
+subgraph Frontend [Next.js App Router]
+UI[React Components / Pages] <--> Hooks[Custom Hooks]
+Hooks <--> Redux[Redux Toolkit Store]
+Hooks <--> API_Client[API Client Wrapper client.js]
+end
+subgraph Backend [Express REST API]
+Router[Router Layer /routes] --> Mid[Middleware Layer]
+Mid --> Validation[Joi / Custom Validation]
+Mid --> Auth[JWT & RBAC Guards]
+Validation & Auth --> Controller[Controllers]
+Controller --> Service[Services / BaseService]
+Service --> Model[Mongoose Models]
+Model <--> MongoDB[(MongoDB Database)]
+end
+API_Client <-->|HTTP REST / JSON| Router
+```
+
+### How Things Are Handled
+
+**1. The Backend (Express REST API)**  
+The backend follows a strict layered controller-service-model pipeline to maintain a clean separation of concerns:
+
+- **Entry (Server.js)**: Boots the application, configures global middleware (CORS, body parsers, logging), connects to MongoDB (`database/MongoDB.js`), and mounts the API routes.
+- **Routing (`routes/versionOne/`)**: Maps paths to middleware chains (e.g., `/api/v1/products`).
+- **Middleware (`middleware/`)**: Automatically intercepts requests for rate-limiting, JWT signature extraction (token/verification), role-based checking (`auth/system/`), and Joi payload validation (`validation/`).
+- **Controllers (`controller/`)**: Act as the adapters. They extract parameters and payload details, call the service layer, and map the return data into HTTP status codes and JSON responses.
+- **Services (`services/`)**: Where all business logic lives (Stripe calculations, password hashing, mailer notifications). Database services inherit from a BaseService which acts as a reusable repository layer.
+- **Models (`model/`)**: Defines database collections, indexes, and Mongoose schemas.
+
+**2. The Frontend (Next.js 14)**  
+The frontend relies on a Feature-Folder design pattern to prevent layout coupling:
+
+- **Features (`src/app/features/`)**: All files are grouped under functional domains (e.g., auth, catalog, seller, order). Each domain packages its own localized UI components, state management hooks (e.g., `use-checkout-form.js`), API service triggers, and helpers.
+- **Global State (`redux/`)**: Shared client state (user login session, active basket, UI popup states) is managed using Redux Toolkit slices.
+- **API Client (`src/api/client.js`)**: A unified API interface layer configuring endpoint routing, custom headers injection, and handling standardized error interceptors.
+
+### End-to-End Control Flow Example: Creating a Product
+
+Here is the lifecycle of a typical request when a Seller adds a new product to their store:
+
+```mermaid
+sequenceDiagram
+autonumber
+actor Seller as Seller User
+participant Page as SellerProductForm.jsx
+participant Hook as use-seller-product-form.js
+participant API as Product_API.js
+participant Router as Post_products.js (Router)
+participant Auth as Seller.js (RBAC Middleware)
+participant Val as ProductValidation.js (Validation)
+participant Ctrl as ProductController.js
+participant Svc as ProductService.js
+participant DB as MongoDB (Mongoose Model)
+Seller->>Page: Fill form & click "Create"
+Page->>Hook: Submit handler triggered
+Hook->>API: Call createProduct(payload)
+API->>Router: POST /api/v1/products (with JWT Auth header)
+rect rgb(240, 240, 240)
+note right of Router: Backend Processing Pipeline
+Router->>Auth: Extract token & verify user is a Seller
+Auth->>Val: Check input payload (name, price, stock, description)
+Val->>Ctrl: Pass validated data
+Ctrl->>Svc: Call productService.createProduct()
+Svc->>DB: MongoDB insert query
+DB-->>Ctrl: Saved Product Document
+end
+Ctrl-->>API: HTTP 201 Created (JSON Response)
+API-->>Hook: Update state & show success toast
+Hook-->>Seller: Redirect to dashboard / show new product
+```
+
+One year of deliberate architecture, separation of concerns, and shipping features that actually work end-to-end.  
+Velora is the result.
