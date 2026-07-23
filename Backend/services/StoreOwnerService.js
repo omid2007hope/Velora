@@ -11,17 +11,22 @@ const logger = require('../utils/logger');
 const SALT_ROUNDS = 12;
 
 module.exports = new (class StoreOwnerService extends BaseService {
+  // ─── Private Helpers ────────────────────────────────────────────────────────
+
+  /** Generates a secure random hex token and its expiry date. */
   _generateToken(hoursValid = 24) {
     const token = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + hoursValid * 60 * 60 * 1000);
     return { token, expires };
   }
 
+  /** Builds a frontend deep-link for seller email actions (verify, reset). */
   _buildClientLink(pathname, token) {
     const { primaryClientUrl } = getEnvConfig();
     return `${primaryClientUrl.replace(/\/$/, '')}${pathname}?token=${token}&authView=seller`;
   }
 
+  /** Maps a raw Mongoose StoreOwner document to a safe public shape. */
   _mapStoreOwner(storeOwner) {
     return {
       _id: storeOwner._id,
@@ -31,15 +36,19 @@ module.exports = new (class StoreOwnerService extends BaseService {
     };
   }
 
-  async registerStoreOwner({ fullName, email, password }) {
-    const normalizedStoreOwner = {
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      password: await bcrypt.hash(password, SALT_ROUNDS),
-    };
+  // ─── Auth ────────────────────────────────────────────────────────────────────
 
+  /**
+   * Registers a new store owner (seller).
+   * - If the email already exists, returns the existing record (idempotent).
+   * - On success, sends a verification email (non-blocking).
+   */
+  async registerStoreOwner({ fullName, email, password }) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Check for existing account before hashing — avoids wasted bcrypt work.
     const existingStoreOwner = await this.model
-      .findOne({ email: normalizedStoreOwner.email })
+      .findOne({ email: normalizedEmail })
       .lean();
 
     if (existingStoreOwner) {
@@ -50,18 +59,20 @@ module.exports = new (class StoreOwnerService extends BaseService {
       };
     }
 
-    const savedStoreOwner = await this.createObject(normalizedStoreOwner);
-    let emailVerificationToken;
+    const savedStoreOwner = await this.createObject({
+      fullName: fullName.trim(),
+      email: normalizedEmail,
+      password: await bcrypt.hash(password, SALT_ROUNDS),
+    });
 
+    // Send verification email. Failure is non-fatal — account is still created.
+    let emailVerificationToken;
     try {
       const { token, expires } = this._generateToken(24);
 
       await this.update(
         { _id: savedStoreOwner._id },
-        {
-          emailVerificationToken: token,
-          emailVerificationExpires: expires,
-        },
+        { emailVerificationToken: token, emailVerificationExpires: expires },
       );
 
       const verificationLink = this._buildClientLink('/verify-email', token);
@@ -73,8 +84,8 @@ module.exports = new (class StoreOwnerService extends BaseService {
         html: `<p>Welcome to Velora!</p><p>Please confirm your seller email by clicking the link below:</p><p><a href="${verificationLink}">Verify email</a></p><p>This link expires in 24 hours.</p>`,
       });
 
-      emailVerificationToken =
-        process.env.NODE_ENV === 'production' ? undefined : token;
+      // Only expose the raw token in non-production (for testing/dev).
+      emailVerificationToken = process.env.NODE_ENV === 'production' ? undefined : token;
     } catch (_error) {
       emailVerificationToken = undefined;
     }
@@ -88,11 +99,14 @@ module.exports = new (class StoreOwnerService extends BaseService {
     };
   }
 
+  /**
+   * Authenticates a store owner by email and password.
+   * Returns { authenticated: false } for any credential mismatch
+   * to avoid leaking whether the email exists.
+   */
   async loginStoreOwner({ email, password }) {
     const storeOwner = await this.model
-      .findOne({
-        email: email.trim().toLowerCase(),
-      })
+      .findOne({ email: email.trim().toLowerCase() })
       .select('+password')
       .lean();
 
@@ -100,11 +114,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
       return { authenticated: false };
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      storeOwner.password,
-    );
-
+    const isPasswordValid = await bcrypt.compare(password, storeOwner.password);
     if (!isPasswordValid) {
       return { authenticated: false };
     }
@@ -113,32 +123,32 @@ module.exports = new (class StoreOwnerService extends BaseService {
       throw createHttpError(500, 'JWT_SECRET is not set');
     }
 
-    const tokenPayload = {
+    const base = {
       sub: storeOwner._id.toString(),
       email: storeOwner.email,
       role: 'seller',
-      tokenType: 'access',
     };
 
     return {
       authenticated: true,
       data: this._mapStoreOwner(storeOwner),
-      token: jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-        expiresIn: '15m',
-      }),
+      token: jwt.sign(
+        { ...base, tokenType: 'access' },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' },
+      ),
       refreshToken: jwt.sign(
-        {
-          sub: storeOwner._id.toString(),
-          email: storeOwner.email,
-          role: 'seller',
-          tokenType: 'refresh',
-        },
+        { ...base, tokenType: 'refresh' },
         process.env.JWT_REFRESH_SECRET,
         { expiresIn: '7d' },
       ),
     };
   }
 
+  /**
+   * Verifies a refresh token and issues a new short-lived access token.
+   * Throws 401 on any token problem (expired, wrong type, tampered).
+   */
   async refreshAccessToken(refreshToken) {
     if (!process.env.JWT_REFRESH_SECRET) {
       throw createHttpError(500, 'JWT_REFRESH_SECRET is not set');
@@ -147,21 +157,23 @@ module.exports = new (class StoreOwnerService extends BaseService {
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     if (payload.tokenType !== 'refresh') {
-      throw createHttpError(500, 'Invalid token type');
+      throw createHttpError(401, 'Invalid token type');
     }
 
     return jwt.sign(
-      {
-        sub: payload.sub,
-        email: payload.email,
-        role: payload.role,
-        tokenType: 'access',
-      },
+      { sub: payload.sub, email: payload.email, role: payload.role, tokenType: 'access' },
       process.env.JWT_SECRET,
       { expiresIn: '15m' },
     );
   }
 
+  // ─── Email Verification ──────────────────────────────────────────────────────
+
+  /**
+   * Sends (or re-sends) an email verification link.
+   * Returns { status: 'noop' } if email not found — avoids user enumeration.
+   * Returns { status: 'already-verified' } if already confirmed.
+   */
   async requestEmailVerification(email) {
     const storeOwner = await this.model.findOne({
       email: email.trim().toLowerCase(),
@@ -179,10 +191,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
 
     await this.update(
       { _id: storeOwner._id },
-      {
-        emailVerificationToken: token,
-        emailVerificationExpires: expires,
-      },
+      { emailVerificationToken: token, emailVerificationExpires: expires },
     );
 
     const verificationLink = this._buildClientLink('/verify-email', token);
@@ -209,6 +218,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
     };
   }
 
+  /** Confirms an email verification token and marks the account as verified. */
   async confirmEmailVerification(token) {
     if (!token) {
       return { ok: false, reason: 'missing-token' };
@@ -235,6 +245,13 @@ module.exports = new (class StoreOwnerService extends BaseService {
     return { ok: true, email: storeOwner.email };
   }
 
+  // ─── Password Reset ──────────────────────────────────────────────────────────
+
+  /**
+   * Initiates a password reset flow for a seller.
+   * Optionally pre-hashes `newPassword` as a pending hash so the reset
+   * link click alone is enough to apply it (no second form submission needed).
+   */
   async requestPasswordReset(email, newPassword) {
     const storeOwner = await this.model.findOne({
       email: email.trim().toLowerCase(),
@@ -244,7 +261,7 @@ module.exports = new (class StoreOwnerService extends BaseService {
       return { ok: true, status: 'noop' };
     }
 
-    const { token, expires } = this._generateToken(1);
+    const { token, expires } = this._generateToken(1); // 1-hour window
 
     const updates = {
       passwordResetToken: token,
@@ -280,6 +297,11 @@ module.exports = new (class StoreOwnerService extends BaseService {
     };
   }
 
+  /**
+   * Completes the password reset.
+   * Priority: if `newPassword` is provided inline it takes precedence over
+   * the pre-hashed `pendingPasswordHash` stored during requestPasswordReset.
+   */
   async confirmPasswordReset(token, newPassword) {
     if (!token) {
       return { ok: false, reason: 'missing-token' };
@@ -296,11 +318,10 @@ module.exports = new (class StoreOwnerService extends BaseService {
       return { ok: false, reason: 'invalid-or-expired' };
     }
 
-    let passwordHash = storeOwner.pendingPasswordHash;
-
-    if (newPassword) {
-      passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-    }
+    // Inline newPassword takes priority over the pre-stored pending hash.
+    const passwordHash = newPassword
+      ? await bcrypt.hash(newPassword, SALT_ROUNDS)
+      : storeOwner.pendingPasswordHash;
 
     if (!passwordHash) {
       return { ok: false, reason: 'invalid-or-expired' };
