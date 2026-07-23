@@ -1,45 +1,29 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const SellerSchema = new mongoose.Schema(
   {
-    storeOwnerName: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
       index: true,
-      minlength: 2,
-      maxlength: 120,
     },
 
-    storeOwnerEmailAddress: {
+    email: {
       type: String,
       required: true,
       unique: true,
+      index: true,
       trim: true,
       lowercase: true,
-      index: true,
     },
 
-    storeOwnerPasswordHash: {
+    password: {
       type: String,
+      required: true,
       select: false,
-    },
-
-    storeOwnerProvider: {
-      type: String,
-      trim: true,
-      lowercase: true,
-      enum: ["local", "google"],
-      default: "local",
-      index: true,
-    },
-
-    storeOwner: {
-      type: Boolean,
-      default: true,
-      index: true,
     },
 
     isEmailVerified: {
@@ -74,7 +58,7 @@ const SellerSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 );
 
-module.exports = mongoose.model("Seller", SellerSchema);
+module.exports = mongoose.model('Seller', SellerSchema);
