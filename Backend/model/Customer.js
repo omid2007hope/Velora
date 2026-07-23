@@ -1,17 +1,9 @@
 // © 2026 Omid Teimory. All rights reserved.
 // Signature: OmidTeimory-2026
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const CustomerSchema = new mongoose.Schema(
   {
-    customerId: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-      default: () => new mongoose.Types.ObjectId().toString(),
-    },
-
     fullName: {
       type: String,
       required: true,
@@ -66,7 +58,7 @@ const CustomerSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 );
 
-module.exports = mongoose.model("Customer", CustomerSchema);
+module.exports = mongoose.model('Customer', CustomerSchema);
