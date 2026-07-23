@@ -28,10 +28,15 @@ module.exports = new (class StoreOwnerService extends BaseService {
 
   /** Maps a raw Mongoose StoreOwner document to a safe public shape. */
   _mapStoreOwner(storeOwner) {
+    if (!storeOwner) return null;
+    const name = storeOwner.fullName || storeOwner.storeOwnerName || '';
+    const email = storeOwner.email || storeOwner.storeOwnerEmailAddress || '';
     return {
       _id: storeOwner._id,
-      fullName: storeOwner.fullName,
-      email: storeOwner.email,
+      fullName: name,
+      email,
+      storeOwnerName: name,
+      storeOwnerEmailAddress: email,
       isEmailVerified: !!storeOwner.isEmailVerified,
     };
   }
@@ -43,12 +48,18 @@ module.exports = new (class StoreOwnerService extends BaseService {
    * - If the email already exists, returns the existing record (idempotent).
    * - On success, sends a verification email (non-blocking).
    */
-  async registerStoreOwner({ fullName, email, password }) {
-    const normalizedEmail = email.trim().toLowerCase();
+  async registerStoreOwner(payload = {}) {
+    const fullName = (payload.fullName || payload.storeOwnerName || '').trim();
+    const email = (payload.email || payload.storeOwnerEmailAddress || '').trim().toLowerCase();
+    const password = payload.password || payload.storeOwnerPassword;
+
+    if (!email || !password) {
+      throw createHttpError(400, 'Email and password are required');
+    }
 
     // Check for existing account before hashing — avoids wasted bcrypt work.
     const existingStoreOwner = await this.model
-      .findOne({ email: normalizedEmail })
+      .findOne({ email })
       .lean();
 
     if (existingStoreOwner) {
@@ -60,8 +71,8 @@ module.exports = new (class StoreOwnerService extends BaseService {
     }
 
     const savedStoreOwner = await this.createObject({
-      fullName: fullName.trim(),
-      email: normalizedEmail,
+      fullName,
+      email,
       password: await bcrypt.hash(password, SALT_ROUNDS),
     });
 
@@ -85,7 +96,8 @@ module.exports = new (class StoreOwnerService extends BaseService {
       });
 
       // Only expose the raw token in non-production (for testing/dev).
-      emailVerificationToken = process.env.NODE_ENV === 'production' ? undefined : token;
+      emailVerificationToken =
+        process.env.NODE_ENV === 'production' ? undefined : token;
     } catch (_error) {
       emailVerificationToken = undefined;
     }
@@ -104,9 +116,16 @@ module.exports = new (class StoreOwnerService extends BaseService {
    * Returns { authenticated: false } for any credential mismatch
    * to avoid leaking whether the email exists.
    */
-  async loginStoreOwner({ email, password }) {
+  async loginStoreOwner(payload = {}) {
+    const email = (payload.email || payload.storeOwnerEmailAddress || '').trim().toLowerCase();
+    const password = payload.password || payload.storeOwnerPassword;
+
+    if (!email || !password) {
+      return { authenticated: false };
+    }
+
     const storeOwner = await this.model
-      .findOne({ email: email.trim().toLowerCase() })
+      .findOne({ email })
       .select('+password')
       .lean();
 
@@ -161,7 +180,12 @@ module.exports = new (class StoreOwnerService extends BaseService {
     }
 
     return jwt.sign(
-      { sub: payload.sub, email: payload.email, role: payload.role, tokenType: 'access' },
+      {
+        sub: payload.sub,
+        email: payload.email,
+        role: payload.role,
+        tokenType: 'access',
+      },
       process.env.JWT_SECRET,
       { expiresIn: '15m' },
     );
@@ -174,10 +198,15 @@ module.exports = new (class StoreOwnerService extends BaseService {
    * Returns { status: 'noop' } if email not found — avoids user enumeration.
    * Returns { status: 'already-verified' } if already confirmed.
    */
-  async requestEmailVerification(email) {
-    const storeOwner = await this.model.findOne({
-      email: email.trim().toLowerCase(),
-    });
+  async requestEmailVerification(emailInput) {
+    const rawEmail = typeof emailInput === 'object' ? (emailInput?.email || emailInput?.storeOwnerEmailAddress) : emailInput;
+    const email = (rawEmail || '').trim().toLowerCase();
+
+    if (!email) {
+      return { ok: true, status: 'noop' };
+    }
+
+    const storeOwner = await this.model.findOne({ email });
 
     if (!storeOwner) {
       return { ok: true, status: 'noop' };
@@ -252,10 +281,15 @@ module.exports = new (class StoreOwnerService extends BaseService {
    * Optionally pre-hashes `newPassword` as a pending hash so the reset
    * link click alone is enough to apply it (no second form submission needed).
    */
-  async requestPasswordReset(email, newPassword) {
-    const storeOwner = await this.model.findOne({
-      email: email.trim().toLowerCase(),
-    });
+  async requestPasswordReset(emailInput, newPassword) {
+    const rawEmail = typeof emailInput === 'object' ? (emailInput?.email || emailInput?.storeOwnerEmailAddress) : emailInput;
+    const email = (rawEmail || '').trim().toLowerCase();
+
+    if (!email) {
+      return { ok: true, status: 'noop' };
+    }
+
+    const storeOwner = await this.model.findOne({ email });
 
     if (!storeOwner) {
       return { ok: true, status: 'noop' };

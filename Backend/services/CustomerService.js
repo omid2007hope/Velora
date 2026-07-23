@@ -44,8 +44,18 @@ module.exports = new (class CustomerService extends BaseService {
    * - If the email already exists, returns the existing record (idempotent).
    * - On success, sends a verification email (non-blocking).
    */
-  async registerCustomer({ fullName, email, password, authView }) {
-    const normalizedEmail = email.trim().toLowerCase();
+  async registerCustomer(payload = {}) {
+    const rawFullName = payload.fullName || payload.name || '';
+    const rawEmail = payload.email || '';
+    const password = payload.password;
+    const authView = payload.authView;
+
+    if (!rawEmail || !password) {
+      throw createHttpError(400, 'Email and password are required');
+    }
+
+    const normalizedEmail = rawEmail.trim().toLowerCase();
+    const fullName = rawFullName.trim();
 
     // Check for existing account before hashing — avoids wasted bcrypt work.
     const existingCustomer = await this.model
@@ -61,7 +71,7 @@ module.exports = new (class CustomerService extends BaseService {
     }
 
     const savedCustomer = await this.createObject({
-      fullName: fullName.trim(),
+      fullName,
       email: normalizedEmail,
       password: await bcrypt.hash(password, SALT_ROUNDS),
     });
@@ -105,9 +115,16 @@ module.exports = new (class CustomerService extends BaseService {
    * Returns { authenticated: false } for any credential mismatch
    * to avoid leaking whether the email exists.
    */
-  async loginCustomer({ email, password }) {
+  async loginCustomer(payload = {}) {
+    const rawEmail = payload.email || '';
+    const password = payload.password;
+
+    if (!rawEmail || !password) {
+      return { authenticated: false };
+    }
+
     const customer = await this.model
-      .findOne({ email: email.trim().toLowerCase() })
+      .findOne({ email: rawEmail.trim().toLowerCase() })
       .select('+password')
       .lean();
 
@@ -171,10 +188,15 @@ module.exports = new (class CustomerService extends BaseService {
    * Returns { status: 'noop' } if email not found — avoids user enumeration.
    * Returns { status: 'already-verified' } if already confirmed.
    */
-  async requestEmailVerification(email, authView) {
-    const customer = await this.model.findOne({
-      email: email.trim().toLowerCase(),
-    });
+  async requestEmailVerification(emailInput, authView) {
+    const rawEmail = typeof emailInput === 'object' ? (emailInput?.email) : emailInput;
+    const email = (rawEmail || '').trim().toLowerCase();
+
+    if (!email) {
+      return { ok: true, status: 'noop' };
+    }
+
+    const customer = await this.model.findOne({ email });
 
     if (!customer) {
       return { ok: true, status: 'noop' };
@@ -249,10 +271,15 @@ module.exports = new (class CustomerService extends BaseService {
    * Optionally pre-hashes `newPassword` as a pending hash so the reset
    * link click alone is enough to apply it (no second form submission needed).
    */
-  async requestPasswordReset(email, newPassword, authView) {
-    const customer = await this.model.findOne({
-      email: email.trim().toLowerCase(),
-    });
+  async requestPasswordReset(emailInput, newPassword, authView) {
+    const rawEmail = typeof emailInput === 'object' ? (emailInput?.email) : emailInput;
+    const email = (rawEmail || '').trim().toLowerCase();
+
+    if (!email) {
+      return { ok: true, status: 'noop' };
+    }
+
+    const customer = await this.model.findOne({ email });
 
     if (!customer) {
       return { ok: true, status: 'noop' };
