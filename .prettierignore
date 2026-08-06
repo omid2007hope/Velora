@@ -12,3 +12,13 @@ pnpm-lock.yaml
 # environment and logs
 .env*
 *.log
+
+# C/C++/C# files should be handled strictly by clang-format
+*.c
+*.cpp
+*.cxx
+*.cc
+*.h
+*.hpp
+*.hxx
+*.cs

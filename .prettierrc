@@ -6,21 +6,21 @@
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": false,
   "jsxSingleQuote": false,
-  "printWidth": 80,
+  "printWidth": 100,
   "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "requirePragma": false,
   "semi": true,
   "singleQuote": true,
-  "tabWidth": 2,
+  "tabWidth": 8,
   "trailingComma": "all",
-  "useTabs": false,
+  "useTabs": true,
   "vueIndentScriptAndStyle": false,
   "overrides": [
     {
       "files": "*.json",
       "options": {
-        "printWidth": 120,
+        "printWidth": 100,
         "trailingComma": "none",
         "singleQuote": false
       }
@@ -29,21 +29,22 @@
       "files": "*.yaml",
       "options": {
         "tabWidth": 2,
+        "useTabs": false,
         "singleQuote": true,
-        "printWidth": 80
+        "printWidth": 100
       }
     },
     {
       "files": "*.md",
       "options": {
-        "printWidth": 80,
+        "printWidth": 100,
         "proseWrap": "always"
       }
     },
     {
       "files": "*.html",
       "options": {
-        "printWidth": 120
+        "printWidth": 100
       }
     },
     {
