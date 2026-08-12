@@ -1,7 +1,7 @@
 **After a year of development: Personal Project — Velora (E-Commerce)**
 
 I can say with certainty and confidence:  
-Today’s Velora consists of **296 files**, **115 folders**, and approximately **12,000–14,000 lines of hand-written code** (scaling to 35,000+ lines including package configurations and dependency lockfiles).
+Today’s Velora consists of **296 files**, **115 folders**, and approximately **40,000–45,000 lines of hand-written code**.
 
 ### What I Have Achieved in a Year
 
