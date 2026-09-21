@@ -1,241 +1,190 @@
-Listed directory routes
-Listed directory controller
-Listed directory services
-Listed directory model
-Listed directory middleware
-Listed directory validation
-Listed directory versionOne
-Listed directory utils
-Listed directory database
-Listed directory config
-Listed directory BaseService
-Listed directory app
-Viewed Server.js:1-79
-Viewed env.js:1-63
-Viewed stripeClient.js:1-52
-Viewed logger.js:1-28
-Viewed MongoDB.js:1-24
-Viewed errorHandler.js:1-67
-Viewed index.js:1-149
-Listed directory auth
-Listed directory system
-Listed directory token
-Viewed Customer.js:1-19
-Viewed Seller.js:1-19
-Viewed Extraction.js:1-16
-Listed directory verification
-Viewed Mandatory.js:1-28
-Viewed Access.js:1-19
-Viewed rateLimit.js:1-36
-Listed directory validation
-Viewed common.js:1-42
-Viewed Product.js:1-126
-Viewed Order.js:1-151
-Viewed Cart.js:1-96
-Viewed Payment.js:1-52
-Viewed OrderService.js:1-103
-Viewed CartService.js:1-133
-Viewed WebhookController.js:1-64
-Viewed index.js:1-15
-Listed directory webhook
-Viewed index.js:1-35
-Viewed index.js:1-9
-Viewed Post_webhook.js:1-10
-Viewed ProductService.js:1-128
-Viewed PaymentController.js:1-20
-Viewed PaymentService.js:1-69
-Viewed PaymentIntentService.js:1-48
-Viewed OrderController.js:1-60
-Viewed CustomerController.js:1-157
-Viewed StoreOwnerController.js:1-153
-Listed directory checkout
-Viewed Patch_checkout.js:1-21
-Viewed Post_checkout.js:1-12
-Viewed OrderValidation.js:1-9
-Viewed index.js:1-24
-Searched for "orderStatusSchema"
-Viewed customerValidation.js:65-92
-Viewed customerValidation.js:50-92
-Searched for "order"
-Listed directory seller
-Viewed page.jsx:1-90
-Viewed CustomerService.js:1-100
-Viewed CustomerService.js:101-200
-Searched for "role"
-Searched for "role"
-Searched for "requireCustomer"
-Viewed Post_reviews.js:1-23
-Viewed ReviewController.js:1-24
-Viewed ReviewService.js:1-21
-Viewed Review.js:1-43
-Viewed StoreService.js:1-113
-Viewed Store.js:1-66
-Viewed StoreController.js:1-53
-Viewed ProductController.js:1-71
-Listed directory products
-Viewed Patch_product.js:1-22
-Viewed Post_products.js:1-12
-Viewed Delete_product.js:1-12
-Listed directory features
-Listed directory api
-Viewed client.js:1-134
-Viewed index.js:1-9
-Viewed index.js:1-9
-Viewed Post_customer.js:1-59
-Viewed Post_storeOwner.js:1-55
-Listed directory order
-Listed directory hooks
-Listed directory services
-Viewed use-checkout-form.js:1-151
-Viewed page.jsx:1-31
-Listed directory account
-Viewed page.jsx:1-100
-Searched for "AccountShell"
-Searched for "order"
-Viewed index.js:1-13
-Viewed BasketSlice.js:1-76
-Searched for "cart"
-Listed directory products
-Viewed page.jsx:1-28
-Viewed SellerProductForm.jsx:1-100
-Viewed SellerProductForm.jsx:101-155
-Viewed next.config.mjs:1-85
-Listed directory products
-Viewed page.jsx:1-105
-Viewed ProductDetailPage.jsx:1-60
+# Velora Project Roadmap & Actionable TODOs
 
-### 1. Findings
-
-#### A. Bugs & Critical Safety Flaws (High Effect / Priority 1)
-
-- **BOLA / IDOR on Products (Broken Object-Level Authorization):**
-     - In [`ProductController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/ProductController.js#L37-L61) and [`ProductService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/ProductService.js#L84-L126):
-          - `patchProductByid` never checks if the authenticated seller owns the product or store (`req.user.id` is not passed to the service). **Any seller can edit any other seller's product.**
-          - `deleteProductById` accepts any `productId` and performs a soft delete without validating that the seller owns that product or its store. **Any seller can delete another store's listings.**
-          - `createProduct` allows any seller to provide any arbitrary `storeId` in the request body without checking ownership.
-- **Order Status Privilege Escalation:**
-     - In [`Patch_checkout.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/checkout/Patch_checkout.js#L12-L19): `PATCH /api/v1/order/:id` only uses `requireAuth`. Any authenticated user (including customers) can submit `{ "orderStatus": "delivered" }` or `"shipped"` to overwrite their order status.
-- **Missing JWT `role: "customer"` in Login:**
-     - In [`CustomerService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CustomerService.js#L152-L165): Customer access tokens are generated without the `role: "customer"` claim (`StoreOwnerService.js` includes `role: 'seller'`). Consequently, [`requireCustomer`](file:///c:/Users/Omid/X/Code/Velora/Backend/middleware/auth/system/Customer.js#L10) fails for all customer sessions, which forced developers to comment out `requireCustomer` in [`Post_reviews.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/reviews/Post_reviews.js#L4).
-- **Phantom Model Reference (`ref: "User"`):**
-     - In [`Order.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Order.js#L59) and [`Cart.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Cart.js#L74): `userId` references `"User"`. There is no `User` model in the system (they are `Customer` and `storeOwner`). Any call to `.populate("userId")` throws a fatal `MissingSchemaError`.
-- **Broken Pagination Item Count:**
-     - In [`BaseService/index.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/BaseService/index.js#L45-L57): `findAllWithPagination` calculates `total` using `this.model.countDocuments(filter)` instead of `this.model.countDocuments(activeFilter)`. Soft-deleted documents are counted, corrupting page counts and pagination metadata.
-- **Next.js `<Image />` Runtime Crash on External URLs:**
-     - In [`next.config.mjs`](file:///c:/Users/Omid/X/Code/Velora/Frontend/next.config.mjs#L50-L61): Only `images.augustman.com` and `i.pinimg.com` are whitelisted in `remotePatterns`. Because [`SellerProductForm.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/seller/components/product/SellerProductForm.jsx#L103) allows sellers to input any raw URL, any product created with an unlisted image domain instantly crashes the catalog and product detail pages at runtime.
-- **User Enumeration & Data Leakage on Register:**
-     - In [`CustomerService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CustomerService.js#L61-L71): Registering with an existing email returns HTTP `201 Created` with `existed: true` and the customer's `_id`, `fullName`, and verification status, allowing attackers to harvest user accounts.
-- **Hardcoded Public DNS in Server Entry:**
-     - In [`Server.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/Server.js#L18-L20): `dns.setServers(["1.1.1.1", "8.8.8.8"])` forcibly overrides runtime resolution, breaking deployments in private clouds, corporate networks, Docker setups, or environments blocking external UDP port 53.
+> **Generated from comprehensive line-by-line audit.**  
+> Priority scale: `[P0] Critical / Security` > `[P1] Architecture & Core Flow` > `[P2] Commercial Feature Gaps` > `[P3] DX & Infrastructure`
 
 ---
 
-#### B. Wiring & Import Issues
+## 🔴 Phase 1: Security & Critical Vulnerabilities [P0]
 
-- **Dead / Unwired Backend Cart API:**
-     - The backend implements a full cart pipeline ([`CartController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/CartController.js), [`CartService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CartService.js), [`Cart.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Cart.js)), but the frontend never calls any of these endpoints. The frontend relies solely on `localStorage` via [`BasketSlice.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/redux/slice/BasketSlice.js). There is zero server-side cart persistence across devices.
-- **Incomplete Order Client API:**
-     - [`Order_API.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/api/order/Order_API.js) only defines `createOrder`. It has no bindings for `listOrders` or `getOrderById`.
-- **Missing Frontend Payment Handshake:**
-     - The frontend has no Stripe SDK (`@stripe/stripe-js`, `@stripe/react-stripe-js`). When a user submits an order in [`use-checkout-form.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/order/hooks/use-checkout-form.js#L118-L128), it triggers `createOrder`, immediately clears the cart, and routes back to `/order` (the empty cart). The payment flow is never collected from the customer.
+- [ ] **Fix Broken Object-Level Authorization (BOLA/IDOR) on Products**
+  - **Issue:** Any seller can modify or delete any product on the platform or create listings under another seller's store.
+  - **Files:**
+    - [`ProductController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/ProductController.js#L31-L61)
+    - [`ProductService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/ProductService.js#L57-L126)
+  - **Action:**
+    - In `createProduct`: Validate that `req.body.storeId` is owned by `req.user.id` (`ownerOfStore`).
+    - In `patchProductByid`: Pass `req.user.id` and ensure the target product's store belongs to the requesting seller.
+    - In `deleteProductById`: Query both `_id: productId` and verify store ownership before soft deleting.
 
----
+- [ ] **Prevent Privilege Escalation on Order Status**
+  - **Issue:** Any authenticated customer can submit `PATCH /api/v1/order/:id` with `{ "orderStatus": "delivered" }` to mark their own orders delivered or shipped.
+  - **Files:**
+    - [`Patch_checkout.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/checkout/Patch_checkout.js#L12-L18)
+    - [`OrderController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/OrderController.js#L42-L53)
+  - **Action:**
+    - Restrict customer status updates strictly to `"cancelled"` (and only when payment/order is still pending).
+    - Status transitions like `"shipped"` and `"delivered"` must require seller or admin credentials.
 
-#### C. Duplication & Inefficiencies
+- [ ] **Inject `role: "customer"` into Customer JWT & Restore `requireCustomer`**
+  - **Issue:** Customer login issues tokens without `role: "customer"`, causing [`requireCustomer`](file:///c:/Users/Omid/X/Code/Velora/Backend/middleware/auth/system/Customer.js) to fail and forcing routes to disable role checks.
+  - **Files:**
+    - [`CustomerService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CustomerService.js#L152-L165)
+    - [`Post_reviews.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/reviews/Post_reviews.js#L4-L16)
+  - **Action:**
+    - Add `role: 'customer'` to JWT signing payload in `CustomerService.loginCustomer`.
+    - Un-comment and restore `requireCustomer` guard in `Post_reviews.js` and other customer-only endpoints.
 
-- **SSR Data Redundancy on Product Details:**
-     - In [`ProductDetailRoute`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/products/%5Bid%5D/page.jsx#L69-L104), the server fetches `product` and `reviews` for JSON-LD and SEO, but then renders `<ProductDetailClientPage productId={productId} />` without passing initial data. The client immediately triggers duplicate API calls in `useEffect`, incurring double latency.
-- **N+1 Queries in Tree Construction:**
-     - [`BaseService._buildTree`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/BaseService/index.js#L9-L19) executes recursive database queries per child node instead of using a single aggregation pipeline (`$graphLookup`) or in-memory map.
+- [ ] **Fix Ghost Model Reference (`ref: "User"`)**
+  - **Issue:** `Order.js` and `Cart.js` set `ref: "User"`, but no `User` model exists (models are `Customer` and `storeOwner`). Calling `.populate("userId")` causes a fatal `MissingSchemaError`.
+  - **Files:**
+    - [`Order.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Order.js#L59)
+    - [`Cart.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Cart.js#L74)
+  - **Action:**
+    - Update `ref: "User"` to `ref: "Customer"`.
 
----
+- [ ] **Fix Soft-Delete Accounting in BaseService Pagination**
+  - **Issue:** `countDocuments(filter)` counts soft-deleted documents, returning inaccurate page and total counts.
+  - **Files:**
+    - [`BaseService/index.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/BaseService/index.js#L45-L57)
+  - **Action:**
+    - Change `this.model.countDocuments(filter)` to `this.model.countDocuments(activeFilter)`.
 
-#### D. Architecture & Domain Gaps (What is Missing for a True SaaS Marketplace)
+- [ ] **Fix Next.js `<Image />` Runtime Crash on External Hostnames**
+  - **Issue:** `next.config.mjs` only allows two domains. Sellers pasting unsanctioned image URLs crash the frontend product pages.
+  - **Files:**
+    - [`next.config.mjs`](file:///c:/Users/Omid/X/Code/Velora/Frontend/next.config.mjs#L50-L61)
+  - **Action:**
+    - Configure broader `remotePatterns` (or wildcard HTTPS / Cloudinary / S3 bucket) and implement graceful fallback images in `resolveProductImageSrc`.
 
-1. **Multi-Seller Order Routing & Payouts (Critical):**
-      - [`OrderItemSchema`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Order.js#L5-L53) does not store `storeId` or `sellerId`.
-      - Sellers cannot view, manage, or fulfill orders that contain their items.
-      - There is no seller wallet, commission deduction, or Stripe Connect automated payout system.
-2. **Inventory & Stock Tracking:**
-      - Products lack an `inventory` / `stockCount` field. Items can be bought infinitely regardless of availability. There is no stock reservation at checkout.
-3. **Customer Order History UI:**
-      - No `/account/orders` route exists in the frontend. Customers cannot track or review their purchases after completing checkout.
-4. **Media Storage Pipeline:**
-      - No file upload handling (S3, Cloudflare R2, Cloudinary). Sellers are forced to copy and paste direct image URLs.
-5. **Review Protection & Aggregate Ratings:**
-      - No verified purchase verification before leaving reviews.
-      - Missing compound index `{ productId: 1, userId: 1 }` to prevent spam.
-      - `Product` does not denormalize `averageRating` or `reviewCount`, requiring runtime calculations.
-6. **Platform Administration (Super Admin):**
-      - No admin tier to approve/reject sellers, review disputes, or moderate listings.
+- [ ] **Prevent Account Enumeration on Registration**
+  - **Issue:** `POST /customers/register` returns `201 Created` with full user profile when an email already exists.
+  - **Files:**
+    - [`CustomerService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CustomerService.js#L61-L71)
+  - **Action:**
+    - Return a generic response or throw a standardized 409 error without leaking user ID or verification status.
 
----
-
-### 2. Prioritized Roadmap of Missing Components
-
-#### High Priority (Safety, Data Integrity & Core Workflow)
-
-1. **Enforce Authorization Checks (Fix BOLA/IDOR):**
-      - Verify store ownership in `ProductService` before allowing `createProduct`, `patchProductByid`, or `deleteProductById`.
-      - Restrict `PATCH /api/v1/order/:id` so customers can only cancel pending orders, while status transitions (`shipped`, `delivered`) require seller/admin roles.
-2. **Inject Role in Customer JWT:**
-      - Add `role: "customer"` to `CustomerService.loginCustomer` and restore `requireCustomer` in routes.
-3. **Correct Mongoose Model References:**
-      - Change `ref: "User"` in `Order.js` and `Cart.js` to `ref: "Customer"`.
-4. **Build the Customer Order History UI:**
-      - Add `/account/orders` and wire `listOrdersByUser` in `Order_API.js`.
-5. **Implement Real Client-Side Stripe Payment:**
-      - Integrate Stripe Elements in `CheckoutStep.jsx` to confirm the `PaymentIntent.clientSecret` before clearing the cart and marking the order as confirmed.
-6. **Store Association on Order Items:**
-      - Add `storeId` to `OrderItemSchema` and build `listOrdersBySeller` so store owners can view and fulfill their sales.
-7. **Fix BaseService Pagination Filter:**
-      - Pass `activeFilter` into `this.model.countDocuments`.
-
-#### Medium Priority (Commercial Features & Scalability)
-
-8. **Inventory / Stock Engine:**
-      - Add `stock` to `ProductSchema` with atomic decrement operations (`$inc: { stock: -qty }`, check `$gte: qty`) during checkout.
-9. **Direct Image Uploads:**
-      - Implement a signed URL service or multer upload endpoint for seller product media.
-10. **Bridge Cart to Backend:**
-       - Synchronize Redux cart with the backend `/server/cart` endpoints on user login for cross-device support.
-11. **Review Spam Prevention:**
-       - Add unique index on `{ productId: 1, userId: 1 }` in `Review.js` and ensure user has completed an order containing the product.
-12. **Next.js SSR Hydration Optimization:**
-       - Pass initial product data from server route to `ProductDetailClientPage` to avoid double fetches.
-
-#### Low Priority (DX & Infrastructure)
-
-13. **Remove DNS Hardcoding:** Let Node inherit host DNS in `Server.js`.
-14. **TypeScript Migration:** Introduce compile-time type safety across both apps.
-15. **Docker Compose:** Create root-level container orchestration for Next.js, Express, and MongoDB.
-16. **Index Pruning:** Remove individual btree indexes on arbitrary text fields in `Store.js`.
+- [ ] **Remove Hardcoded DNS in Server Bootstrap**
+  - **Issue:** `dns.setServers(["1.1.1.1", "8.8.8.8"])` breaks containerized/private cloud networking.
+  - **Files:**
+    - [`Server.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/Server.js#L18-L20)
+  - **Action:**
+    - Remove hardcoded DNS override or gate behind an explicit dev environment flag.
 
 ---
 
-### 3. Files Added / Changed / Removed
+## 🟠 Phase 2: Core E-Commerce Flow & Wiring [P1]
 
-- _No files were modified during this inspection._
+- [ ] **Integrate Real Frontend Stripe Payment Collection**
+  - **Issue:** Checkout currently creates an order, clears the basket, and redirects without collecting credit card details.
+  - **Files:**
+    - [`package.json`](file:///c:/Users/Omid/X/Code/Velora/Frontend/package.json)
+    - [`use-checkout-form.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/order/hooks/use-checkout-form.js#L118-L128)
+    - [`CheckoutStep.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/order/components/CheckoutStep.jsx)
+  - **Action:**
+    - Install `@stripe/stripe-js` and `@stripe/react-stripe-js`.
+    - Render Stripe `PaymentElement` in checkout to confirm the `clientSecret` returned by `createOrder`.
+    - Clear basket only after payment confirmation succeeds.
+
+- [ ] **Build Customer Order History UI (`/account/orders`)**
+  - **Issue:** Backend has order listing, but frontend has no order view, receipt page, or tracking UI.
+  - **Files:**
+    - [`Order_API.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/api/order/Order_API.js)
+    - [`AccountShell.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/components/account/AccountShell.jsx)
+  - **Action:**
+    - Export `listOrders()` and `getOrderById(id)` in `Order_API.js`.
+    - Create `src/app/account/orders/page.jsx` with order cards, tracking statuses, item summaries, and receipts.
+
+- [ ] **Wire Frontend Basket with Backend Cart API**
+  - **Issue:** Backend cart service is completely unused; basket is only in `localStorage`.
+  - **Files:**
+    - [`Cart_API.js` (NEW)](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/api/cart/Cart_API.js)
+    - [`BasketSlice.js`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/redux/slice/BasketSlice.js)
+  - **Action:**
+    - Sync cart items with `POST /server/cart/items` on user login to enable cross-device shopping persistence.
+
+- [ ] **Pass SSR Product Data to Avoid Redundant Fetching**
+  - **Issue:** Server fetches product & reviews for SEO, then renders `<ProductDetailClientPage>` which re-fetches the identical data on client mount.
+  - **Files:**
+    - [`products/[id]/page.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/products/%5Bid%5D/page.jsx#L101)
+    - [`ProductDetailPage.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/product/ProductDetailPage.jsx)
+  - **Action:**
+    - Pass `initialProduct={product}` and `initialReviews={reviews}` props from the Server Component to the Client Component.
 
 ---
 
-### 4. Test / Build / Lint Results
+## 🟡 Phase 3: SaaS Multi-Seller Marketplace Engine [P2]
 
-- Static code analysis performed line-by-line across:
-     - Backend: Entry, middleware, routes, controllers, services, validation schemas, and database models.
-     - Frontend: Routing, API clients, Redux slices, forms, and feature components.
+- [ ] **Multi-Seller Order Routing & Line-Item Stores**
+  - **Issue:** Orders do not record which seller/store owns each ordered item; sellers cannot see their sales.
+  - **Files:**
+    - [`Order.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Order.js#L5-L53)
+    - [`OrderService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/OrderService.js)
+  - **Action:**
+    - Add `storeId` and `sellerId` to `OrderItemSchema`.
+    - Implement `listOrdersBySeller(sellerId)` query in `OrderService`.
+    - Build seller order management dashboard in `/seller/orders`.
+
+- [ ] **Inventory & Stock Management**
+  - **Issue:** Products have no stock limits; customers can order infinite items.
+  - **Files:**
+    - [`Product.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Product.js)
+    - [`OrderService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/OrderService.js#L55-L71)
+  - **Action:**
+    - Add `stock: { type: Number, default: 0, min: 0 }` to `ProductSchema`.
+    - Atomically check and decrement stock during order creation with MongoDB `$inc` and `$gte`.
+
+- [ ] **Media Upload Service (S3 / Cloudinary / R2)**
+  - **Issue:** Sellers must manually input external image URLs.
+  - **Files:**
+    - [`SellerProductForm.jsx`](file:///c:/Users/Omid/X/Code/Velora/Frontend/src/app/features/seller/components/product/SellerProductForm.jsx)
+  - **Action:**
+    - Implement image file upload handler with file validation and cloud storage upload.
+
+- [ ] **Review Integrity & Product Rating Denormalization**
+  - **Issue:** Anyone with a token can spam unlimited reviews without purchasing.
+  - **Files:**
+    - [`Review.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Review.js)
+    - [`ReviewService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/ReviewService.js)
+    - [`Product.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Product.js)
+  - **Action:**
+    - Add compound unique index `{ productId: 1, userId: 1 }` in `Review.js`.
+    - Verify customer has a completed order containing `productId` before accepting review.
+    - Denormalize `ratingAverage` and `reviewCount` onto `Product` document on each review write.
 
 ---
 
-### 5. Risks & Intentionally Deferred Items
+## 🟢 Phase 4: Production Hardening, Testing & DevOps [P3]
 
-- **Deferred Code Changes:** As directed by the workflow directive, no code modifications were applied during the inspection phase to allow you to review and prioritize the findings.
+- [ ] **Automate CI/CD Pipelines**
+  - **Files:**
+    - [`.github/workflows/ci.yml`](file:///c:/Users/Omid/X/Code/Velora/.github/workflows/ci.yml)
+  - **Action:**
+    - Change trigger from manual `workflow_dispatch` to `on: [push, pull_request]`.
+    - Add frontend build step (`npm run build`) in CI.
 
----
+- [ ] **Frontend Testing Suite**
+  - **Files:**
+    - [`package.json`](file:///c:/Users/Omid/X/Code/Velora/Frontend/package.json)
+  - **Action:**
+    - Setup Vitest + React Testing Library for cart, checkout, and auth flows.
 
-### 6. Next Safe Improvements
+- [ ] **TypeScript Migration Plan**
+  - **Action:**
+    - Progressively adopt TypeScript starting with shared Zod schemas and API interfaces.
 
-1. Fix the authorization vulnerability in `ProductService.js` and `OrderController.js`.
-2. Add `role: "customer"` to `CustomerService.js` token generation.
-3. Fix the `ref: "User"` bug in `Order.js` and `Cart.js`.
-4. Connect frontend checkout to actual Stripe payment collection.
+- [ ] **Containerization (Docker)**
+  - **Action:**
+    - Add `Dockerfile` for Backend and Frontend, and `docker-compose.yml` for unified local development (with MongoDB).
+
+- [ ] **Structured Logging & Error APM**
+  - **Files:**
+    - [`logger.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/utils/logger.js)
+  - **Action:**
+    - Replace console logger with Pino/Winston for structured JSON logging and integrate Sentry for crash monitoring.
+
+- [ ] **Prune Wasteful Database Indexes**
+  - **Files:**
+    - [`Store.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/model/Store.js)
+  - **Action:**
+    - Remove individual btree indexes on arbitrary text fields like `storeDescription` and `storeAddress`.
