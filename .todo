@@ -18,7 +18,7 @@
     - In `deleteProductById`: Query both `_id: productId` and verify store ownership before soft deleting.
 
 - [ ] **Prevent Privilege Escalation on Order Status**
-  - **Issue:** Any authenticated customer can submit `PATCH /api/v1/order/:id` with `{ "orderStatus": "delivered" }` to mark their own orders delivered or shipped.
+  - **Issue:** Any authenticated customer can submit `PATCH /server/checkout/order/:id` with `{ "orderStatus": "delivered" }` to mark their own orders delivered or shipped.
   - **Files:**
     - [`Patch_checkout.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/checkout/Patch_checkout.js#L12-L18)
     - [`OrderController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/OrderController.js#L42-L53)
@@ -49,13 +49,6 @@
     - [`BaseService/index.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/BaseService/index.js#L45-L57)
   - **Action:**
     - Change `this.model.countDocuments(filter)` to `this.model.countDocuments(activeFilter)`.
-
-- [ ] **Fix Next.js `<Image />` Runtime Crash on External Hostnames**
-  - **Issue:** `next.config.mjs` only allows two domains. Sellers pasting unsanctioned image URLs crash the frontend product pages.
-  - **Files:**
-    - [`next.config.mjs`](file:///c:/Users/Omid/X/Code/Velora/Frontend/next.config.mjs#L50-L61)
-  - **Action:**
-    - Configure broader `remotePatterns` (or wildcard HTTPS / Cloudinary / S3 bucket) and implement graceful fallback images in `resolveProductImageSrc`.
 
 - [ ] **Prevent Account Enumeration on Registration**
   - **Issue:** `POST /customers/register` returns `201 Created` with full user profile when an email already exists.
