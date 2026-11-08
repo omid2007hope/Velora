@@ -1,127 +1,139 @@
-const Product = require("../model/Product");
-const { createHttpError } = require("../utils/httpError");
-const BaseService = require("./BaseService");
+const Product = require('../model/Product');
+const { createHttpError } = require('../utils/httpError');
+const BaseService = require('./BaseService');
 
 function escapeRegex(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 module.exports = new (class ProductService extends BaseService {
-  // ! Gets
+	// ! Gets
 
-  // ! Ok
-  async listProducts({ category, subCategory, isNew, search, storeId }) {
-    const filter = { isDeleted: { $ne: true } };
+	// ! Ok
+	async listProducts({ category, subCategory, isNew, search, storeId }) {
+		const filter = { isDeleted: { $ne: true } };
 
-    if (storeId) {
-      filter.storeId = storeId;
-    }
+		if (storeId) {
+			filter.storeId = storeId;
+		}
 
-    if (category) {
-      filter.category = category;
-    }
+		if (category) {
+			filter.category = category;
+		}
 
-    if (subCategory) {
-      filter.subCategory = subCategory;
-    }
+		if (subCategory) {
+			filter.subCategory = subCategory;
+		}
 
-    if (isNew === true) {
-      filter.NewArrivals = true;
-    }
+		if (isNew === true) {
+			filter.NewArrivals = true;
+		}
 
-    if (search) {
-      const normalizedSearch = escapeRegex(String(search).trim().slice(0, 100));
+		if (search) {
+			const normalizedSearch = escapeRegex(String(search).trim().slice(0, 100));
 
-      if (normalizedSearch) {
-        filter.name = { $regex: normalizedSearch, $options: "i" };
-      }
-    }
+			if (normalizedSearch) {
+				filter.name = { $regex: normalizedSearch, $options: 'i' };
+			}
+		}
 
-    return this.model.find(filter).sort({ createdAt: -1 });
-  }
+		return this.model.find(filter).sort({ createdAt: -1 });
+	}
 
-  // ! Ok
+	// ! Ok
 
-  async listProductsByStoreId(storeId) {
-    return this.findAllByThisId(storeId, "storeId");
-  }
+	async listProductsByStoreId(storeId) {
+		return this.findAllByThisId(storeId, 'storeId');
+	}
 
-  // ! Ok
+	// ! Ok
 
-  async getProductById(id) {
-    return this.findById(id);
-  }
+	async getProductById(id) {
+		return this.findById(id);
+	}
 
-  // ! post
+	// ! post
 
-  async createProduct(payload) {
-    if (!payload.storeId) {
-      throw createHttpError(400, "StoreId is required");
-    }
+	async createProduct(payload, storeId) {
+		if (!payload.storeId) {
+			throw createHttpError(400, 'StoreId is required');
+		}
 
-    const normalizedPayload = {
-      storeId: payload.storeId,
-      name: payload.name,
-      description: payload.description,
-      price: payload?.newPrice ? payload?.newPrice : payload?.oldPrice,
-      oldPrice: payload.oldPrice,
-      newPrice: payload?.newPrice || null,
-      discount: payload.discount || null,
-      category: payload.category,
-      subCategory: payload.subCategory?.trim(),
-      imageUrl: payload.imageUrl,
-      image: payload.imageUrl ? payload.imageUrl : payload.image,
-      NewArrivals: payload.NewArrivals,
-      color: payload.color,
-      size: payload.size,
-      highlights: payload.highlights,
-      details: payload.details,
-    };
+		if (!payload.userId) {
+			throw createHttpError(400, 'UserId required');
+		}
 
-    return this.createObject(normalizedPayload);
-  }
+		// Validation: Does the storeId in the body match the user's main store?
+		if (storeId !== req.seller.storeId) {
+			throw createHttpError(
+				400,
+				`Store ID ${storeId} does not match the user's store.`,
+			);
+		}
 
-  async patchProductByid(productId, payload) {
-    if (!productId) {
-      throw createHttpError(400, "Product's ID is required");
-    }
+		const normalizedPayload = {
+			storeId: payload.storeId,
+			name: payload.name,
+			description: payload.description,
+			price: payload?.newPrice ? payload?.newPrice : payload?.oldPrice,
+			oldPrice: payload.oldPrice,
+			newPrice: payload?.newPrice || null,
+			discount: payload.discount || null,
+			category: payload.category,
+			subCategory: payload.subCategory?.trim(),
+			imageUrl: payload.imageUrl,
+			image: payload.imageUrl ? payload.imageUrl : payload.image,
+			NewArrivals: payload.NewArrivals,
+			color: payload.color,
+			size: payload.size,
+			highlights: payload.highlights,
+			details: payload.details,
+		};
 
-    const normalizedPayload = {
-      name: payload?.name,
-      description: payload?.description,
-      price: payload?.newPrice ? payload?.newPrice : payload?.oldPrice,
-      oldPrice: payload?.oldPrice,
-      newPrice: payload?.newPrice,
-      discount: payload?.discount,
-      category: payload?.category,
-      subCategory: payload?.subCategory?.trim(),
-      imageUrl: payload?.imageUrl,
-      image: payload?.imageUrl ? payload?.imageUrl : payload?.image,
-      NewArrivals: payload?.NewArrivals,
-      color: payload?.color,
-      size: payload?.size,
-      highlights: payload?.highlights,
-      details: payload?.details,
-    };
+		return this.createObject(normalizedPayload);
+	}
 
-    const updated = await this.update({ _id: productId }, normalizedPayload);
+	async patchProductByid(productId, payload) {
+		if (!productId) {
+			throw createHttpError(400, "Product's ID is required");
+		}
 
-    if (!updated) {
-      throw createHttpError(404, "Product not found");
-    }
+		const normalizedPayload = {
+			name: payload?.name,
+			description: payload?.description,
+			price: payload?.newPrice ? payload?.newPrice : payload?.oldPrice,
+			oldPrice: payload?.oldPrice,
+			newPrice: payload?.newPrice,
+			discount: payload?.discount,
+			category: payload?.category,
+			subCategory: payload?.subCategory?.trim(),
+			imageUrl: payload?.imageUrl,
+			image: payload?.imageUrl ? payload?.imageUrl : payload?.image,
+			NewArrivals: payload?.NewArrivals,
+			color: payload?.color,
+			size: payload?.size,
+			highlights: payload?.highlights,
+			details: payload?.details,
+		};
 
-    return updated;
-  }
+		const updated = await this.update({ _id: productId }, normalizedPayload);
 
-  async deleteProductById(productId, ownerId) {
-    const existingProduct = await this.findOneByCondition({
-      _id: productId,
-    });
+		if (!updated) {
+			throw createHttpError(404, 'Product not found');
+		}
 
-    if (!existingProduct) {
-      throw createHttpError(404, "Product not found");
-    }
+		return updated;
+	}
 
-    return this.softDelete({ _id: productId }, ownerId);
-  }
+	async deleteProductById(productId, ownerId) {
+		const existingProduct = await this.findOneByCondition({
+			_id: productId,
+		});
+
+		if (!existingProduct) {
+			throw createHttpError(404, 'Product not found');
+		}
+
+		return this.softDelete({ _id: productId }, ownerId);
+	}
 })(Product);
