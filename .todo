@@ -7,11 +7,11 @@
 
 ## 🔴 Phase 1: Security & Critical Vulnerabilities [P0]
 
-- [ ] **Fix Broken Object-Level Authorization (BOLA/IDOR) on Products**
+- [x] **Fix Broken Object-Level Authorization (BOLA/IDOR) on Products**
   - **Issue:** Any seller can modify or delete any product on the platform or create listings under another seller's store.
   - **Files:**
-    - [`ProductController.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/controller/ProductController.js#L31-L61)
-    - [`ProductService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/ProductService.js#L57-L126)
+    - [`ProductController.js`](file:///c:/Users/Omid/My%20Work%20Place/Programming/Velora/Backend/controller/ProductController.js#L31-L64)
+    - [`ProductService.js`](file:///c:/Users/Omid/My%20Work%20Place/Programming/Velora/Backend/services/ProductService.js#L55-L162)
   - **Action:**
     - In `createProduct`: Validate that `req.body.storeId` is owned by `req.user.id` (`ownerOfStore`).
     - In `patchProductByid`: Pass `req.user.id` and ensure the target product's store belongs to the requesting seller.
@@ -26,11 +26,11 @@
     - Restrict customer status updates strictly to `"cancelled"` (and only when payment/order is still pending).
     - Status transitions like `"shipped"` and `"delivered"` must require seller or admin credentials.
 
-- [ ] **Inject `role: "customer"` into Customer JWT & Restore `requireCustomer`**
-  - **Issue:** Customer login issues tokens without `role: "customer"`, causing [`requireCustomer`](file:///c:/Users/Omid/X/Code/Velora/Backend/middleware/auth/system/Customer.js) to fail and forcing routes to disable role checks.
+- [x] **Inject `role: "customer"` into Customer JWT & Restore `requireCustomer`**
+  - **Issue:** Customer login issues tokens without `role: "customer"`, causing [`requireCustomer`](file:///c:/Users/Omid/My%20Work%20Place/Programming/Velora/Backend/middleware/auth/system/Customer.js) to fail and forcing routes to disable role checks.
   - **Files:**
-    - [`CustomerService.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/services/CustomerService.js#L152-L165)
-    - [`Post_reviews.js`](file:///c:/Users/Omid/X/Code/Velora/Backend/routes/versionOne/reviews/Post_reviews.js#L4-L16)
+    - [`CustomerService.js`](file:///c:/Users/Omid/My%20Work%20Place/Programming/Velora/Backend/services/CustomerService.js#L152-L165)
+    - [`Post_reviews.js`](file:///c:/Users/Omid/My%20Work%20Place/Programming/Velora/Backend/routes/versionOne/reviews/Post_reviews.js#L1-L22)
   - **Action:**
     - Add `role: 'customer'` to JWT signing payload in `CustomerService.loginCustomer`.
     - Un-comment and restore `requireCustomer` guard in `Post_reviews.js` and other customer-only endpoints.

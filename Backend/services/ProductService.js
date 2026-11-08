@@ -1,4 +1,5 @@
 const Product = require('../model/Product');
+const Store = require('../model/Store');
 const { createHttpError } = require('../utils/httpError');
 const BaseService = require('./BaseService');
 
@@ -52,24 +53,33 @@ module.exports = new (class ProductService extends BaseService {
 		return this.findById(id);
 	}
 
+	async _verifyStoreOwnership(targetStoreId, sellerStoreId, sellerId) {
+		if (sellerStoreId && String(targetStoreId) === String(sellerStoreId)) {
+			return true;
+		}
+
+		if (sellerId) {
+			const store = await Store.findOne({
+				_id: targetStoreId,
+				ownerOfStore: sellerId,
+			});
+
+			if (store) {
+				return true;
+			}
+		}
+
+		throw createHttpError(403, 'Forbidden: store ownership required');
+	}
+
 	// ! post
 
-	async createProduct(payload, storeId) {
+	async createProduct(payload, sellerStoreId, sellerId) {
 		if (!payload.storeId) {
 			throw createHttpError(400, 'StoreId is required');
 		}
 
-		if (!payload.userId) {
-			throw createHttpError(400, 'UserId required');
-		}
-
-		// Validation: Does the storeId in the body match the user's main store?
-		if (storeId !== req.seller.storeId) {
-			throw createHttpError(
-				400,
-				`Store ID ${storeId} does not match the user's store.`,
-			);
-		}
+		await this._verifyStoreOwnership(payload.storeId, sellerStoreId, sellerId);
 
 		const normalizedPayload = {
 			storeId: payload.storeId,
@@ -93,9 +103,23 @@ module.exports = new (class ProductService extends BaseService {
 		return this.createObject(normalizedPayload);
 	}
 
-	async patchProductByid(productId, payload) {
+	async patchProductByid(productId, payload, sellerStoreId, sellerId) {
 		if (!productId) {
 			throw createHttpError(400, "Product's ID is required");
+		}
+
+		const existingProduct = await this.findOneByCondition({
+			_id: productId,
+		});
+
+		if (!existingProduct) {
+			throw createHttpError(404, 'Product not found');
+		}
+
+		await this._verifyStoreOwnership(existingProduct.storeId, sellerStoreId, sellerId);
+
+		if (payload?.storeId && String(payload.storeId) !== String(existingProduct.storeId)) {
+			await this._verifyStoreOwnership(payload.storeId, sellerStoreId, sellerId);
 		}
 
 		const normalizedPayload = {
@@ -125,7 +149,7 @@ module.exports = new (class ProductService extends BaseService {
 		return updated;
 	}
 
-	async deleteProductById(productId, ownerId) {
+	async deleteProductById(productId, sellerStoreId, sellerId) {
 		const existingProduct = await this.findOneByCondition({
 			_id: productId,
 		});
@@ -134,6 +158,8 @@ module.exports = new (class ProductService extends BaseService {
 			throw createHttpError(404, 'Product not found');
 		}
 
-		return this.softDelete({ _id: productId }, ownerId);
+		await this._verifyStoreOwnership(existingProduct.storeId, sellerStoreId, sellerId);
+
+		return this.softDelete({ _id: productId }, sellerId);
 	}
 })(Product);

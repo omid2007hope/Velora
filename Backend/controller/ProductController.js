@@ -30,17 +30,20 @@ const getProductById = asyncHandler(async (req, res) => {
 
 const createProduct = asyncHandler(async (req, res) => {
 	const body = req.body;
-	const storeId = req.seller.storeId;
+	const sellerStoreId = req.seller?.storeId;
+	const sellerId = req.user?.id;
 
-	const createdProduct = await productService.createProduct(body, storeId);
+	const createdProduct = await productService.createProduct(body, sellerStoreId, sellerId);
 	return res.status(201).json({ data: createdProduct });
 });
 
 const patchProductByid = asyncHandler(async (req, res) => {
 	const productId = req.params.id;
+	const sellerStoreId = req.seller?.storeId;
+	const sellerId = req.user?.id;
 	const data = req.body;
 
-	const result = await productService.patchProductByid(productId, data);
+	const result = await productService.patchProductByid(productId, data, sellerStoreId, sellerId);
 
 	if (!result) {
 		throw createHttpError(404, 'Product not found');
@@ -51,9 +54,10 @@ const patchProductByid = asyncHandler(async (req, res) => {
 
 const deleteProductById = asyncHandler(async (req, res) => {
 	const productId = req.params.id;
-	const ownerId = req.user.id;
+	const sellerStoreId = req.seller?.storeId;
+	const sellerId = req.user?.id;
 
-	const result = await productService.deleteProductById(productId, ownerId);
+	const result = await productService.deleteProductById(productId, sellerStoreId, sellerId);
 
 	if (!result) {
 		throw createHttpError(404, 'Product not found');

@@ -18,19 +18,13 @@ function requireAuth(req, _res, next) {
 			role: payload.role,
 		};
 
-		// Give the seller their own unique "Store" identity
-		req.seller = {
-			userId: payload.sub, // Link back to the user
-			storeId: payload.storeId, // The unique ID for their shop
-			storeName: payload.storeName,
-			rating: payload.storeRating,
-		};
-
-		// If you have a specific Admin, give them their own space
-		req.admin = {
-			id: payload.adminId, // If the admin is a specific person
-			role: payload.adminRole,
-		};
+		if (payload.role === 'seller') {
+			req.seller = {
+				userId: payload.sub,
+				storeId: payload.storeId || null,
+				storeName: payload.storeName || null,
+			};
+		}
 
 		return next();
 	} catch (_error) {

@@ -142,10 +142,14 @@ module.exports = new (class StoreOwnerService extends BaseService {
       throw createHttpError(500, 'JWT_SECRET is not set');
     }
 
+    const store = await Store.findOne({ ownerOfStore: storeOwner._id }).lean();
+
     const base = {
       sub: storeOwner._id.toString(),
       email: storeOwner.email,
       role: 'seller',
+      storeId: store?._id ? store._id.toString() : null,
+      storeName: store?.storeName || null,
     };
 
     return {
@@ -179,11 +183,15 @@ module.exports = new (class StoreOwnerService extends BaseService {
       throw createHttpError(401, 'Invalid token type');
     }
 
+    const store = await Store.findOne({ ownerOfStore: payload.sub }).lean();
+
     return jwt.sign(
       {
         sub: payload.sub,
         email: payload.email,
         role: payload.role,
+        storeId: store?._id ? store._id.toString() : (payload.storeId || null),
+        storeName: store?.storeName || payload.storeName || null,
         tokenType: 'access',
       },
       process.env.JWT_SECRET,

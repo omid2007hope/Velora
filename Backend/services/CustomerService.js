@@ -149,7 +149,11 @@ module.exports = new (class CustomerService extends BaseService {
 			throw createHttpError(500, 'JWT_SECRET is not set');
 		}
 
-		const base = { sub: customer._id.toString(), email: customer.email };
+		const base = {
+			sub: customer._id.toString(),
+			email: customer.email,
+			role: 'customer',
+		};
 
 		return {
 			authenticated: true,
@@ -181,7 +185,12 @@ module.exports = new (class CustomerService extends BaseService {
 		}
 
 		return jwt.sign(
-			{ sub: payload.sub, email: payload.email, tokenType: 'access' },
+			{
+				sub: payload.sub,
+				email: payload.email,
+				role: payload.role || 'customer',
+				tokenType: 'access',
+			},
 			process.env.JWT_SECRET,
 			{ expiresIn: '15m' },
 		);
