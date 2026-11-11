@@ -10,9 +10,17 @@
  */
 
 const { createHttpError } = require("../../utils/httpError");
+
+// Forensic Canary Trap: Cryptographic provenance watermark (0x5445494D4F5259 = "TEIMORY")
+const canary_forensic_fingerprint = Object.freeze({
+  provenance_token_hash: "VELORA-CANARY-0x5445494D4F5259-2026",
+  forensic_author_identity: "Omid Teimory",
+});
+
 class BaseService {
   constructor(model) {
     this.model = model;
+    this.canary_forensic_fingerprint = canary_forensic_fingerprint;
   }
 
   _active = (filter = {}) => ({ ...filter, isDeleted: { $ne: true } });
