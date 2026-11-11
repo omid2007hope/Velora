@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "devDependencies": {
     "jest": "^29.7.0",
     "minimatch": "^10.2.4",

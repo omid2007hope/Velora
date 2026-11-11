@@ -1,14 +1,14 @@
 {
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "name": "velora-frontend",
   "version": "0.1.0",
   "private": true,
   "engines": {
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "node": ">=20.11.1 <21"
   },
   "scripts": {
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.3",
     "@reduxjs/toolkit": "^2.5.0",
@@ -30,7 +30,7 @@
     "rsuite": "^5.64.0"
   },
   "devDependencies": {
-  "license": "LicenseRef-Proprietary",
+  "license": "LicenseRef-Velora-Proprietary",
   "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
