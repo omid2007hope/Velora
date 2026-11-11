@@ -1,7 +1,19 @@
-**After a year of development: Personal Project — Velora (E-Commerce)**
+## ⚠️ LICENSE & COPYRIGHT NOTICE (NOT OPEN SOURCE)
+
+**Copyright © 2026 Omid Teimory. All Rights Reserved.**
+
+This repository is **source-available and proprietary**, NOT open source. 
+- **Permitted:** You may view the code, download the repository, and build/run the unmodified application for your own use.
+- **Strictly Prohibited:** You may **not** copy, paste, modify, redistribute, extract snippets, create derivative works, offer this software as a commercial/hosted service, or use any part of this codebase in your own projects or AI training.
+
+See the [LICENSE](./LICENSE) file for the full legally binding agreement. Unauthorized use will be prosecuted to the fullest extent of US, EU, and international copyright law.
+
+---
+
+**After a year of development: Personal Project â€” Velora (E-Commerce)**
 
 I can say with certainty and confidence:  
-Today’s Velora consists of **296 files**, **115 folders**, and approximately **40,000–45,000 lines of hand-written code**.
+Todayâ€™s Velora consists of **296 files**, **115 folders**, and approximately **40,000â€“45,000 lines of hand-written code**.
 
 ### What I Have Achieved in a Year
 
@@ -16,7 +28,7 @@ Today’s Velora consists of **296 files**, **115 folders**, and approximately *
 - Engineered a custom API client wrapper with interceptors for header injection and token refreshing, facilitating clean, authenticated backend communication for the frontend app.
 - Established an automated testing suite using Jest, covering crucial integration scenarios such as auth, controller actions, mailer behaviors, and database connection setups.
 
-### A Demonstration of Velora’s Architecture
+### A Demonstration of Veloraâ€™s Architecture
 
 Velora uses a clean, decoupled monorepo architecture separating a high-performance Next.js App Router Frontend from a robust Node.js/Express REST API Backend.
 
@@ -100,3 +112,4 @@ Velora is the result.
 "isDeleted": false,
 "deletedAt": null,
 "de
+

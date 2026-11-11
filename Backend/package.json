@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "LicenseRef-Proprietary",
   "devDependencies": {
     "jest": "^29.7.0",
     "minimatch": "^10.2.4",
@@ -37,3 +37,4 @@
     "zod": "^3.23.8"
   }
 }
+
